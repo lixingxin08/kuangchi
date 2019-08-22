@@ -1,0 +1,264 @@
+<template>
+    <div class="myMill">
+        <!--收益头部-->
+        <div class="mylcted_top flex_a">
+            <div class="content_box">
+                <div class="flex_a">
+                    <div v-for="(item,index) in 4" :key="index" class="flex_C mylcted_top_main">
+                        <span class="mylcted_top_item">{{index}}</span>
+                        <span class="mylcted_top_item font_b">475.55TH/s</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content_box">
+            <div class="mymill_bottom">
+                <div class="record flex_b">
+                    <div class="record_l flex_f">
+                        <div class="record_item" @click="change_record(1)" :class="recordtype?'':'record_item_active'">收益记录</div>
+                        <div class="record_item" @click="change_record(2)" :class="recordtype?'record_item_active':''">支付记录</div>
+                    </div>
+                    <div class="record_r flex_f">
+                        <div class="record_r_item">
+                            <el-dropdown trigger="click" placement="bottom">
+                                <span class="el-dropdown-link">
+                                    全部
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown" class="myprofit_head">
+                                    <el-dropdown-item>
+                                        <div class="myprofit_slide">最近一周</div>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <div class="myprofit_slide">最近一月</div>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <div class="myprofit_slide">全部</div>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </div>
+                        <div class="record_r_item export" @click="exportExcel()">
+                            导出
+                        </div>
+                    </div>
+                </div>
+                <div class="have_record" v-if="haverecord">
+                    <div class="record_main">
+                        <ul class="flex_b record_main_item record_head">
+                            <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
+                        </ul>
+                        <ul class="flex_b record_main_item">
+                            <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div class="record_page">
+                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10,20,50]" :page-size="100" layout="sizes, prev, pager, next, jumper" :total="totalSize">
+                        </el-pagination>
+                    </div>
+                </div>
+                <div class="nprecord" v-else>
+                    暂无数据
+                </div>
+            </div>
+        </div>
+
+    </div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            recordtype: false,
+            recorddata: [],
+            totalSize: 0,
+            haverecord: true,
+            tableData: [
+                { 'index': '0', "nickName": "沙滩搁浅我们的旧时光", "name": "小明" },
+                { 'index': '1', "nickName": "女人天生高贵", "name": "小红" },
+                { 'index': '2', "nickName": "海是彩色的灰尘", "name": "小兰" }
+            ]
+        }
+    },
+    created() {
+        this.change_record(1)
+    },
+    methods: {
+        change_record(index) {
+            if (index == 1) {
+                this.recordtype = false;
+                this.recorddata = ["收益时间", "收益数额", "日算力", "收益类型", "支付状态"]
+            } else if (index == 2) {
+                this.recordtype = true;
+                this.recorddata = ["支付时间", "结算时间", "收益数额", "钱包地址", "交易哈希"]
+            }
+        },
+        handleSizeChange() { },
+        handleCurrentChange() { },
+        //导出excel
+        exportExcel() {
+            require.ensure([], () => {
+                const { export_json_to_excel } = require('../vendor/Export2Excel');
+                const tHeader = ['序号', '昵称', '姓名'];
+                // 上面设置Excel的表格第一行的标题
+                const filterVal = ['index', 'nickName', 'name'];
+                // 上面的index、nickName、name是tableData里对象的属性
+                const list = this.tableData; //把data里的tableData存到list
+                const data = this.formatJson(filterVal, list);
+                export_json_to_excel(tHeader, data, '列表excel');
+            })
+        },
+
+        formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => v[j]))
+        },
+    }
+}
+</script>
+<style scoped>
+.content_box {
+    width: 6rem;
+    margin: 0 auto;
+}
+
+.mylcted_top {
+    height: 1.85rem;
+    background: url('../assets/img/myltc_bg.jpg') no-repeat;
+    background-size: 100% 100%;
+    overflow: hidden;
+    color: #fff;
+}
+
+.mylcted_top_main {
+    width: 1.4rem;
+    padding: 0.1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.mylcted_top_item {
+    height: 0.3rem;
+    font-family: MicrosoftYaHei-Bold;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    letter-spacing: 0px;
+    color: rgba(255, 255, 255, 1);
+}
+
+.flex_b {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex_a {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.flex_C {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flex_b_c {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.flex_f {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center
+}
+
+
+.record {
+    margin-bottom: 0.1rem;
+}
+
+.record_item {
+    width: 0.5rem;
+    height: 0.25rem;
+    border-bottom: 1px solid rgba(228, 228, 228, 1);
+    line-height: 0.25rem;
+    color: rgba(51, 51, 51, 1);
+    box-sizing: border-box;
+}
+
+.record_item:hover {
+    color: rgba(46, 115, 232, 1);
+}
+
+.record_item_active {
+    color: rgba(46, 115, 232, 1);
+    border-bottom: 3px solid rgba(46, 115, 232, 1);
+}
+
+.record_main {
+    width: 6rem;
+    text-align: left;
+}
+
+.record_main_item {
+    height: 0.25rem;
+    line-height: 0.25rem;
+    padding-right: 1rem;
+    text-overflow: ellipsis;
+    padding-left: 0.1rem;
+}
+
+.record_head {
+    background-color: #eef1fc;
+}
+
+.record_main_li {
+    text-align: left;
+}
+
+.record_page {
+    margin-top: 0.4rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.record_r_item {
+    width: 0.54rem;
+    height: 0.15rem;
+    line-height: 0.15rem;
+    margin-left: 0.1rem;
+    border-radius: 4px;
+    border: solid 1px rgba(220, 220, 220, 1);
+}
+
+.record_r_item:hover {
+    border: solid 1px rgba(46, 115, 232, 1);
+    color: rgba(46, 115, 232, 1);
+}
+
+.myprofit_head {
+    margin-top: 0px;
+}
+
+.myprofit_slide {
+    padding: 0 0.1rem;
+}
+
+.nprecord {
+    width: 100%;
+    height: 0.9rem;
+    line-height: 0.9rem;
+    color: #999;
+    text-align: center;
+    font-size: 0.2rem;
+}
+</style>
+
+
+
+

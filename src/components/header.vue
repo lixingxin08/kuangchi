@@ -1,0 +1,647 @@
+<template>
+  <div class="header">
+    <div class="parent-box">
+      <div class="header-parent-box ">
+        <div class="center_box">
+          <ul class="header-box-ul" @click="getAccountMsg()">
+            <li>{{$t("m.header.key1")}}: {{topMsg.minersTotal?format(topMsg.minersTotal,0):"--"}}</li>
+            <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
+            <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
+            <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
+            <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li>
+            <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
+                                            <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+          </ul>
+        </div>
+      </div>
+      <div class="nav-box-parent">
+        <div class="center_box">
+          <div class="nav_box">
+            <div class="nav_l">
+              <router-link to="/">
+                <div class="logo-box">
+                  <img src="../assets/img/logo.png" alt="">
+                </div>
+              </router-link>
+            </div>
+            <div class="nav_main" :class="isLogin?'nav_mained':''">
+              <div class="nav-div">
+                <ul class="nav-div-ul" v-if="!isLogin">
+                  <li :class="$route.path === '/'?'active':'no_active'">
+                    <router-link to="/">{{$t("m.header.key7")}}</router-link>
+                  </li>
+                  <li :class="$route.path === '/download'?'active':'no_active'">
+                    <router-link to="/download">{{$t("m.header.key11")}}</router-link>
+                  </li>
+                  <li :class="$route.path === '/wallet'?'active':'no_active'">
+                    <router-link to="/myprofit">{{$t("m.header.key26")}}</router-link>
+                  </li>
+                </ul>
+                <ul class="nav-div-ul" v-else-if="isLogin">
+                  <li :class="$route.path === '/'?'active':'no_active'">
+                    <router-link to="/">
+                      {{$t("m.header.key7")}}
+                    </router-link>
+                  </li>
+                  <li :class="$route.path === '/myltc'?'active':'no_active'">
+                    <router-link to="/myltc">
+                      {{$t("m.header.key8")}}
+                    </router-link>
+                  </li>
+                  <li :class="$route.path === '/myprofit'?'active':'no_active'">
+                    <router-link to="/myprofit">
+                      {{$t("m.header.key27")}}
+                    </router-link>
+                  </li>
+                  <li :class="$route.path === '/download'?'active':'no_active'">
+                    <router-link to="/download">{{$t("m.header.key11")}}</router-link>
+                  </li>
+                  <li :class="$route.path === '/sonset'?'active':'no_active'">
+                    <router-link to="/sonset">
+                      {{$t("m.header.key26")}}
+                    </router-link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="lang-box">
+              <ul class="lang-box_main" :class="getCookie('isLogin')?'lang-box_mained':''">
+                <a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+ $i18n.locale" v-show="!getCookie('isLogin')">
+                  <li class="register_li">{{$t("m.header.key12")}}</li>
+                </a>
+                <li v-if="getCookie('isLogin')">
+                  <el-dropdown trigger="click" placement="bottom" click="user_main">
+                    <span class="el-dropdown-link lang_left">
+                      <img src="../assets/img/user_img.png" alt="" class="user_img">
+                      <span>{{user_head}}</span>
+                      <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown" class="user_list">
+                      <el-dropdown-item class="user_head">
+                        <div class="user_head">
+                          <happy-scroll size="4" hide-horizontal resize>
+                            <div class="user_head">
+                              <li class="user_item" v-for="(item,index) in user_List" :key="index" @click="select_user(index)">
+                                <span>
+                                  <img src="../assets/img/admin_select.png" alt="" v-if="user_List[index]!==user_head">
+                                  <img src="../assets/img/admin_selected.png" alt="" v-if="user_List[index]==user_head">{{item}}
+                                </span>
+                                <span>1667</span>
+                              </li>
+                            </div>
+                          </happy-scroll>
+                        </div>
+                      </el-dropdown-item>
+                      <el-dropdown-item class="user_center">
+                        <li class="user_email">账号：21418278@163.com </li>
+                      </el-dropdown-item>
+                      <el-dropdown-item class="user_bottom">
+                        <li class="user_b_main">
+                          <span>个人中心</span>
+                          <span>
+                            <router-link to="/sonset">
+                              <span class="text_color"> 子用户设置</span>
+                            </router-link>
+                          </span>
+                          <span @click="sing_up">{{$t("m.header.key13")}}</span>
+                        </li>
+                      </el-dropdown-item>
+
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </li>
+                <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
+                <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
+                                                  <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                  <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                    <router-link to="/setting">
+                                                      <li>{{$t("m.wallet.key7")}}</li>
+                                                    </router-link>
+                                                    <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                  </ul>
+                                                </li>  -->
+                <li v-if="!getCookie('isLogin')">
+                  <a :href="baseHerf + $i18n.locale">
+                    <div class="login-box register_li">
+                      {{$t("m.home.key1")}}
+                    </div>
+                  </a>
+                </li>
+                <li class="username-li" style="position: relative">
+                  <el-dropdown trigger="click" placement="bottom">
+                    <span class="el-dropdown-link lang_right">
+                      <img class="switch-lang-img" src="../assets/img/langs.png" alt="">
+                      <span id="lang-span">{{lang_title}}</span>
+                      <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>
+                        <li @click="switchLang('zh')" class="lang_item">中文</li>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <li @click="switchLang('en')" class="lang_item">English</li>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <li @click="switchLang('ko')" class="lang_item">한글</li>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import Qs from "qs";
+import bus from "../assets/eventBus"
+import { setCookie, getCookie, delCookie } from "../assets/cookie";
+import { HappyScroll } from 'vue-happy-scroll';
+export default {
+  inject: ["reload", "reloadTwo"],
+  data() {
+    return {
+      baseUrl: this.GLOBAL.baseUrl,
+      baseUrlTwo: this.GLOBAL.baseUrlTwo,
+      baseHerf: this.GLOBAL.baseHerf,
+      username: "",
+      isLogin: true,
+      topMsg: {
+        minersTotal: "",
+      },
+      payfee: "",
+      user_head: "admin1",
+      user_List: ["admin1", "admin2", "admin3", "admin4", "admin5", "admin4", "admin5"],
+      lang_title: '中文',
+      user_msg: ""
+    }
+  },
+  created() {
+    var vueThis = this;
+    this.getTopMsg();
+    if (!getCookie("isLogin")) {
+      this.isLogin = false
+      this.getAccountMsg();
+    }
+    bus.$on("payfee", function(res) {
+      vueThis.payfee = res;
+    })
+  },
+  mounted() {
+    // if (localStorage.getItem("lang") === "zh") {
+    //   $("#lang-span").text("中文");
+    //   // document.title = "WTC主子链后台管理系统"
+    // } else if (localStorage.getItem("lang") === "en") {
+    //   $("#lang-span").text("English");
+    //   // document.title = "Backend Management System"
+    // } else if (localStorage.getItem("lang") === "ko") {
+    //   $("#lang-span").text("한글");
+    //   // document.title = "Backend Management System"
+    // }
+    // $(".nav-div-ul a").on("click", function() {
+    //   $(this).children("li").addClass("active");
+    //   $(this).siblings().children("li").removeClass("active");
+    // })
+  },
+  methods: {
+    //切换用户
+    select_user(index) {
+      this.user_head = this.user_List[index]
+    },
+    //获取账号信息
+    getAccountMsg() {
+      var vueThis = this;
+      var obj = {};
+      console.log(99)
+      this.$axios({
+        method: "get",
+        url: this.baseUrlTwo + "getAccountInfo?username=" + this.getCookie("username"),
+        withCredentials: true
+      }).then(function(res) {
+        vueThis.user_msg = res
+        console.log(vueThis.user_msg)
+        // console.log(res)
+        if (res.data.code === 1) {
+          setCookie("isLogin", "isTrue");
+          vueThis.reload();
+          vueThis.reloadTwo();
+
+        } else if (res.data.code === 1068) {
+
+        }
+      }).catch(function(err) {
+      })
+    },
+    // 切换语言
+    switchLang(index) {
+      this.getTopMsg()
+      console.log(index)
+      if (index === "zh") {
+        localStorage.setItem('lang', "zh");
+        this.lang = "zh";
+        this.$i18n.locale = this.lang;
+        this.lang_title = "中文"
+        // document.title = "WTC主子链后台管理系统"
+      } else if (index === "en") {
+        localStorage.setItem('lang', "en");
+        this.lang = "en";
+        this.$i18n.locale = this.lang;
+        this.lang_title = "English"
+        // document.title = "Backend Management System"
+      } else if (index === "ko") {
+        localStorage.setItem('lang', "ko");
+        this.lang = "ko";
+        this.$i18n.locale = this.lang;
+        this.lang_title = "한글"
+        // document.title = "Backend Management System"
+      }
+      this.reloadTwo();
+    },
+
+    //    计算时间
+    adTime(a) {
+      a = (new Date().getTime() / 1000) - a;
+      if (a < 60) {
+        this.miao = Math.floor(a) + " " + this.$t("m.header.key14");
+        return this.miao;
+      } else if ((a / 60) < 60) {
+        this.fz = Math.floor(a % 86400 % 3600 / 60) + " " + this.$t("m.header.key15");
+        return this.fz
+      } else if ((a / 3600) < 24) {
+        this.xs = Math.floor(a % 86400 / 3600) + " " + this.$t("m.header.key15");
+        return this.xs;
+      } else {
+        this.tian = Math.floor(a / 86400) + " " + this.$t("m.header.key16");
+        return this.tian;
+      }
+    },
+    //获取顶部数据
+    getTopMsg() {
+      var vueThis = this;
+      this.$axios({
+        mounted: "get",
+        url: this.baseUrl + "v1/wtcPool/wtcPoolInfo",
+        withCredentials: false
+      }).then(function(res) {
+        if (res.data.code === 200) {
+          vueThis.topMsg = res.data.data.PoolInfo[0];
+          // bus.$emit("newBlock", res.data.data.PoolInfo[0].height);
+          sessionStorage.setItem("newBlock", vueThis.adTime(res.data.data.PoolInfo[0].lastBlockTime));
+        } else {
+        }
+      }).catch(function(err) {
+      })
+    },
+    // 退出
+    sing_up() {
+      var vueThis = this;
+      setCookie("isLogin", "", -1);
+      this.$axios({
+        method: "post",
+        url: this.baseUrlTwo + "tuichu",
+      }).then(function(res) {
+        vueThis.sessionStorage.removeItem("newBlock");
+        vueThis.sessionStorage.removeItem("userMsg");
+        vueThis.reload();
+        vueThis.reloadTwo();
+        vueThis.$router.push("/");
+      }).catch(function(err) {
+        vueThis.sessionStorage.removeItem("newBlock");
+        vueThis.sessionStorage.removeItem("userMsg");
+        vueThis.$router.push("/");
+        vueThis.reload();
+        vueThis.reloadTwo();
+      });
+
+      // window.location.href = "http://account.kirinpool.com:81/#/account/login?platformName=wtcpool&lang=" + this.$i18n.locale;
+
+    },
+  },
+}
+</script>
+<style scoped>
+ul {
+  padding: 0;
+}
+
+.header {
+  background-color: rgba(21, 6, 47, 1);
+}
+
+.center_box {
+  width: 6rem;
+  margin: 0 auto;
+}
+
+.el-dropdown {
+  color: #fff;
+}
+
+.header-parent-box {
+  height: 0.15rem;
+  line-height: 0.15rem;
+  background-color: #0d0d29;
+}
+
+.nav-box,
+.nav-div li,
+.lang-box li {
+  cursor: pointer;
+}
+
+.logo-box img {
+  width: 0.89rem;
+  height: 0.14rem;
+}
+
+.lang-box {
+  width: 1.11rem;
+  height: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lang-box_main {
+  width: 1.2rem;
+  height: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.04rem;
+}
+
+.lang-box_mained {
+  width: 0.9rem;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.register_li {
+  width: 0.35rem;
+  height: 0.14rem;
+  border: 1px solid #2e73e8;
+  color: #fff;
+  box-sizing: border-box;
+  border-radius: 2px;
+  line-height: 0.14rem;
+}
+
+
+.header-box-ul {
+  width: 4.69rem;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'MicrosoftYaHei';
+  font-size: 6px;
+  font-weight: normal;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  color: #fff;
+  opacity: 0.8;
+  font-size: 0.06rem;
+}
+
+.nav-box-parent {
+  display: flex;
+  justify-content: center;
+  font-size: 0.07rem;
+  background-color: #00001e;
+}
+
+.nav_box {
+  width: 100%;
+  display: flex;
+  height: 0.35rem;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+}
+
+.nav-div {
+  font-size: 0.07rem;
+  height: 100%;
+}
+
+.nav-div ul {
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
+  align-items: center;
+}
+.lang_left {
+  width: 0.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.lang_right {
+  width: 0.4rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 0.06rem;
+}
+
+.switch-lang-img {
+  width: 0.08rem;
+  height: 0.08rem;
+}
+
+.el-dropdown-menu {
+  border-radius: 1px;
+  border: solid 1px #434343;
+  box-sizing: border-box;
+}
+
+.user_img {
+  width: 0.08rem;
+  height: 0.08rem;
+  margin-bottom: 0.01rem;
+}
+
+.user_el_list:hover {
+  background-color: black;
+}
+
+.user_list {
+  width: 1.5rem!important;
+  background-color: #000224;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.user_center {
+  height: 0.18rem;
+  line-height: 0.18rem;
+  border-top: 1px solid #434343;
+  text-overflow: ellipsis;
+  color: #eeeeee;
+  padding-left: 0.22rem;
+  box-sizing: border-box
+}
+
+.user_center:hover {
+  background-color: black;
+  color: #fff;
+}
+
+.user_bottom {
+  height: 0.18rem;
+  line-height: 0.18rem;
+  color: #2e73e8;
+  padding: 0 0.22rem;
+}
+
+.user_bottom:hover {
+  background-color: black;
+  color: #2e73e8;
+}
+
+.text_color {
+  color: #2e73e8;
+}
+
+.user_b_main {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user_b_main:hover {
+  color: #2e73e8;
+  opacity: 0.9;
+}
+
+.user_head {
+  width: 100%;
+  height: 0.72rem;
+}
+
+.user_item {
+  height: 0.18rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  border-bottom: 1px solid #434343;
+  box-sizing: border-box;
+  margin-left: 0.15rem;
+}
+
+.user_item:hover {
+  background-color: #050e3a;
+  color: #2e73e8;
+}
+.lang_item{
+  text-align: center;
+   color: #fff;
+   padding: 0 0.05rem;
+}
+.lang_item:hover{
+  background-color: #050e3a;
+  color: #2e73e8;
+}
+.user_item img {
+  margin-right: 5px
+}
+
+.el-dropdown-menu__item:hover {
+  background-color: black;
+}
+
+.el-dropdown-menu__item {
+  background-color: black;
+}
+
+.nav-div-ul a {
+  color: #ffffff;
+  height: 0.35rem;
+  display: flex;
+  align-items: center;
+}
+
+.nav-div-ul li {
+  height: 0.3rem;
+  font-size: 15px;
+  margin: auto 0.1rem;
+}
+
+
+
+
+
+.active {
+  border-bottom: 3px solid #fff;
+  opacity: 1!important;
+  color: #fff;
+}
+
+.no_active {
+  opacity: 0.7;
+}
+
+.nav-div ul,
+.lang-box ul {
+  margin: 0;
+}
+
+.username-li {
+  width: 0.29rem;
+  opacity: 1;
+}
+
+.user-msg-ul li {
+  color: black;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  opacity: 1 !important;
+}
+
+.user-msg-ul li:hover {
+  background: #ecf6ff;
+  color: skyblue;
+}
+
+.dropdown-menu {
+  min-width: 1.2rem;
+}
+
+.arrow__down {
+  font-size: 12px
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*媒体查询*/
+</style>
