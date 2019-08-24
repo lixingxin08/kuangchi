@@ -62,7 +62,7 @@
             <div class="myltct" v-if="!myltctype">
                 <div class="myltct_t">
                     <div class="myltct_t_head">
-                        您可按照以下方法配置矿机
+                        {{$t("m.myltc.key1")}}
                     </div>
                     <div class="myltct_t_head_main">
                         <el-timeline>
@@ -75,17 +75,23 @@
                 <div class="myltct_t_bt">
                     <div class="myltct_t_bt_item">
                         <div class="myltct_t_head">
-                            您可按照以下方法配置矿机
+                            {{$t("m.myltc.key7")}}
                         </div>
-                        <div class="flex_c myltct_t_b_main" v-for="item in 4" :key="item">www.kirinpool.com:5555</div>
+                        <div class="flex_c myltct_t_b_main"> {{$t("m.myltc.key8")}}</div>
+                        <div class="flex_c myltct_t_b_main" v-for="item in 3" :key="item">www.kirinpool.com:5555</div>
                     </div>
                     <div class="myltct_t_bt_item">
                         <div class="myltct_t_head">
-                            费率标准
+                            {{$t("m.myltc.key9")}}
                         </div>
-                        <div class="flex_b myltct_t_bt_b" v-for="item in 2" :key="item">
-                                <span>SMN</span>
-                                <span>SMN</span>
+                        <div class="flex_b myltct_t_bt_b">
+                            
+                            <span>SMN：</span>
+                            <span>GMN：</span>
+                        </div>
+                        <div class="flex_b myltct_t_bt_b">
+                            <span>MN：</span>
+                            <span>{{$t("m.myltc.key10")}}:</span>
                         </div>
                     </div>
                 </div>
@@ -101,18 +107,17 @@ export default {
             ltc_top: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32")],
             ltc_main: [this.$t("m.myMill.key5"), this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key37"), this.$t("m.myMill.key36")],
             ltc_item: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32"), this.$t("m.myMill.key30")],
-            myltctype: false,
+            myltctype: true,
             select_type: true,
             activities: [{
-                content: '配置好钱包地址之后，下载配置软件：局域网搜索矿机工具FindMiner 。下载地址： http://file.kirinpool.com/download/FINDMINER',
-                timestamp: '矿机通电，连接矿机所在的局域网，登录矿机后台。',
+                content: this.$t("m.myltc.key2"),
+                timestamp: this.$t("m.myltc.key3"),
             }, {
-                content: '配置矿池和矿工，Worker矿机名为矿机标示，批量配置将顺延其编号。如miner则顺延成miner001、miner002、……、miner100（限制长度为8-16的数字和字母）',
-                timestamp: '建议：先配置好子账户钱包地址，再配置矿池和矿工。',
-                color: "red"
+                content: this.$t("m.myltc.key4"),
+                timestamp: this.$t("m.myltc.key5"),
             },
             {
-                content: ' 坐享收益 。配置完毕，一切就绪。等些许时间，矿池将会自动添加至矿池网站',
+                content: this.$t("m.myltc.key6"),
                 timestamp: '',
             },
             ],
@@ -608,6 +613,7 @@ export default {
 
 
 
+
 /**图表弹出框**/
 
 .share {
@@ -707,6 +713,7 @@ export default {
 
 
 
+
 /**未配置**/
 
 .myltct_t {
@@ -758,7 +765,8 @@ export default {
     background-color: rgba(255, 255, 255, 1);
     border-radius: 4px;
 }
-.myltct_t_bt_b{
+
+.myltct_t_bt_b {
     width: 1rem;
     margin-left: 0.18rem;
     margin-bottom: 0.3rem;

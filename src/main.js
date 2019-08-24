@@ -53,71 +53,71 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// axios.interceptors.request.use(
-//   config => {
-//
-//     let token = getCookie("userToken");
-//     if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-//       config.headers.Authorization = "Bearer " + `${token}`;
-//     }
-//
-//     return config;
-//   },
-//   err => {
-//       return Promise.reject(err);
-//     }
-// );
+axios.interceptors.request.use(
+  config => {
 
-// axios.interceptors.response.use(
-//   response => {
-//     // if(response.data.msg === "账户未登录"){
-//     //   sessionStorage.removeItem("newBlock");
-//     //   sessionStorage.removeItem("userMsg");
-//     //   setCookie("isLogin","",-1);
-//     //   if(response.data.code !== 1068){
-//     //     // router.replace({
-//     //     //   path:"login",
-//     //     //   // query:{redirect:router.currentRoute.fullPath}
-//     //     // });
-//     //     alert(window.vm.$t("m.main.key3"));
-//     //     // window.history.go(0);
-//     //     window.location.href = global.baseHerf + vm.$i18n.locale;
-//     //     return false;
-//     //   }else if(response.data.code === 1068){
-//     //     router.replace({
-//     //       path:"/",
-//     //       // query:{redirect:router.currentRoute.fullPath}
-//     //     });
-//     //     alert(window.vm.$t("m.main.key3"));
-//     //     // window.history.go(0);
-//     //     return false;
-//     //   }
-//     //
-//     // }
-//     if (response.status === 200) {
-//       return Promise.resolve(response);
-//     } else {
-//       return Promise.reject(response);
-//     }
-//   },error => {
-//     if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
-//       alert(window.vm.$t("m.key4"));
-//       return Promise.reject(error);          // reject这个错误信息
-//     }else {
-//       alert(window.vm.$t("m.key"));
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+    let token = getCookie("userToken");
+    if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      config.headers.Authorization = "Bearer " + `${token}`;
+    }
+
+    return config;
+  },
+  err => {
+      return Promise.reject(err);
+    }
+);
+
+axios.interceptors.response.use(
+  response => {
+    if(response.data.msg === "账户未登录"){
+      sessionStorage.removeItem("newBlock");
+      sessionStorage.removeItem("userMsg");
+      setCookie("isLogin","",-1);
+      if(response.data.code !== 1068){
+        // router.replace({
+        //   path:"login",
+        //   // query:{redirect:router.currentRoute.fullPath}
+        // });
+        alert(window.vm.$t("m.main.key3"));
+        // window.history.go(0);
+        window.location.href = global.baseHerf + vm.$i18n.locale;
+        return false;
+      }else if(response.data.code === 1068){
+        router.replace({
+          path:"/",
+          // query:{redirect:router.currentRoute.fullPath}
+        });
+        alert(window.vm.$t("m.main.key3"));
+        // window.history.go(0);
+        return false;
+      }
+    
+    }
+    if (response.status === 200) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(response);
+    }
+  },error => {
+    if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
+      alert(window.vm.$t("m.key4"));
+      return Promise.reject(error);          // reject这个错误信息
+    }else {
+      alert(window.vm.$t("m.key"));
+    }
+    return Promise.reject(error);
+  }
+);
 
 //校验手机号
 Vue.prototype.IsPhone = function (phone) {
-  // var myreg = /^[1][1-9]\d{9}$/;
-  // if (myreg.test(phone) !== true){
-  //   return false;
-  // }else {
-  //   return true;
-  // }
+  var myreg = /^[1][1-9]\d{9}$/;
+  if (myreg.test(phone) !== true){
+    return false;
+  }else {
+    return true;
+  }
   return true;
 };
 //验证邮箱格式

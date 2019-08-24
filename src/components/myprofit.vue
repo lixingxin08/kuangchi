@@ -4,8 +4,8 @@
         <div class="mylcted_top flex_a">
             <div class="content_box">
                 <div class="flex_a">
-                    <div v-for="(item,index) in 4" :key="index" class="flex_C mylcted_top_main">
-                        <span class="mylcted_top_item">{{index}}</span>
+                    <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
+                        <span class="mylcted_top_item">{{item}}</span>
                         <span class="mylcted_top_item font_b">475.55TH/s</span>
                     </div>
                 </div>
@@ -15,31 +15,33 @@
             <div class="mymill_bottom">
                 <div class="record flex_b">
                     <div class="record_l flex_f">
-                        <div class="record_item" @click="change_record(1)" :class="recordtype?'':'record_item_active'">收益记录</div>
-                        <div class="record_item" @click="change_record(2)" :class="recordtype?'record_item_active':''">支付记录</div>
+                        <div class="record_item" @click="change_record(1)" :class="recordtype?'':'record_item_active'"> {{$t("m.myprofit.key5")}}</div>
+                        <div class="record_item" @click="change_record(2)" :class="recordtype?'record_item_active':''">{{$t("m.myprofit.key6")}}</div>
                     </div>
                     <div class="record_r flex_f">
                         <div class="record_r_item">
                             <el-dropdown trigger="click" placement="bottom">
                                 <span class="el-dropdown-link">
-                                    全部
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                    <span class="flex_b all">
+                                        <span>{{$t("m.myprofit.key17")}}</span>
+                                        <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </span>
                                 </span>
                                 <el-dropdown-menu slot="dropdown" class="myprofit_head">
                                     <el-dropdown-item>
-                                        <div class="myprofit_slide">最近一周</div>
+                                        <div class="myprofit_slide">{{$t("m.myprofit.key21")}}</div>
                                     </el-dropdown-item>
                                     <el-dropdown-item>
-                                        <div class="myprofit_slide">最近一月</div>
+                                        <div class="myprofit_slide">{{$t("m.myprofit.key22")}}</div>
                                     </el-dropdown-item>
                                     <el-dropdown-item>
-                                        <div class="myprofit_slide">全部</div>
+                                        <div class="myprofit_slide">{{$t("m.myprofit.key17")}}</div>
                                     </el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </div>
                         <div class="record_r_item export" @click="exportExcel()">
-                            导出
+                            {{export_name}}
                         </div>
                     </div>
                 </div>
@@ -72,7 +74,9 @@ export default {
             recordtype: false,
             recorddata: [],
             totalSize: 0,
+            export_name: '',
             haverecord: true,
+            profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             tableData: [
                 { 'index': '0', "nickName": "沙滩搁浅我们的旧时光", "name": "小明" },
                 { 'index': '1', "nickName": "女人天生高贵", "name": "小红" },
@@ -87,10 +91,12 @@ export default {
         change_record(index) {
             if (index == 1) {
                 this.recordtype = false;
-                this.recorddata = ["收益时间", "收益数额", "日算力", "收益类型", "支付状态"]
+                this.export_name = this.$t("m.myprofit.key18")
+                this.recorddata = [this.$t("m.myprofit.key7"), this.$t("m.myprofit.key8"), this.$t("m.myprofit.key9"), this.$t("m.myprofit.key10"), , this.$t("m.myprofit.key11")]
             } else if (index == 2) {
                 this.recordtype = true;
-                this.recorddata = ["支付时间", "结算时间", "收益数额", "钱包地址", "交易哈希"]
+                this.export_name = this.$t("m.myprofit.key19")
+                this.recorddata = [this.$t("m.myprofit.key12"), this.$t("m.myprofit.key13"), this.$t("m.myprofit.key14"), this.$t("m.myprofit.key15"), , this.$t("m.myprofit.key16")]
             }
         },
         handleSizeChange() { },
@@ -240,7 +246,9 @@ export default {
     border: solid 1px rgba(46, 115, 232, 1);
     color: rgba(46, 115, 232, 1);
 }
-
+.all{
+    width: 0.4rem;
+}
 .myprofit_head {
     margin-top: 0px;
 }

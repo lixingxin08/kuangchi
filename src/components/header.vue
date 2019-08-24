@@ -10,7 +10,7 @@
             <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
             <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li>
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
-                                            <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+                                                  <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
           </ul>
         </div>
       </div>
@@ -64,6 +64,7 @@
                 </ul>
               </div>
             </div>
+
             <div class="lang-box">
               <ul class="lang-box_main" :class="getCookie('isLogin')?'lang-box_mained':''">
                 <a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+ $i18n.locale" v-show="!getCookie('isLogin')">
@@ -93,7 +94,7 @@
                         </div>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_center">
-                        <li class="user_email">账号：21418278@163.com </li>
+                        <li class="user_email">账号：{{head_username}} </li>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_bottom">
                         <li class="user_b_main">
@@ -112,14 +113,14 @@
                 </li>
                 <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
                 <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
-                                                  <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
-                                                  <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
-                                                    <router-link to="/setting">
-                                                      <li>{{$t("m.wallet.key7")}}</li>
-                                                    </router-link>
-                                                    <li @click="sing_up">{{$t("m.header.key13")}}</li>
-                                                  </ul>
-                                                </li>  -->
+                                                        <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                        <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                          <router-link to="/setting">
+                                                            <li>{{$t("m.wallet.key7")}}</li>
+                                                          </router-link>
+                                                          <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                        </ul>
+                                                      </li>  -->
                 <li v-if="!getCookie('isLogin')">
                   <a :href="baseHerf + $i18n.locale">
                     <div class="login-box register_li">
@@ -168,6 +169,7 @@ export default {
       baseUrlTwo: this.GLOBAL.baseUrlTwo,
       baseHerf: this.GLOBAL.baseHerf,
       username: "",
+      head_username: "",
       isLogin: true,
       topMsg: {
         minersTotal: "",
@@ -176,12 +178,17 @@ export default {
       user_head: "admin1",
       user_List: ["admin1", "admin2", "admin3", "admin4", "admin5", "admin4", "admin5"],
       lang_title: '中文',
-      user_msg: ""
+      user_msg: "",
+      setGoogleAuth: '',
+      setPaymentCode: '',
+      setRealNameAuth: '',
     }
   },
   created() {
+    this.head_username = localStorage.getItem('username')
     var vueThis = this;
     this.getTopMsg();
+    this.getAccountMsg();
     if (!getCookie("isLogin")) {
       this.isLogin = false
       this.getAccountMsg();
@@ -191,6 +198,7 @@ export default {
     })
   },
   mounted() {
+
     // if (localStorage.getItem("lang") === "zh") {
     //   $("#lang-span").text("中文");
     //   // document.title = "WTC主子链后台管理系统"
@@ -213,22 +221,34 @@ export default {
     },
     //获取账号信息
     getAccountMsg() {
+      let _that = this
       var vueThis = this;
       var obj = {};
-      console.log(99)
       this.$axios({
         method: "get",
         url: this.baseUrlTwo + "getAccountInfo?username=" + this.getCookie("username"),
         withCredentials: true
       }).then(function(res) {
         vueThis.user_msg = res
-        console.log(vueThis.user_msg)
-        // console.log(res)
+        //手机号或邮箱
+        console.log(res)
+        console.log(_that.getCookie("username"))
+        console.log(document.cookie)
+        _that.head_username = res.data.msg.data.email == '' ? res.data.msg.data.phone : res.data.msg.data.email
+        _that.username = res.data.msg.data.username
+        _that.user_msgs = res.data.msg.data
+        _that.setGoogleAuth = res.data.msg.data.setGoogleAuth
+        _that.setPaymentCode = res.data.msg.data.setPaymentCode
+        _that.setRealNameAuth = res.data.msg.data.setRealNameAuth
+        localStorage.setItem('username', _that.head_username);
+        localStorage.setItem('subusername', _that.username);
+        localStorage.setItem('setGoogleAuth', _that.setGoogleAuth);
+        localStorage.setItem('setPaymentCode', _that.setPaymentCode);
+        localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
         if (res.data.code === 1) {
           setCookie("isLogin", "isTrue");
-          vueThis.reload();
-          vueThis.reloadTwo();
-
+          // vueThis.reload();
+          // vueThis.reloadTwo();
         } else if (res.data.code === 1068) {
 
         }
@@ -432,12 +452,14 @@ ul {
   height: 100%;
   align-items: center;
 }
+
 .lang_left {
   width: 0.5rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
+
 .lang_right {
   width: 0.4rem;
   display: flex;
@@ -537,15 +559,18 @@ ul {
   background-color: #050e3a;
   color: #2e73e8;
 }
-.lang_item{
+
+.lang_item {
   text-align: center;
-   color: #fff;
-   padding: 0 0.05rem;
+  color: #fff;
+  padding: 0 0.05rem;
 }
-.lang_item:hover{
+
+.lang_item:hover {
   background-color: #050e3a;
   color: #2e73e8;
 }
+
 .user_item img {
   margin-right: 5px
 }
@@ -615,6 +640,9 @@ ul {
 .arrow__down {
   font-size: 12px
 }
+
+
+
 
 
 

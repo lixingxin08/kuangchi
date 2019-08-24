@@ -4,6 +4,7 @@ import Router from 'vue-router'
 let home=''
 
 const mobile_home = resolve => require(['@/components/mobile_home'], resolve);
+const pc_home= resolve => require(['@/components/pc_home'], resolve)
 const myprofit = resolve => require(['@/components/myprofit'], resolve);
 const myltc = resolve => require(['@/components/myltc'], resolve);
 const sonset = resolve => require(['@/components/son_set'], resolve);
@@ -17,7 +18,7 @@ const download = resolve => require(['@/components/download'], resolve);
 // const setting=resolve=>require(['@/components/setting'],resolve);
 // import app from '@/components/downloadApp'
 const app = resolve => require(['@/components/downloadApp'], resolve);
- function browserRedirect() {
+ function browserRedirect(pcdata,mobiledata) {
             var sUserAgent = navigator.userAgent.toLowerCase();
             var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
             var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
@@ -32,16 +33,18 @@ const app = resolve => require(['@/components/downloadApp'], resolve);
             if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
                 // document.writeln("phone");
                  console.log("phone")
-                   home= resolve => require(['@/components/mobile_home'], resolve);
+                   resolve => require(['@/components/mobile_home'], resolve);
+                   return  home=mobiledata
            
             } else {
                 // document.writeln("pc");
-               home= resolve => require(['@/components/pc_home'], resolve);
+              
                  console.log("pc")
+                   return  home=pcdata
             }
         }
 
-        browserRedirect();
+        browserRedirect(pc_home,mobile_home);
 Vue.use(Router);
 
 export default new Router({

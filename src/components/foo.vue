@@ -76,7 +76,7 @@
     justify-content: start;
   }
   .foo{
-    margin-top: 50px;
+    margin-top: 0.25rem;
   }
   #QrCode-box2{
     display: none;

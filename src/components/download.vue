@@ -4,152 +4,147 @@
     <div class="center-box">
       <div class="main-box__bg-1">
         <div class="main-box-left-1">
-          <div class="main-box-left_title">
+          <div class="main-box-left_title" :class="this.switch?'color1':''">
+            <div class="block_box"></div>
             <span @click="switchBox(0)">{{$t("m.header.key11")}}
-              <span class="el-icon-arrow-right arrow_right"></span>
             </span>
           </div>
           <ul class="main-box-left-ul">
-            <li v-if="downloadtype==1" @click="switchBox(1)"></li>
-            <li v-if="downloadtype==2" @click="switchBox(2)" :class="this.switch?'systemActive':''">{{$t("m.download.key27")}}</li>
-            <li v-if="downloadtype==3" @click="switchBox(3)" :class="this.switch?'systemActive':''">{{$t("m.download.key28")}}</li>
-            <!--<li>流畅打开国外网站</li>-->
-            <!--<li>注册前需要注意的几件事</li>-->
-            <!--<li>手把手带您通过实名验证</li>-->
-            <!--<li>两步验证相关问题</li>-->
-            <!--<li>安全中心</li>-->
-            <!--<li>安全指南</li>-->
+            <li v-if="downloadtype==1"></li>
+            <li v-if="downloadtype==2" :class="this.switch?'systemActive':''">
+              <span class="el-icon-arrow-right"></span>{{$t("m.download.key27")}}</li>
+            <li v-if="downloadtype==3" :class="this.switch?'systemActive':''">
+              <span class="el-icon-arrow-right"></span>{{$t("m.download.key28")}}</li>
           </ul>
         </div>
 
-        <div class="main-box-right1">
+        <div class="main-box-right1" v-if="this.downloadtype!==3">
           <!--帮助中心-->
           <div class="help_main" v-if="this.downloadtype==1">
-            <ul class="help_box" v-for="(item,index) in helplist" :key="index" @click="switchBox(index)">
-              <li class="help_boxli1">{{item.top}}</li>
-              <li class="help_boxli2">{{item.center}}</li>
-              <li class="help_boxli3">{{item.bottom}}</li>
+            <ul class="flex_a_c help_box" v-for="(item,index) in helplist" :key="index" @click="switchBox(index+1)">
+              <li class="help_boxli1"><img :src="imgsrc[index]" alt=""></li>
+              <li class="flex_a_c help_boxli2">
+                <span class="help_boxli2_t">{{item.center}}</span>
+                <span>{{item.bottom}}</span>
+              </li>
             </ul>
           </div>
 
           <!--工具下载-->
-          <div class="main-box__content main-box__content1" v-if="this.downloadtype==2">
-            <div class="DownloadTool-left">
-              <div class="header-text">
-                <span>{{$t("m.download.key29")}}</span>
+          <div class="main-box__content" v-if="this.downloadtype==2">
+            <div class="flex_b Download_item">
+              <div class="flex_b header-text">
+                <img src="../assets/img/donwn_logo2.png" alt="">
+                <div class="flex_c down_text">
+                  <span>KIRINMINER:</span>
+                  <span>{{$t("m.download.key29")}}</span>
+                </div>
+              </div>
+              <div class="guide-box">
+                <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=" target="_blank">{{$t("m.download.key30")}}</a>
               </div>
               <div class="Download-main">
-                <div class="guide-box">
-                  <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=" target="_blank" v-if="$i18n.locale === 'zh'">{{$t("m.download.key30")}}</a>
-                  <a href="http://file.kirinpool.com/download/en/KIRINMINER.pdf?attname=" target="_blank" v-if="$i18n.locale === 'en'">{{$t("m.download.key30")}}</a>
-                </div>
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="_blank" class="tool-btn">{{$t("m.download.key32")}}</a>
+                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="_blank">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
             </div>
-            <div class="DownloadTool-right">
-              <div class="header-text">
-                <span>{{$t("m.download.key31")}}</span>
+            <div class="flex_b Download_item">
+              <div class="flex_b header-text">
+                <img src="../assets/img/donwn_logo3.png" alt="">
+                <div class="flex_c down_text">
+                  <span>FindMiner:</span>
+                  <span>{{$t("m.download.key31")}}</span>
+                </div>
+              </div>
+              <div class="guide-box">
+                <a href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=" target="_blank">{{$t("m.download.key34")}}</a>
               </div>
               <div class="Download-main">
-                <div class="guide-box">
-                  <a href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=" target="_blank" v-if="$i18n.locale === 'zh'">{{$t("m.download.key34")}}</a>
-                  <a href="http://file.kirinpool.com/download/en/FINDMINER.pdf?attname=" target="_blank" v-if="$i18n.locale === 'en'">{{$t("m.download.key34")}}</a>
-                </div>
                 <div class="tool-box">
                   <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="_blank" class="tool-btn">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
             </div>
           </div>
-          <!--常见问题-->
-          <div class="main-box__content problem" v-if="this.downloadtype==3">
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key1")}}</p>
-              <p>{{$t("m.download.key2")}}</p>
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key3")}}</p>
-              <p>{{$t("m.download.key4")}}</p>
-              <div>
-                <span style="margin-right: 10px;">{{$t("m.download.key5")}}</span>
-              </div>
-              <p>{{$t("m.download.key37")}}</p>
-              <div>
-                <!--<span style="margin-right: 10px;">{{$t("m.download.key7")}}</span>-->
-                <!--<div>{{$t("m.download.key8")}}<a href="https://github.com/WaltonChain/WaltonWallet_Android" target="_blank">https://github.com/WaltonChain/WaltonWallet_Android</a></div>-->
-                <!--<div>macOS: <a href="https://github.com/WaltonChain/WaltonWallet_MacOS" target="_blank">https://github.com/WaltonChain/WaltonWallet_MacOS</a></div>-->
-                <!--<div>Linux: <a href="https://github.com/WaltonChain/WaltonWallet_Linux" target="_blank">https://github.com/WaltonChain/WaltonWallet_Linux</a></div>-->
-                <!--<div>Windows: <a href="https://github.com/WaltonChain/WaltonWallet_Win" target="_blank">https://github.com/WaltonChain/WaltonWallet_Win</a></div>-->
-              </div>
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key9")}}</p>
-              <p>{{$t("m.download.key10")}}</p>
-              <p>{{$t("m.download.key11")}} &nbsp&nbsp&nbsp
-                <span>{{$t("m.download.key12")}}</span>
-                <a target="_blank" href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/FINDMINER</a>
-              </p>
-              <p>{{$t("m.download.key13")}} &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-                <span>{{$t("m.download.key14")}}</span>
-                <a target="_blank" href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/KIRINMINER</a>
-              </p>
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key15")}}</p>
-              <p>{{$t("m.download.key16")}}</p>
-              <p>www.kirinpool.com:5555 </p>
-              <p>www.kirinpool.com:6666</p>
-              <p>www.kirinpool.com:7777</p>
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key17")}}</p>
-              <p>{{$t("m.download.key18")}}</p>
-
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key19")}}</p>
-              <p>{{$t("m.download.key20")}}</p>
-              <p>{{$t("m.download.key21")}}</p>
-              <p>{{$t("m.download.key22")}}</p>
-              <p>{{$t("m.download.key23")}}</p>
-            </div>
-            <div class="main-box_content_item">
-              <p>{{$t("m.download.key24")}}</p>
-              <p>{{$t("m.download.key25")}}</p>
-              <p>{{$t("m.download.key26")}}</p>
-            </div>
-          </div>
-
         </div>
-
+        <!--常见问题-->
+        <div class="main-box__content" v-if="this.downloadtype==3">
+        <el-collapse class="problem_main">
+          <el-collapse-item :title="problem_tile[0]" name="1" class="problem_item">
+            <p>{{$t("m.download.key2")}}</p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[1]" name="2"  class="problem_item">
+            <p>{{$t("m.download.key4")}}</p>
+            <div>
+              <span style="margin-right: 10px;">{{$t("m.download.key5")}}</span>
+            </div>
+            <p>{{$t("m.download.key37")}}</p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[2]" name="3"  class="problem_item">
+            <p>{{$t("m.download.key10")}}</p>
+            <p>{{$t("m.download.key11")}} 
+              <span>{{$t("m.download.key12")}}</span>
+              <a target="_blank" href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/FINDMINER</a>
+            </p>
+            <p>{{$t("m.download.key13")}}
+              <span>{{$t("m.download.key14")}}</span>
+              <a target="_blank" href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/KIRINMINER</a>
+            </p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[3]" name="4"  class="problem_item">
+            <p>{{$t("m.download.key16")}}</p>
+            <p>www.kirinpool.com:5555 </p>
+            <p>www.kirinpool.com:6666</p>
+            <p>www.kirinpool.com:7777</p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[4]" name="5"  class="problem_item">
+            <p>{{$t("m.download.key18")}}</p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[5]" name="6"  class="problem_item">
+            <p>{{$t("m.download.key20")}}</p>
+            <p>{{$t("m.download.key21")}}</p>
+            <p>{{$t("m.download.key22")}}</p>
+            <p>{{$t("m.download.key23")}}</p>
+          </el-collapse-item>
+          <el-collapse-item :title="problem_tile[6]" name="7"  class="problem_item">
+            <p>{{$t("m.download.key25")}}</p>
+            <p>{{$t("m.download.key26")}}</p>
+          </el-collapse-item>
+        </el-collapse>
       </div>
-      <!--<div class="center-bottom-box">-->
-      <!--<p>帮助中心</p>-->
-      <!--<ul>-->
-      <!--<li>工具下载</li>-->
-      <!--<li>常见问题</li>-->
-      <!--</ul>-->
-      <!--</div>-->
-      <!--<div class="addMiner-box">-->
-      <!--dahdoadlkajdpa-->
-      <!--</div>-->
+
     </div>
+    <!--<div class="center-bottom-box">-->
+    <!--<p>帮助中心</p>-->
+    <!--<ul>-->
+    <!--<li>工具下载</li>-->
+    <!--<li>常见问题</li>-->
+    <!--</ul>-->
+    <!--</div>-->
+    <!--<div class="addMiner-box">-->
+    <!--dahdoadlkajdpa-->
+    <!--</div>-->
+  </div>
   </div>
 </template>
 
 <script>
-
+import img1 from '../assets/img/help1.png'
+import img2 from '../assets/img/help2.png'
+import img3 from '../assets/img/help3.png'
 export default {
   data() {
     return {
       switch: false,
       downloadtype:1,
-      helplist:[
-        {top:"ICON",center:this.$t("m.header.key28"),bottom:this.$t("m.header.key26")},
-        {top:"ICON",center:this.$t("m.header.key18"),bottom:this.$t("m.header.key26")},
-        {top:"ICON",center:this.$t("m.header.key28"),bottom:this.$t("m.header.key26")}]
+      imgsrc: [img1, img2, img3],
+      helplist: [
+        { top: "ICON", center: this.$t("m.header.key28"), bottom: this.$t("m.header.key26") },
+        { top: "ICON", center: this.$t("m.header.key18"), bottom: this.$t("m.header.key26") },
+        { top: "ICON", center: this.$t("m.header.key28"), bottom: this.$t("m.header.key26") }],
+      problem_tile: [this.$t("m.download.key1"), this.$t("m.download.key3"), this.$t("m.download.key9"), this.$t("m.download.key15"), this.$t("m.download.key17")
+        , this.$t("m.download.key19"), this.$t("m.download.key24")]
     }
   },
   props: {
@@ -163,13 +158,16 @@ export default {
   methods: {
     switchBox(index) {
       if (index == 0) {
-        console.log(11)
+        this.switch = false
         this.downloadtype = 1
-      } else if (index ==1) { 
-        this.downloadtype = 2 }
-        else if(index==2){
-          this.downloadtype=3
-        }
+      } else if (index == 1) {
+        this.downloadtype = 2
+        this.switch = true
+      }
+      else if (index == 2) {
+        this.switch = true
+        this.downloadtype = 3
+      }
     },
   }
 }
@@ -195,6 +193,48 @@ ul {
 li {
   /*display: inline-block;*/
 }
+
+.color1 {
+  color: rgba(51, 51, 255, 1)
+}
+
+.problem_item{
+ width: 100%;
+ margin-bottom: 0.1rem;
+}
+.flex_a_c {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.flex_a {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex_b {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex_c {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+
+.problem_main{
+ 
+}
+
+
+
+
 
 
 
@@ -309,6 +349,27 @@ li {
   color: #e4d494;
 }
 
+.block_box {
+  width: 0.05rem;
+  height: 0.05rem;
+  background-color: #2e73e8;
+  display: inline-block;
+  margin-right: 0.05rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -352,6 +413,23 @@ li {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*成熟块*/
 
 .center-bottom-box {
@@ -372,6 +450,23 @@ li {
   color: #7937ff;
   font-size: 13px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -399,58 +494,47 @@ li {
   width: 100%;
   height: 100%;
   text-align: left;
-  justify-content: space-around;
-  align-items: center;
   box-sizing: border-box;
 }
 
-.main-box__content1 {
-  display: flex;
+.Download_item {
+  height: 0.7rem;
+  border-bottom: 1px solid rgba(0, 0, 1, 0.08);
 }
-.problem{
-  padding-left: 0.1rem;
-}
+
+
+
 .main-box-right1 {
   width: 100%;
-  min-height: 5.8rem;
-  border: 1px solid rgba(155, 155, 155, 0.2);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+  height: 2.3rem;
   box-sizing: border-box;
+  border: 2px solid rgba(242, 242, 242, 1);
+  border-radius: 4px;
+  padding: 0 0.15rem;
 }
 
 
-.DownloadTool-left,
-.DownloadTool-right {
-  width: 250px;
-  height: 313px;
-  border: 1px solid rgba(155, 155, 155, 0.2);
-  box-sizing: border-box;
-  border-top: 5px solid rgba(155, 155, 155, 0.2);
-}
 
-.DownloadTool-left:hover,
-.DownloadTool-right:hover {
-  border-top: 5px solid #5714D1;
-}
 
 .header-text {
-  width: 100%;
-  font-size: 22px;
-  height: 50%;
-  border-bottom: 1px solid rgba(155, 155, 155, 0.2);
+  margin-left: 0.25rem;
   box-sizing: border-box;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-weight: 600
+}
+
+.guide-box {
+  border-bottom: 1px solid rgba(46, 115, 232, 1)
+}
+
+.guide-box a {
+  color: rgba(46, 115, 232, 1);
+}
+
+.down_text {
+  width: 1.2rem;
+  margin-left: 0.08rem;
 }
 
 .Download-main {
-  width: 100%;
-  height: 50%;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -458,31 +542,14 @@ li {
   align-items: center;
 }
 
-.guide-box,
 .tool-box {
-  font-size: 15px;
-  margin-bottom: 20px;
-}
-
-.guide-box {
-  margin-bottom: 20px;
-}
-
-.guide-box a {
-  color: #5714d1;
-}
-
-.tool-btn {
-  border: 1px solid #5714d1;
-  padding: 5px 25px;
-  background-color: #fff;
-  border-radius: 3px;
-  color: #5714d1;
-}
-
-.tool-btn:hover {
-  background-color: #5714d1;
-  color: #fff;
+  width: 0.6rem;
+  height: 0.2rem;
+  line-height: 0.2rem;
+  text-align: center;
+  border: 1px solid rgba(46, 115, 232, 1);
+  border-radius: 4px;
+  color: rgba(46, 115, 232, 1);
 }
 
 .main-box__content img {
@@ -568,7 +635,7 @@ li {
 }
 
 .main-box-left-1 ul .systemActive {
-  color: #8e8e8e;
+  color: #666666;
 }
 
 .main-box-left-1 ul li a {
@@ -596,19 +663,33 @@ li {
 
 .help_main {
   width: 100%;
-   min-height: 5.8rem;
+  min-height: 2.9rem;
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
+}
 
+.help_box {
+  width: 1.33rem;
+  height: 1.7rem;
+  margin-top: 0.2rem;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: solid 1px #2e73e8;
 }
-.help_box{
-  margin-top: 0.8rem;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
+
+.help_boxli2 {
+  line-height: 0.17rem;
 }
+
+.help_boxli2_t {
+  font-size: 14px;
+  font-weight: 900;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  color: #333333;
+}
+
 @media (max-width: 1200px) {
   .home-parent-box,
   .center-box {

@@ -43,17 +43,14 @@
             <div class="block_c_t" :class="[this.hometype==3?'bgc2':'',this.hometype==4?'bgc3':'']">
               <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:{{search_data}}</span>
             </div>
-            <div class="block_c_main">
-              <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index">
+            <div class="block_c_main" :class="hometype!==3?'':'flex_f'">
+              <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index" :class="hometype!==3?'':'wallet_top_c'">
                 <span>{{item}}</span>
                 <span>{{user_detail_data[1][index]}}</span>
-                <div class="wallet_change" v-if="hometype==3&&index==2">
-                  <span @click="wallet_change(true)"> {{$t("m.home.key31")}}</span>
-                  <span @click="wallet_change(false)"> {{$t("m.home.key32")}}</span>
-                </div>
+
               </div>
             </div>
-            <div class="block_c_main">
+            <div class="block_c_main" v-if="hometype!==3">
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[2]" :key="index">
                 <span>{{item}}</span>
                 <span>{{user_detail_data[2][index]}}</span>
@@ -67,57 +64,60 @@
           </div>
           <div class="search_box block_bottom_title" v-show="hometype!==4">
             <div class="bottom-box-text">
-              <div class="bottom-box-text_l">
-                {{$t("m.home.key14")}}:
+              <div class="bottom-box-text_l"></div>
+              <div class="wallet_change" v-if="hometype!==3">{{$t("m.home.key14")}}:11</div>
+              <div class="wallet_change" v-if="hometype==3">
+                <span @click="wallet_change(true)" class="wallet_change_item1" :class="wallet_changes?'color1':''"> {{$t("m.home.key31")}}</span>
+                <span @click="wallet_change(false)" :class="wallet_changes?'':'color1'"> {{$t("m.home.key32")}}</span>
               </div>
-              <div>
-              </div>
+            </div>
+            <div>
             </div>
           </div>
-        </div>
-        <div class="center-bottom-box" v-show="hometype!==4">
-          <div class="list-box">
-            <ul class="header-ul">
-              <li :class="'li'+index" v-for="(item,index) in homedata.pagination" :key="index">{{item}}</li>
-            </ul>
-            <!--首页数据-->
-            <div v-if="hometype==1">
-              <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-                <li class="li0">{{item.number}}</li>
-                <li class="li1">{{timestampToTime(item.timestamp)}}</li>
-                <li class="li2">
-                  <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
-                  <img src="../assets/img/NA.png" alt="" v-if="item.minerFiner!==1">
-                </li>
-                <li class="li3">{{item.hash}}</li>
-                <li class="li4">{{changpow(item.difficulty)}}</li>
-                <li class="li5">{{item.transactionNumber}}</li>
-                <li class="li6">{{item.reward}}</li>
-              </ul>
-            </div>
-            <!--搜索钱包地址-->
-            <div v-if="hometype==3">
-              <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-                <li class="li0">{{item.number}}</li>
-                <li class="li1">{{item.hash}}</li>
-                <li class="li2">{{item.gasUsed}}</li>
-                <li class="li3">{{item.hash}}</li>
-                <li class="li4">{{item.gasUsed}}</li>
-                <li class="li5">{{item.number}}</li>
-              </ul>
-            </div>
-          </div>
-          <!--分页-->
-          <div class="page-box">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
-            </el-pagination>
-          </div>
-        </div>
-        <div class="nomore nomorecolor" v-if="hometype==4">
-          {{$t("m.home.key30")}}
         </div>
       </div>
+      <div class="center-bottom-box" v-show="hometype!==4">
+        <div class="list-box">
+          <ul class="header-ul">
+            <li :class="'li'+index" v-for="(item,index) in homedata.pagination" :key="index">{{item}}</li>
+          </ul>
+          <!--首页数据-->
+          <div v-if="hometype==1">
+            <ul class="center-ul" v-for="(item,index) in datas" :key="index">
+              <li class="li0" @click="item_search(item.number)">{{item.number}}</li>
+              <li class="li1">{{timestampToTime(item.timestamp)}}</li>
+              <li class="li2">
+                <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
+                <img src="../assets/img/NA.png" alt="" v-if="item.minerFiner!==1">
+              </li>
+              <li class="li3">{{item.hash}}</li>
+              <li class="li4">{{changpow(item.difficulty)}}</li>
+              <li class="li5">{{item.transactionNumber}}</li>
+              <li class="li6">{{item.reward}}</li>
+            </ul>
+          </div>
+          <!--搜索钱包地址-->
+          <div v-if="hometype==3">
+            <ul class="center-ul" v-for="(item,index) in datas" :key="index">
+              <li class="li1">{{item.hash}}</li>
+              <li class="li2">{{item.gasUsed}}</li>
+              <li class="li3">{{item.hash}}</li>
+              <li class="li4">{{item.gasUsed}}</li>
+              <li class="li5">{{item.number}}</li>
+            </ul>
+          </div>
+        </div>
+        <!--分页-->
+        <div class="page-box">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,50]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
+          </el-pagination>
+        </div>
+      </div>
+      <div class="nomore nomorecolor" v-if="hometype==4">
+        {{$t("m.home.key30")}}
+      </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -132,6 +132,7 @@ export default {
       baseUrltree: this.GLOBAL.baseUrltree,
       baseHerf: this.GLOBAL.baseHerf,
       blockList: "",
+      username: "",
       totalSize: 0,
       rate: "",
       placehoder: this.$t("m.home.key8"),
@@ -140,20 +141,21 @@ export default {
         pageSize: 20
       },
       block_top_data: [],
-      user_detail_data:[[],[],[]],
+      user_detail_data: [[], [], []],
       newBlock: "",
       page_bg: false,
-      hometype: 1,
+      hometype:1,
       homedata: { pagination: [] },
       search_data: "",
       homedatalist: [],
       paginationdata: '',
       datas: [],
-      wallet_changes: true
+      wallet_changes: true,
     }
   },
   created() {
-    // this.getWtcPoolBlockInfo();
+    // this.getWtcPoolBlockInfo();  
+    console.log(localStorage.getItem("token"), "222")
     if (getCookie("isLogin")) {
       this.getAccountMill();
       this.getRate();
@@ -161,14 +163,15 @@ export default {
   },
   mounted() {
     this.sethomedata()
-    // this.tosearch()
+    this.tosearch()
   },
   methods: {
     wallet_change(val) {
       this.wallet_changes = val
       this.datas = []
       if (this.wallet_changes) {
-        this.homedata.pagination = [this.$t("m.home.key26"), this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
+        console.log("block")
+        this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
         for (let i = 0; i < this.homedatalist.block.length; i++) {
           this.datas.push(JSON.parse(this.homedatalist.block[i]))
         }
@@ -176,60 +179,76 @@ export default {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
         for (let i = 0; i < this.homedatalist.transcationArray.length; i++) {
           this.datas.push(JSON.parse(this.homedatalist.transcationArray[i]))
+          this.datas[i].timestamp = this.timestampToTime(this.datas[i].timestamp)
+          this.data[i].difficulty = this.changpow(his.data[i].difficulty)
+          if (this.datas[i].reward.length < 6) {
+            this.datas[i].reward = Number(this.datas[i].reward).toFixed(9)
+          }
         }
       }
     },
     sethomedata() {
       if (this.hometype == 1) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
-      } else if (this.hometype == 2) {
+      } else if (this.hometype == 4) {
+        this.block_top_data = [[this.$t("m.home.key36"), this.$t("m.home.key37")],
+        [this.$t("m.myMill.key10"), this.$t("m.home.key24"), this.$t("m.home.key25")],
+        [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
       }
     },
     /**搜索**/
     tosearch() {
+      let _that = this;
       this.search_data = this.search_data.toLocaleLowerCase()
       let regPos = /^\d+(\.\d+)?$/; //非负浮点数
       let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
       let datalist = []
-      let _that = this;
-      if (_that.search_data.indexOf("0x") == 0 && _that.search_data == 64) {
+
+      if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 64) {
         _that.hometype = 4
         console.log(44444444)
-        //搜索钱包地址
+        this.block_top_data = [[this.$t("m.home.key28")],
+        [this.$t("m.setting.key1"), this.$t("m.home.key26"), this.$t("m.home.key27")], [1, 2, 3, 4]]
+        console.log(this.block_top_data)
       } else if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 42) {
-        this.block_top_data = [[this.$t("m.home.key28")],  
-        [this.$t("m.setting.key1"), this.$t("m.home.key26"), this.$t("m.home.key27")],]
+        //搜索钱包地址
+        this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
+        this.block_top_data = [[this.$t("m.home.key28")],
+        [this.$t("m.setting.key1"), this.$t("m.home.key26")],]
         console.log(3333333)
         _that.blockListObj.address = _that.search_data
-                console.log(_that.blockListObj)
         _that.hometype = 3;
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchMinerInfo', this.blockListObj, function(data) {
           console.log(JSON.parse(data))
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
-          _that.user_detail_data[0]=["11"]
-          _that.user_detail_data[1]= [balance, JSON.parse(data).TxCount]
+          _that.user_detail_data[0] = ["11"]
+          _that.user_detail_data[1] = [balance, JSON.parse(data).TxCount]
           _that.totalSize = JSON.parse(data).blockCount
           _that.homedatalist = JSON.parse(data)
           _that.datas = []
-          console.log(_that.user_detail_data)
-          //账户交易
-          if (_that.wallet_changes) {
-            _that.homedata.pagination = [_that.$t("m.home.key26"), _that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), _that.$t("m.home.key24"), _that.$t("m.home.key25")]
-            for (let i = 0; i < _that.homedatalist.block.length; i++) {
-              _that.datas.push(JSON.parse(_that.homedatalist.block[i]))
-            }
-          } else if (!_that.wallet_changes) {
-            //挖块统计
-            _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
-            for (let i = 0; i < _that.homedatalist.transcationArray.length; i++) {
-              _that.datas.push(JSON.parse(_that.homedatalist.transcationArray[i]))
-            }
-          }
+          console.log(res)
+          console.log(23521)
+          // //账户交易
+          // if (_that.wallet_changes) {
+          //   _that.homedata.pagination = [_that.$t("m.home.key26"), _that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), _that.$t("m.home.key24"), _that.$t("m.home.key25")]
+          //   for (let i = 0; i < _that.homedatalist.block.length; i++) {
+          //     _that.datas.push(JSON.parse(_that.homedatalist.block[i]))
+          //   }
+          // } else if (!_that.wallet_changes) {
+          //   //挖块统计
+          //   _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
+          //   for (let i = 0; i < _that.homedatalist.transcationArray.length; i++) {
+          //     _that.datas.push(JSON.parse(_that.homedatalist.transcationArray[i]))
+          //   }
+          // }
           console.log(_that.datas)
         }, function(error) {
           console.log(error)
         })
       } else if (regPos.test(_that.search_data) || regNeg.test(_that.search_data)) {
+
+
+
         //搜索块详情
         _that.hometype = 2;
         _that.blockListObj.param = this.search_data;
@@ -239,10 +258,10 @@ export default {
         [this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key21")]]
         console.log(2222222)
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchBlockInfo', this.blockListObj, function(data) {
-          let blockInfo=JSON.parse(data).blockInfo[0]
-           _that.user_detail_data[0]=[blockInfo.hash]
-          _that.user_detail_data[1]=[_that.timestampToTime(blockInfo.timestamp),blockInfo.size,blockInfo.MinerblockRewad,blockInfo.MinerTxReward]
-          _that.user_detail_data[2]=[_that.changpow(blockInfo.difficulty),blockInfo.transactionNumber,blockInfo.miner]
+          let blockInfo = JSON.parse(data).blockInfo[0]
+          _that.user_detail_data[0] = [blockInfo.hash]
+          _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, blockInfo.MinerblockRewad, blockInfo.MinerTxReward]
+          _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), blockInfo.transactionNumber, blockInfo.miner]
           console.log(JSON.parse(data))
           console.log(_that.user_detail_data)
         }, function(error) {
@@ -258,19 +277,26 @@ export default {
           _that.totalSize = JSON.parse(data).chainCount
           for (let i = 0; i < _that.homedatalist.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist[i])
-            if (_that.datas[i].reward.length < 4) {
+            if (_that.datas[i].reward.length < 6) {
               _that.datas[i].reward = Number(_that.datas[i].reward).toFixed(9)
             }
             _that.$set(_that.datas, i, _that.datas[i])
           }
+          localStorage.setItem('sss', _that.datas)
           console.log(_that.datas)
         }, function(error) {
           console.log(error);
         })
       }
     },
+    //item搜索
+    item_search(val) {
+      this.search_data = val + '';
+      this.tosearch()
+    },
     //用户矿机信息
     getAccountMill() {
+      console.log("MILL")
       var vueThis = this;
       this.$axios({
         method: "post",
@@ -279,6 +305,8 @@ export default {
         withCredentials: false
       }).then(function(res) {
         if (res.data.code === 200) {
+          console.log(211)
+          console.log(res)
           bus.$emit("payfee", res.data.accountInfo.payFee);
         } else {
           if (res.data.code === 402) {
@@ -367,6 +395,14 @@ ul {
 li {
   /*display: inline-block;*/
 }
+
+.color1 {
+  color: #2e73e8;
+}
+
+
+
+
 
 
 
@@ -459,8 +495,8 @@ li {
 }
 
 .search_box {
-  margin-top: 0.15rem;
-  margin-bottom: 0.12rem;
+  margin-top: 0.19rem;
+  margin-bottom: 0.11rem;
 }
 
 .go_search {
@@ -612,6 +648,25 @@ input:-ms-input-placeholder {
 }
 
 
+.wallet_change {
+  width: 100%;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  letter-spacing: 0px;
+  color: #333333;
+  cursor: pointer;
+}
+
+.wallet_change_item1 {
+  margin-left: 0.03rem;
+  margin-right: 0.29rem;
+}
+
+
+
+
+
 
 
 
@@ -720,6 +775,12 @@ input:-ms-input-placeholder {
   font-size: 14px;
   padding-left: 0.07rem;
 }
+
+
+
+
+
+
 
 
 
@@ -930,6 +991,12 @@ input:-ms-input-placeholder {
 
 
 
+
+
+
+
+
+
 /*分页*/
 
 .page-box {
@@ -985,6 +1052,12 @@ input:-ms-input-placeholder {
 
 
 
+
+
+
+
+
+
 /**底部**/
 
 .block_detail {
@@ -992,10 +1065,13 @@ input:-ms-input-placeholder {
 }
 
 .block_detail_top {
-  font-size: 0.16rem;
-  font-weight: 400;
-  padding-left: 0.4rem;
-  margin-bottom: 0.4rem
+  font-size: 13px;
+  font-weight: normal;
+  font-stretch: normal;
+  line-height: 19px;
+  letter-spacing: 0px;
+  color: #666666;
+  margin-bottom: 0.13rem
 }
 
 .block_center {
@@ -1004,8 +1080,8 @@ input:-ms-input-placeholder {
 }
 
 .block_c_t {
-  height: 0.54rem;
-  padding: 0 0.6rem;
+  height: 0.25rem;
+  padding: 0 0.25rem;
   background-color: #f9f5f9;
   border: 1px solid #f9f5f9;
   box-sizing: border-box;
@@ -1024,7 +1100,7 @@ input:-ms-input-placeholder {
 
 .block_c_main {
   height: 0.6rem;
-  padding: 0 0.6rem;
+  padding: 0 0.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1036,14 +1112,17 @@ input:-ms-input-placeholder {
   display: flex;
   justify-content: space-around;
   flex-direction: column;
- text-overflow: ellipsis;
+  text-overflow: ellipsis;
 }
 
-.wallet_change {
+.flex_f {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  color: #2e73e8;
+}
+
+.wallet_top_c {
+  margin-right: 0.8rem;
 }
 
 .next {
@@ -1068,6 +1147,12 @@ input:-ms-input-placeholder {
 .nomorecolor {
   color: rgba(255, 102, 0, 0.698039215686274);
 }
+
+
+
+
+
+
 
 
 
