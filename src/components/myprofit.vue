@@ -234,14 +234,16 @@ export default {
 }
 
 .record_r_item {
-    width: 0.54rem;
     height: 0.15rem;
     line-height: 0.15rem;
     margin-left: 0.1rem;
     border-radius: 4px;
+    padding: 0 0.05rem;
     border: solid 1px rgba(220, 220, 220, 1);
 }
-
+.mymill_bottom{
+    margin-top: 0.22rem;
+}
 .record_r_item:hover {
     border: solid 1px rgba(46, 115, 232, 1);
     color: rgba(46, 115, 232, 1);

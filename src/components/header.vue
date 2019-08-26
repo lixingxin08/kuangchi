@@ -231,9 +231,6 @@ export default {
       }).then(function(res) {
         vueThis.user_msg = res
         //手机号或邮箱
-        console.log(res)
-        console.log(_that.getCookie("username"))
-        console.log(document.cookie)
         _that.head_username = res.data.msg.data.email == '' ? res.data.msg.data.phone : res.data.msg.data.email
         _that.username = res.data.msg.data.username
         _that.user_msgs = res.data.msg.data
@@ -245,8 +242,10 @@ export default {
         localStorage.setItem('setGoogleAuth', _that.setGoogleAuth);
         localStorage.setItem('setPaymentCode', _that.setPaymentCode);
         localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
+        console.log(res)
         if (res.data.code === 1) {
           setCookie("isLogin", "isTrue");
+          console.log(document.cookie)
           // vueThis.reload();
           // vueThis.reloadTwo();
         } else if (res.data.code === 1068) {

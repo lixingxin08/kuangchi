@@ -37,17 +37,16 @@
       <div class="block_detail">
         <div class="block_detail_top_main" v-if="hometype!==1">
           <div class="block_detail_top">
-            {{$t("m.home.key9")}}1{{$t("m.home.key10")}}:"46546"
+            {{$t("m.home.key9")}}1{{$t("m.home.key10")}}:{{search_data}}
           </div>
           <div class="block_center">
             <div class="block_c_t" :class="[this.hometype==3?'bgc2':'',this.hometype==4?'bgc3':'']">
-              <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:{{search_data}}</span>
+              <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:{{user_detail_data[0][index]}}</span>
             </div>
             <div class="block_c_main" :class="hometype!==3?'':'flex_f'">
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index" :class="hometype!==3?'':'wallet_top_c'">
                 <span>{{item}}</span>
                 <span>{{user_detail_data[1][index]}}</span>
-
               </div>
             </div>
             <div class="block_c_main" v-if="hometype!==3">
@@ -58,16 +57,16 @@
             </div>
           </div>
           <div class="next" v-if="hometype!==3">
-            <span>
-              <<{{$t( "m.home.key12")}}1513</span>
-                <span>{{$t("m.home.key13")}}1513>></span>
+            <span @click="other_block(-1)">
+              <<{{$t( "m.home.key12")}}{{Number(target_data)-1}}</span>
+                <span @click="other_block(1)">{{$t("m.home.key13")}}{{Number(target_data)+1}}>></span>
           </div>
           <div class="search_box block_bottom_title" v-show="hometype!==4">
             <div class="bottom-box-text">
               <div class="bottom-box-text_l"></div>
-              <div class="wallet_change" v-if="hometype!==3">{{$t("m.home.key14")}}:11</div>
+              <div class="wallet_change" v-if="hometype!==3">{{$t("m.home.key14")}}:1133</div>
               <div class="wallet_change" v-if="hometype==3">
-                <span @click="wallet_change(true)" class="wallet_change_item1" :class="wallet_changes?'color1':''"> {{$t("m.home.key31")}}</span>
+                <span @click="wallet_change(true)" class="wallet_change_item1" :class="wallet_changes?'color1':''"> {{$t("m.home.key14")}}</span>
                 <span @click="wallet_change(false)" :class="wallet_changes?'':'color1'"> {{$t("m.home.key32")}}</span>
               </div>
             </div>
@@ -84,7 +83,7 @@
           <!--首页数据-->
           <div v-if="hometype==1">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-              <li class="li0" @click="item_search(item.number)">{{item.number}}</li>
+              <li class="li0" @click="item_search(item.number,index)">{{item.number}}</li>
               <li class="li1">{{timestampToTime(item.timestamp)}}</li>
               <li class="li2">
                 <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
@@ -134,6 +133,7 @@ export default {
       blockList: "",
       username: "",
       totalSize: 0,
+      target_data:'',
       rate: "",
       placehoder: this.$t("m.home.key8"),
       blockListObj: {
@@ -144,7 +144,7 @@ export default {
       user_detail_data: [[], [], []],
       newBlock: "",
       page_bg: false,
-      hometype:1,
+      hometype: 1,
       homedata: { pagination: [] },
       search_data: "",
       homedatalist: [],
@@ -221,7 +221,7 @@ export default {
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchMinerInfo', this.blockListObj, function(data) {
           console.log(JSON.parse(data))
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
-          _that.user_detail_data[0] = ["11"]
+          _that.user_detail_data[0] = [_that.search_data]
           _that.user_detail_data[1] = [balance, JSON.parse(data).TxCount]
           _that.totalSize = JSON.parse(data).blockCount
           _that.homedatalist = JSON.parse(data)
@@ -247,8 +247,6 @@ export default {
         })
       } else if (regPos.test(_that.search_data) || regNeg.test(_that.search_data)) {
 
-
-
         //搜索块详情
         _that.hometype = 2;
         _that.blockListObj.param = this.search_data;
@@ -259,7 +257,7 @@ export default {
         console.log(2222222)
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchBlockInfo', this.blockListObj, function(data) {
           let blockInfo = JSON.parse(data).blockInfo[0]
-          _that.user_detail_data[0] = [blockInfo.hash]
+          _that.user_detail_data[0] = [blockInfo.number,blockInfo.hash]
           _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, blockInfo.MinerblockRewad, blockInfo.MinerTxReward]
           _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), blockInfo.transactionNumber, blockInfo.miner]
           console.log(JSON.parse(data))
@@ -290,8 +288,15 @@ export default {
       }
     },
     //item搜索
-    item_search(val) {
+    item_search(val, index) {
+      this.target_data=val
       this.search_data = val + '';
+      this.tosearch()
+    },
+    //上一个或下一个块
+    other_block(val) {
+      this.target_data = this.target_data + val
+       this.search_data = this.search_data + '';
       this.tosearch()
     },
     //用户矿机信息
@@ -340,24 +345,6 @@ export default {
 
       })
     },
-    //获取成熟块
-    // getWtcPoolBlockInfo() {
-    //   var vueThis = this;
-    //   this.$axios({
-    //     method: "get",
-    //     url: this.baseUrl + "v1/wtcPool/wtcPoolBlockInfo?page=" + vueThis.blockListObj.page + "&pageSize=" + vueThis.blockListObj.pageSize,
-    //     withCredentials: false
-    //   }).then(function(res) {
-    //     if (res.data.code === 200) {
-    //       vueThis.blockList = res.data.data.array;
-    //       vueThis.totalSize = res.data.data.total;
-    //       console.log(vueThis.blockList)
-    //     } else {
-    //     }
-    //   }).catch(function(err) {
-
-    //   })
-    // },
     handleSizeChange(val) {
       this.blockListObj.pageSize = val;
       // this.getWtcPoolBlockInfo();
@@ -399,6 +386,7 @@ li {
 .color1 {
   color: #2e73e8;
 }
+
 
 
 
@@ -706,6 +694,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /*卡片*/
 
 .center-box {
@@ -775,6 +764,7 @@ input:-ms-input-placeholder {
   font-size: 14px;
   padding-left: 0.07rem;
 }
+
 
 
 
@@ -997,6 +987,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /*分页*/
 
 .page-box {
@@ -1004,6 +995,7 @@ input:-ms-input-placeholder {
   margin-top: 0.3rem;
   margin-bottom: 0.6rem;
 }
+
 
 
 
@@ -1130,7 +1122,7 @@ input:-ms-input-placeholder {
   justify-content: space-between;
   color: #2F8CFF;
   margin-top: 0.1rem;
-  padding: 0 0.6rem;
+  padding: 0 0.25rem;
   cursor: pointer;
 }
 
@@ -1147,6 +1139,7 @@ input:-ms-input-placeholder {
 .nomorecolor {
   color: rgba(255, 102, 0, 0.698039215686274);
 }
+
 
 
 

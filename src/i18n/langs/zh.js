@@ -81,7 +81,7 @@ const zh = {
       key25: "Amount",
       key26: "交易数量",
       key27: "操作",
-      key28: "普通地址：",
+      key28: "普通地址",
       key29: "In/Out",
       key30: "暂无更多数据",
       key31: "账户交易",

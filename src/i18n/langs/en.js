@@ -80,7 +80,7 @@ const en = {
       key25: "Amount",
       key26: "Quantity of transactions",
       key27: "operation",
-      key28: "Ordinary address:",
+      key28: "Ordinary address",
       key29: "In/Out",
       key30: "No more data yet",
       key31: "Account transactions",
