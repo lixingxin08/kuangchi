@@ -386,9 +386,13 @@ const en = {
       // key32_1:"Download tool(Mac)",
       key33: "Real-time hash power, farm and miner monitoring anytime and anywhere",
       key34: "KIRINMINER USER MANUAL",
-      key35: "GpuMiner tools",
+      key35: "tools",
       key36: "GpuMiner USER MANUAL",
-      key37: "IMToken is recommended for mobile wallets. Website: https://token.im/Note: IOS needs overseas ID, download and install, open APP to create wallet, must backup mnemonics, sure!"
+      key37: "IMToken is recommended for mobile wallets. Website: https://token.im/Note: IOS needs overseas ID, download and install, open APP to create wallet, must backup mnemonics, sure!",
+      key38: "Mine Pool Announcement",
+      key39: "Notice of all announcements about the mine",
+      key40: "Mining Tools Download",
+      key41: "Routine Question Answering"
     },
     register: {
       key: "Sign up",

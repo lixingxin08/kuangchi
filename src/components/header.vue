@@ -8,9 +8,9 @@
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
             <!-- <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
-                <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
+                  <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
-                                                      <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+                                                        <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
           </ul>
         </div>
       </div>
@@ -113,14 +113,14 @@
                 </li>
                 <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
                 <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
-                                                            <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
-                                                            <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
-                                                              <router-link to="/setting">
-                                                                <li>{{$t("m.wallet.key7")}}</li>
-                                                              </router-link>
-                                                              <li @click="sing_up">{{$t("m.header.key13")}}</li>
-                                                            </ul>
-                                                          </li>  -->
+                                                              <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                              <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                                <router-link to="/setting">
+                                                                  <li>{{$t("m.wallet.key7")}}</li>
+                                                                </router-link>
+                                                                <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                              </ul>
+                                                            </li>  -->
                 <li v-if="!getCookie('isLogin')">
                   <a :href="baseHerf + $i18n.locale">
                     <div class="login-box register_li">
@@ -170,19 +170,19 @@ export default {
       baseHerf: this.GLOBAL.baseHerf,
       username: "",
       head_username: "",
-      isLogin: true,
+      isLogin: false,
       topMsg: {
         minersTotal: "",
       },
       payfee: "",
-      user_head:localStorage.getItem('username'),
+      user_head: localStorage.getItem('username'),
       user_List: ["admin1", "admin2", "admin3", "admin4", "admin5", "admin4", "admin5"],
-      lang_title: '中文',
+      lang_title: 'English',
       user_msg: "",
       setGoogleAuth: '',
       setPaymentCode: '',
       setRealNameAuth: '',
-      subnameList:'',
+      subnameList: '',
     }
   },
   created() {
@@ -193,7 +193,8 @@ export default {
     this.getsubusername()
     if (!getCookie("isLogin")) {
       this.isLogin = false
-      this.getAccountMsg();
+    } else if (getCookie("isLogin")) {
+      this.isLogin = true
     }
     bus.$on("payfee", function(res) {
       vueThis.payfee = res;
@@ -258,7 +259,7 @@ export default {
     },
     //获取子账号列表
     getsubusername() {
-      let _that=this
+      let _that = this
       let res = {
         "code": 1,
         "msg": "success",
@@ -281,7 +282,7 @@ export default {
           }
         ]
       }
-        _that.subnameList=res.minerPow;
+      _that.subnameList = res.minerPow;
       // this.$ajax('post', 'http://120.77.241.114:7011//v2/accountSubWorkerList', { username:'lilinskt1', token:'47a6fRdFccApRnG4JnHBtNd7APz7YAXk4aRnSxm7Ra8jNWEiQ8y3WFimd4eYZSMBGA7AYB6nwF4WKaEsTFMZbtwwxbezy33yH8ZZRXcT863p' }, function(res) {
       //   console.log(res)
       //   _that.sonset_list = res.subList
@@ -675,6 +676,7 @@ ul {
 .arrow__down {
   font-size: 12px
 }
+
 
 
 

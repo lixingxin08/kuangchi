@@ -30,7 +30,7 @@
                 </li>
                 <li class="sonset_list5">
                     <span class="color1" v-if="edit_son!==indexs" @click="edit_sons(indexs)">{{$t("m.sonset.key7")}}</span>
-                    <span class="color1" v-if="edit_son==indexs" @click="address_edit(indexs)">{{$t("m.wallet.key19")}}11</span>
+                    <span class="color1" v-if="edit_son==indexs" @click="address_edit(indexs)">{{$t("m.wallet.key19")}}</span>
                     <span class="sonset_list5_cancel" v-if="edit_son==indexs" @click="cancel_edit()">{{$t("m.sonset.key15")}}</span>
                 </li>
                 <li class="sonset_list6 color1" @click="delete_item(indexs)">{{$t("m.sonset.key8")}}</li>

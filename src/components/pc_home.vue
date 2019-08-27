@@ -83,7 +83,7 @@
           <!--首页数据-->
           <div v-if="hometype==1">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-              <li class="li0" @click="item_search(item.number,index)">{{comdify(item.number)}}</li>
+              <li class="li0" @click="item_search(item.number)">{{comdify(item.number)}}</li>
               <li class="li1">{{timestampToTime(item.timestamp)}}</li>
               <li class="li2">
                 <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
@@ -173,7 +173,7 @@ export default {
       page_bg: false,
       hometype: 1,
       homedata: { pagination: [] },
-      search_data: "",
+      search_data: '',
       homedatalist: {
         block: '',
         transcationArray: ''
@@ -227,10 +227,12 @@ export default {
       this.target_data = val
       console.log(val)
       if (this.hometype == 1) {
-        val=Number(val)
-        this.search_data = val + '';
+        // console.log(11)
+        val = Number(val)
+        this.search_data = val+''
         this.tosearch()
       } else if (this.hometype == 2) {
+        console.log(22)
         this.search_data = val + '';
         this.tosearch()
       } else if (this.hometype == 3) {
@@ -246,10 +248,10 @@ export default {
     /**搜索**/
     tosearch(val) {
       let _that = this;
-      console.log(this.search_data)
+      if (typeof (this.search_data) !== 'number') {
       this.search_data = this.search_data.replace(/\s/g, "")
-      this.search_data = this.search_data.toLocaleLowerCase()
-      console.log(this.search_data)
+        this.search_data = this.search_data.toLocaleLowerCase()
+      }
       let regPos = /^\d+(\.\d+)?$/; //非负浮点数
       let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
       let datalist = []
@@ -288,7 +290,7 @@ export default {
         // })
       } else if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 42) {
         //搜索钱包地址
-        _that.wallet_changes=false;
+        _that.wallet_changes = false;
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
         this.block_top_data = [[this.$t("m.home.key28")],
         [this.$t("m.setting.key1"), this.$t("m.home.key26")],]
@@ -300,9 +302,8 @@ export default {
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
           _that.user_detail_data[0] = [_that.search_data]
           _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
- 
           _that.homedatalist = JSON.parse(data)
-          console.log( _that.homedatalist)
+          console.log(_that.homedatalist)
           //账户交易
           // if (JSON.parse(data).transcationArray.length>0) {
           //   console.log(1231)
@@ -315,7 +316,7 @@ export default {
           //挖块统计
           _that.datas = JSON.parse(data).block
           _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
-          _that.totalSize = _that.homedatalist.block.length
+          _that.totalSize = _that.homedatalist.block.length||0
           for (let i = 0; i < _that.homedatalist.block.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist.block[i])
           }
@@ -327,6 +328,7 @@ export default {
       } else if (regPos.test(_that.search_data) || regNeg.test(_that.search_data)) {
         //搜索块详情
         _that.hometype = 2;
+             _that.search_data=Number(_that.search_data)
         _that.target_data = _that.search_data
         _that.blockListObj.param = this.search_data;
         this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
@@ -340,8 +342,7 @@ export default {
           _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward)]
           _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
           _that.datas = JSON.parse(data).TxArray
-          _that.totalSize = JSON.parse(data).TxArray.length||0
-
+          _that.totalSize = JSON.parse(data).TxArray.length
         }, function(error) {
           console.log(error)
         })
@@ -455,6 +456,7 @@ li {
 .color1 {
   color: #2e73e8;
 }
+
 
 
 
@@ -804,6 +806,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /*卡片*/
 
 .center-box {
@@ -873,6 +876,7 @@ input:-ms-input-placeholder {
   font-size: 14px;
   padding-left: 0.07rem;
 }
+
 
 
 
@@ -1141,6 +1145,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /*分页*/
 
 .page-box {
@@ -1148,6 +1153,7 @@ input:-ms-input-placeholder {
   margin-top: 0.3rem;
   margin-bottom: 0.6rem;
 }
+
 
 
 
@@ -1314,6 +1320,7 @@ input:-ms-input-placeholder {
 .nomorecolor {
   color: rgba(255, 102, 0, 0.698039215686274);
 }
+
 
 
 

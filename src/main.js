@@ -36,7 +36,7 @@ axios.defaults.withCredentials = true;//让ajax携带cookie
 //进入路由前校验是否需要登录
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (getCookie("isLogin")) {
+    if (getCookie("isLogin")) {    
       next()
     } else {
       // next(
@@ -149,6 +149,7 @@ Vue.prototype.verifyUsername = function (str) {
   //限制输入特殊字符
   Vue.prototype.btKeyUp = function (e) {
     e.target.value = e.target.value.replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, "");
+      return e.target.value
   },
   //千位分隔符
   Vue.prototype.format = function (num, index) {
@@ -255,7 +256,7 @@ Vue.prototype.verEmail = function (str) {
   }
 };
 //中国标准时间转化时间格式
-Vue.prototype.Format = function (time, format) {
+Vue.prototype.Formatdate = function (time, format) {
   var t = new Date(time);
   var tf = function (i) {
     return (i < 10 ? '0' : '') + i

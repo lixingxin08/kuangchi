@@ -377,9 +377,13 @@ const ko = {
       // key32_1:"工具下载(Mac)",
       key33: "실시간산력 감시, 언제 어디서나 광장, 광기 운행 상황을 파악하다",
       key34: "KIRINMINER 사용 설명서",
-      key35: "GpuMiner 현카가 광구를 캐는 도구 ",
+      key35: "현카가 광구를 캐는 도구 ",
       key36: "GpuMiner 사용 수첩",
-      key37: "핸드폰 지갑 추천 IMToken.인터넷 주소: https://token.im /주: IOS 해외 ID, 다운로드 설치, APP 를 열어 지갑 만들기, 꼭 백업 조언 꼭!"
+      key37: "핸드폰 지갑 추천 IMToken.인터넷 주소: https://token.im /주: IOS 해외 ID, 다운로드 설치, APP 를 열어 지갑 만들기, 꼭 백업 조언 꼭!",
+      key38: "광장 공고",
+      key39: "본 광장의 모든 공고 통지",
+      key40: "광구",
+      key41: "상식 문제."
     },
     register: {
       key: "등록",

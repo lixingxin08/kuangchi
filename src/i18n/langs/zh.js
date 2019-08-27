@@ -376,9 +376,13 @@ const zh = {
       // key32_1:"工具下载(Mac)",
       key33: "实时算力监控，随时随地掌握矿场、矿机运行情况",
       key34: "KIRINMINER使用手册",
-      key35: "GpuMiner 显卡挖矿工具 ",
+      key35: "显卡挖矿工具 ",
       key36: "GpuMiner 使用手册",
-      key37: "手机钱包推荐 IMToken。网址：https://token.im/    注：IOS需要海外ID，下载安装，打开APP创建钱包，一定要备份助记词，一定！"
+      key37: "手机钱包推荐 IMToken。网址：https://token.im/    注：IOS需要海外ID，下载安装，打开APP创建钱包，一定要备份助记词，一定！",
+      key38:"矿池公告",
+      key39:"关于本矿池所有公告通知",
+      key40:"挖矿工具下载",
+      key41:"常规问题答疑"
 
     },
     register: {

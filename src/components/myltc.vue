@@ -138,27 +138,22 @@ export default {
             eject_switch: false,
             eject_data: [],
             eject_time: 'hour',
-            myltc_param: {
-                subusername: '',
-                token: '',
-                username: '',
-            },
-            List_k_params: {
-                subusername: '',
-                type: this.eject_time,
-                wokername: ''
-            },
+            // myltc_param: {
+            //     subusername:localStorage.getItem('subusername'),
+            //     token:localStorage.getItem('token'),
+            //     username: localStorage.getItem('username'),
+            // },
+            // List_k_params: {
+            //     subusername:localStorage.getItem('subusername'),
+            //     type: this.eject_time,
+            //     wokername: ''
+            // },
             wokerListdata: [],
-            wokerAlldata: [
-                {
-                    "latestHrInfo": 200000004,
-                    "minHrInfo": 20000000,
-                    "dayHrInfo": 20000000
-                }
-            ],
+            wokerAlldata:'',
         }
     },
     mounted() {
+        this.getmyltcdata()
         this.wokerAllKlinedata()
         this.wokerList()
         this.wokerListKlinedata()
@@ -317,6 +312,7 @@ export default {
         eject_open(index) {
             this.eject_switch = true;
             this.eject_data = this.ltc_item[index]
+            // this.List_k_params.wokername=this.wokerListdata[index].wokerName
             console.log(index)
             this.wokerListKlinedata()
             this.eject_chart()
@@ -327,6 +323,19 @@ export default {
         //子账户下总矿机算力
         getmyltcdata() {
             let _that = this
+            let data = {
+                "code": 1,
+                "msg": "success",
+                "minerPow": [
+                    {
+                        "latestHrInfo": 200000004,
+                        "minHrInfo": 20000000,
+                        "dayHrInfo": 20000000
+                    }
+                ]
+            }
+            _that.wokerAlldata=data.minerPow
+            console.log( _that.wokerAlldata[0].latestHrInfo)
             // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerAllInfo', this.myltc_param, function(data) {
             //     _that.wokerAlldata = JSON.parse(res).minerPow
             // }, function(error) {
@@ -335,16 +344,21 @@ export default {
         //子账户下单个矿机的列表
         wokerList() {
             let _that = this
-            let res = [
-                {
-                    "wokerName": "3",
-                    "latestHr": 100000003,
-                    "minHr": 10000000,
-                    "dayHr": 10000000,
-                    "time": 1552296607
-                }
-            ];
-            _that.wokerListdata = res
+            let res = {
+                "code": 1,
+                "msg": "success",
+                "minerPow": [
+                    {
+                        "wokerName": "3",
+                        "latestHr": 100000003,
+                        "minHr": 10000000,
+                        "dayHr": 10000000,
+                        "time": 1552296607
+                    }
+                ],
+                "minerNumber": 1
+            };
+            _that.wokerListdata = res.minerPow
             // this.$ajax('post', '127.0.0.1:7001/v2/wokerListInfo', this.myltc_param, function(res) {
             //     _that.wokerListdata = JSON.parse(res).minerPow
             //     console.log(res)
@@ -394,7 +408,7 @@ export default {
             }
             _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
             console.log(_that.ListKlinedata)
-            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', this.myltc_param, function(data) {
+            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', this.List_k_params, function(data) {
             // }, function(error) {
             // })
         },
@@ -775,6 +789,8 @@ export default {
 
 
 
+
+
 /**图表弹出框**/
 
 .share {
@@ -844,6 +860,8 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
+
 
 
 
