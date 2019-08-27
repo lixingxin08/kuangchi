@@ -78,9 +78,9 @@ export default {
             haverecord: true,
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             tableData: [
-                { 'index': '0', "nickName": "沙滩搁浅我们的旧时光", "name": "小明" },
-                { 'index': '1', "nickName": "女人天生高贵", "name": "小红" },
-                { 'index': '2', "nickName": "海是彩色的灰尘", "name": "小兰" }
+                { 'index': '0', "nickName": "沙滩搁浅我们的旧时光", "name": "小明" , "name": "小明" , "name": "小明" },
+                { 'index': '1', "nickName": "女人天生高贵", "name": "小红","name": "小红","name": "小红" },
+                { 'index': '2', "nickName": "海是彩色的灰尘", "name": "小兰","name": "小红","name": "小红" }
             ]
         }
     },
@@ -92,11 +92,11 @@ export default {
             if (index == 1) {
                 this.recordtype = false;
                 this.export_name = this.$t("m.myprofit.key18")
-                this.recorddata = [this.$t("m.myprofit.key7"), this.$t("m.myprofit.key8"), this.$t("m.myprofit.key9"), this.$t("m.myprofit.key10"), , this.$t("m.myprofit.key11")]
+                this.recorddata = [this.$t("m.myprofit.key7"), this.$t("m.myprofit.key8"), this.$t("m.myprofit.key9"), this.$t("m.myprofit.key10"),this.$t("m.myprofit.key11")]
             } else if (index == 2) {
                 this.recordtype = true;
                 this.export_name = this.$t("m.myprofit.key19")
-                this.recorddata = [this.$t("m.myprofit.key12"), this.$t("m.myprofit.key13"), this.$t("m.myprofit.key14"), this.$t("m.myprofit.key15"), , this.$t("m.myprofit.key16")]
+                this.recorddata = [this.$t("m.myprofit.key12"), this.$t("m.myprofit.key13"), this.$t("m.myprofit.key14"), this.$t("m.myprofit.key15"),this.$t("m.myprofit.key16")]
             }
         },
         handleSizeChange() { },
@@ -105,13 +105,13 @@ export default {
         exportExcel() {
             require.ensure([], () => {
                 const { export_json_to_excel } = require('../vendor/Export2Excel');
-                const tHeader = ['序号', '昵称', '姓名'];
+                const tHeader = this.recorddata;
                 // 上面设置Excel的表格第一行的标题
-                const filterVal = ['index', 'nickName', 'name'];
+                const filterVal = ['index', 'nickName', 'name', 'name', 'name'];
                 // 上面的index、nickName、name是tableData里对象的属性
                 const list = this.tableData; //把data里的tableData存到list
                 const data = this.formatJson(filterVal, list);
-                export_json_to_excel(tHeader, data, '列表excel');
+                export_json_to_excel(tHeader, data, 'this_excel');
             })
         },
 
@@ -214,9 +214,10 @@ export default {
 .record_main_item {
     height: 0.25rem;
     line-height: 0.25rem;
-    padding-right: 1rem;
+    padding-right:0.1rem;
     text-overflow: ellipsis;
     padding-left: 0.1rem;
+    text-align: center;
 }
 
 .record_head {

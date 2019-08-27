@@ -141,7 +141,7 @@ export default {
             myltc_param: {
                 subusername: '',
                 token: '',
-                username: ''
+                username: '',
             },
             List_k_params: {
                 subusername: '',
@@ -327,10 +327,10 @@ export default {
         //子账户下总矿机算力
         getmyltcdata() {
             let _that = this
-            this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllInfo', myltc_param, function(data) {
-                _that.wokerAlldata = JSON.parse(res).minerPow
-            }, function(error) {
-            })
+            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerAllInfo', this.myltc_param, function(data) {
+            //     _that.wokerAlldata = JSON.parse(res).minerPow
+            // }, function(error) {
+            // })
         },
         //子账户下单个矿机的列表
         wokerList() {
@@ -345,8 +345,9 @@ export default {
                 }
             ];
             _that.wokerListdata = res
-            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerListInfo', myltc_param, function(res) {
+            // this.$ajax('post', '127.0.0.1:7001/v2/wokerListInfo', this.myltc_param, function(res) {
             //     _that.wokerListdata = JSON.parse(res).minerPow
+            //     console.log(res)
             // }, function(error) {
             //     console.log(error);
             // })
@@ -368,8 +369,8 @@ export default {
                     }]
             }
             _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllKlineInfo', { subusername: localStorage.getItem(subusername), type: this.select_type }, function(data) {
-
+            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllKlineInfo', { subusername: localStorage.getItem('username'), type: this.select_type }, function(data) {
+            //      _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
             // }, function(error) {
             // })
         },
@@ -393,7 +394,7 @@ export default {
             }
             _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
             console.log(_that.ListKlinedata)
-            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', myltc_param, function(data) {
+            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', this.myltc_param, function(data) {
             // }, function(error) {
             // })
         },
@@ -773,6 +774,7 @@ export default {
 
 
 
+
 /**图表弹出框**/
 
 .share {
@@ -842,6 +844,7 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
 
 
 

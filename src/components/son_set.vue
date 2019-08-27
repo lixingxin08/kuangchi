@@ -113,49 +113,26 @@ export default {
             sonset_list: [],
             item_index: '',
             subList_params: {
-                username: '',
-                token: '',
-                subusername: '',
+                username: getCookie('username'),
+                token: getCookie('token'),
+                subusername: localStorage.getItem('subusername'),
                 address: ''
             },
             add_sons: {
-                username: "",
+                username: getCookie('username'),
                 usersub: ""
             },
             setGoogleAuth: '',
             setPaymentCode: '',
             delete_params: {
-                subusername: "",
-                username: "",
-                token: "",
+                subusername: localStorage.getItem('subusername'),
+                username: localStorage.getItem('username'),
+                token: getCookie('token'),
                 code: "",
                 paypassword: "",
             },
             delete_tips: '',
-        }
-    },
-    created() {
-        this.get_sonlist()
-        this.add_sons.username = localStorage.getItem('subusername')
-        this.setGoogleAuth = localStorage.getItem('setGoogleAuth')
-        this.setPaymentCode = localStorage.getItem('setPaymentCode')
-
-    },
-    methods: {
-        add_son() {
-            this.pop_type = 1
-        },
-        cancel_edit() {
-            this.edit_son = null
-        },
-        remove() {
-            this.pop_type = 0
-            this.edit_son = null
-        },
-        //子账户管理页面
-        get_sonlist() {
-            let _that = this
-            let res = {
+            testdata: {
                 "code": 200,
                 "msg": "success",
                 "subList": [
@@ -178,8 +155,34 @@ export default {
                         "createTime": "1566477238000"
                     }
                 ]
-            }
-            _that.sonset_list = res.subList
+            },
+        }
+    },
+    created() {
+        console.log('RELOAD')
+        console.log(this.subList_params)
+        this.get_sonlist()
+        this.add_sons.username = localStorage.getItem('subusername')
+        this.setGoogleAuth = localStorage.getItem('setGoogleAuth')
+        this.setPaymentCode = localStorage.getItem('setPaymentCode')
+
+    },
+    methods: {
+        add_son() {
+            this.pop_type = 1
+        },
+        cancel_edit() {
+            this.edit_son = null
+        },
+        remove() {
+            this.pop_type = 0
+            this.edit_son = null
+        },
+        //子账户管理页面
+        get_sonlist() {
+            let _that = this
+            let res =
+                _that.sonset_list = this.testdata.subList
             // this.$ajax('post', 'http://127.0.0.1:7001/v2/accountSubList', this.subList_params, function(res) {
             //     console.log(res)
             //     _that.sonset_list = res.subList
@@ -205,6 +208,7 @@ export default {
             this.delete_params.token = getCookie("token")
             this.$ajax('post', 'http://127.0.0.1:7001/v2/deleteAccountSub', this.delete_params, function(data) {
                 console.log(data)
+                _that.get_sonlist()
             }, function(error) {
                 console.log(error);
             })
@@ -224,7 +228,7 @@ export default {
             this.pop_type = 3
             this.edit_son = indexs
             console.log(this.sonset_list[indexs].name)
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser',{username:this.sonset_list[indexs].name}, function(data) {
+            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name }, function(data) {
                 console.log(data)
             }, function(error) {
                 console.log(error);
@@ -244,19 +248,22 @@ export default {
         },
         //创建子账户
         createdson() {
+            console.log(this.add_sons)
+            let _that = this
             if (!this.verifyUsername(this.add_sons.usersub)) {
-                this.add_sons.usersub=''
-                return      alert(this.$t("m.sonset.key9"))
+                this.add_sons.usersub = ''
+                return alert(this.$t("m.sonset.key9"))
             }
             this.addson = false
             this.removeson = false
             console.log(JSON.stringify(this.add_sons))
             this.$ajax('post', 'http://127.0.0.1:7001/v2/createAccountSub', this.add_sons, function(data) {
                 console.log(data)
+                _that.get_sonlist()
             }, function(error) {
                 console.log(error);
             })
-            this.pop_type=0
+            this.pop_type = 0
         }
     }
 }

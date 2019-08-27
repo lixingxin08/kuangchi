@@ -8,9 +8,9 @@
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
             <!-- <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
-            <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
+                <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
-                                                  <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+                                                      <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
           </ul>
         </div>
       </div>
@@ -82,12 +82,12 @@
                         <div class="user_head">
                           <happy-scroll size="4" hide-horizontal resize>
                             <div class="user_head">
-                              <li class="user_item" v-for="(item,index) in user_List" :key="index" @click="select_user(index)">
+                              <li class="user_item" v-for="(item,index) in subnameList" :key="index" @click="select_user(index)">
                                 <span>
-                                  <img src="../assets/img/admin_select.png" alt="" v-if="user_List[index]!==user_head">
-                                  <img src="../assets/img/admin_selected.png" alt="" v-if="user_List[index]==user_head">{{item}}
+                                  <img src="../assets/img/admin_select.png" alt="" v-if="subnameList[index].subsernameU!==user_head">
+                                  <img src="../assets/img/admin_selected.png" alt="" v-if="subnameList[index].subsernameU==user_head">{{item.subsernameU}}
                                 </span>
-                                <span>1667</span>
+                                <span>{{item.latestHrInfo}}</span>
                               </li>
                             </div>
                           </happy-scroll>
@@ -113,14 +113,14 @@
                 </li>
                 <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
                 <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
-                                                        <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
-                                                        <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
-                                                          <router-link to="/setting">
-                                                            <li>{{$t("m.wallet.key7")}}</li>
-                                                          </router-link>
-                                                          <li @click="sing_up">{{$t("m.header.key13")}}</li>
-                                                        </ul>
-                                                      </li>  -->
+                                                            <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                            <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                              <router-link to="/setting">
+                                                                <li>{{$t("m.wallet.key7")}}</li>
+                                                              </router-link>
+                                                              <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                            </ul>
+                                                          </li>  -->
                 <li v-if="!getCookie('isLogin')">
                   <a :href="baseHerf + $i18n.locale">
                     <div class="login-box register_li">
@@ -175,13 +175,14 @@ export default {
         minersTotal: "",
       },
       payfee: "",
-      user_head: "admin1",
+      user_head:localStorage.getItem('username'),
       user_List: ["admin1", "admin2", "admin3", "admin4", "admin5", "admin4", "admin5"],
       lang_title: '中文',
       user_msg: "",
       setGoogleAuth: '',
       setPaymentCode: '',
       setRealNameAuth: '',
+      subnameList:'',
     }
   },
   created() {
@@ -189,6 +190,7 @@ export default {
     var vueThis = this;
     this.getTopMsg();
     this.getAccountMsg();
+    this.getsubusername()
     if (!getCookie("isLogin")) {
       this.isLogin = false
       this.getAccountMsg();
@@ -217,7 +219,9 @@ export default {
   methods: {
     //切换用户
     select_user(index) {
-      this.user_head = this.user_List[index]
+      this.user_head = this.subnameList[index].subsernameU
+      localStorage.setItem('username', this.user_head)
+      console.log(localStorage.getItem('username'))
     },
     //获取账号信息
     getAccountMsg() {
@@ -237,8 +241,7 @@ export default {
         _that.setGoogleAuth = res.data.msg.data.setGoogleAuth
         _that.setPaymentCode = res.data.msg.data.setPaymentCode
         _that.setRealNameAuth = res.data.msg.data.setRealNameAuth
-        localStorage.setItem('username', _that.head_username);
-        localStorage.setItem('subusername', _that.username);
+        localStorage.setItem('username', _that.username);
         localStorage.setItem('setGoogleAuth', _that.setGoogleAuth);
         localStorage.setItem('setPaymentCode', _that.setPaymentCode);
         localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
@@ -252,6 +255,40 @@ export default {
         }
       }).catch(function(err) {
       })
+    },
+    //获取子账号列表
+    getsubusername() {
+      let _that=this
+      let res = {
+        "code": 1,
+        "msg": "success",
+        "minerPow": [
+          {
+            "subsernameU": "lilinskt1",
+            "latestHrInfo": 100000001
+          },
+          {
+            "subsernameU": "asdjkl",
+            "latestHrInfo": 100000002
+          },
+          {
+            "subsernameU": "asdjkl3",
+            "latestHrInfo": 100000003
+          },
+          {
+            "subsernameU": "asdjkl2",
+            "latestHrInfo": ""
+          }
+        ]
+      }
+        _that.subnameList=res.minerPow;
+      // this.$ajax('post', 'http://120.77.241.114:7011//v2/accountSubWorkerList', { username:'lilinskt1', token:'47a6fRdFccApRnG4JnHBtNd7APz7YAXk4aRnSxm7Ra8jNWEiQ8y3WFimd4eYZSMBGA7AYB6nwF4WKaEsTFMZbtwwxbezy33yH8ZZRXcT863p' }, function(res) {
+      //   console.log(res)
+      //   _that.sonset_list = res.subList
+      // console.log(323233)
+      // }, function(error) {
+      //   console.log(error);
+      // })
     },
     // 切换语言
     switchLang(index) {
@@ -638,6 +675,8 @@ ul {
 .arrow__down {
   font-size: 12px
 }
+
+
 
 
 

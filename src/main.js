@@ -55,7 +55,6 @@ router.beforeEach((to, from, next) => {
 
 axios.interceptors.request.use(
   config => {
-
     let token = getCookie("userToken");
     if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
       config.headers.Authorization = "Bearer " + `${token}`;

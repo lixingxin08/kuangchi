@@ -253,7 +253,7 @@ export default {
       let regPos = /^\d+(\.\d+)?$/; //非负浮点数
       let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
       let datalist = []
-      if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 64) {
+      if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length >= 64) {
         //搜索交易哈希
         _that.hometype = 4
         console.log(44444444)
@@ -297,12 +297,12 @@ export default {
         _that.hometype = 3;
         _that.datas = []
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchMinerInfo', this.blockListObj, function(data) {
-          console.log(JSON.parse(data))
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
           _that.user_detail_data[0] = [_that.search_data]
           _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
  
           _that.homedatalist = JSON.parse(data)
+          console.log( _that.homedatalist)
           //账户交易
           // if (JSON.parse(data).transcationArray.length>0) {
           //   console.log(1231)
@@ -313,7 +313,6 @@ export default {
           //   }
           // } else if (JSON.parse(data).block.length>0) {
           //挖块统计
-          console.log(55531)
           _that.datas = JSON.parse(data).block
           _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
           _that.totalSize = _that.homedatalist.block.length
@@ -335,10 +334,8 @@ export default {
         [this.$t("m.myMill.key10"), this.$t("m.home.key18"), this.$t("m.home.key6"), this.$t("m.home.key35")],
         [this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key21")]]
         console.log(2222222)
-        console.log(_that.search_data)
         this.$ajax('post', 'http://120.77.241.114:7011/v2/searchBlockInfo', this.blockListObj, function(data) {
           let blockInfo = JSON.parse(data).blockInfo[0]
-                    console.log(data)
           _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
           _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward)]
           _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
@@ -350,8 +347,8 @@ export default {
         })
       } else if (_that.search_data == '') {
         //首页
-        console.log(1111111)
         _that.hometype = 1;
+        console.log(1111111)
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
         this.$ajax('get', 'http://120.77.241.114:7011/v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
           _that.homedatalist = JSON.parse(data).chainInfo
@@ -363,7 +360,6 @@ export default {
             }
             _that.$set(_that.datas, i, _that.datas[i])
           }
-          console.log(_that.datas)
         }, function(error) {
           console.log(error);
         })
@@ -373,13 +369,11 @@ export default {
     //上一个或下一个块
     other_block(val) {
       this.target_data = Number(this.target_data) + val
-      console.log(this.target_data)
       this.search_data = this.target_data + '';
       this.tosearch()
     },
     //用户矿机信息
     getAccountMill() {
-      console.log("MILL")
       var vueThis = this;
       this.$axios({
         method: "post",
@@ -388,8 +382,6 @@ export default {
         withCredentials: false
       }).then(function(res) {
         if (res.data.code === 200) {
-          console.log(211)
-          console.log(res)
           bus.$emit("payfee", res.data.accountInfo.payFee);
         } else {
           if (res.data.code === 402) {
@@ -433,7 +425,6 @@ export default {
       this.blockListObj.page = val;
       // this.getWtcPoolBlockInfo();
       this.tosearch()
-      console.log(111)
       this.page_bg = true
     },
   },
