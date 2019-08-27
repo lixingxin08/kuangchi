@@ -7,8 +7,8 @@
             <li>{{$t("m.header.key1")}}: {{topMsg.minersTotal?format(topMsg.minersTotal,0):"--"}}</li>
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
-            <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
-            <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li>
+            <!-- <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
+            <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
                                                   <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
           </ul>
@@ -245,7 +245,6 @@ export default {
         console.log(res)
         if (res.data.code === 1) {
           setCookie("isLogin", "isTrue");
-          console.log(document.cookie)
           // vueThis.reload();
           // vueThis.reloadTwo();
         } else if (res.data.code === 1068) {

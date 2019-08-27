@@ -87,7 +87,9 @@ const en = {
       key32: "Digging block statistics",
       key33: "More",
       key34: "The settlement mode of current mine pool changed from SOLO mode to PPLNS mode!",
-      key35: "Transaction rewards"
+      key35: "Transaction rewards",
+      key36: "Located block",
+      key37: "Trading hash"
     },
     myltc: {
       key1: "You can configure the miners in the following ways",

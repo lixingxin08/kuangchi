@@ -64,17 +64,17 @@ axios.interceptors.request.use(
     return config;
   },
   err => {
-      return Promise.reject(err);
-    }
+    return Promise.reject(err);
+  }
 );
 
 axios.interceptors.response.use(
   response => {
-    if(response.data.msg === "账户未登录"){
+    if (response.data.msg === "账户未登录") {
       sessionStorage.removeItem("newBlock");
       sessionStorage.removeItem("userMsg");
-      setCookie("isLogin","",-1);
-      if(response.data.code !== 1068){
+      setCookie("isLogin", "", -1);
+      if (response.data.code !== 1068) {
         // router.replace({
         //   path:"login",
         //   // query:{redirect:router.currentRoute.fullPath}
@@ -83,27 +83,27 @@ axios.interceptors.response.use(
         // window.history.go(0);
         window.location.href = global.baseHerf + vm.$i18n.locale;
         return false;
-      }else if(response.data.code === 1068){
+      } else if (response.data.code === 1068) {
         router.replace({
-          path:"/",
+          path: "/",
           // query:{redirect:router.currentRoute.fullPath}
         });
         alert(window.vm.$t("m.main.key3"));
         // window.history.go(0);
         return false;
       }
-    
+
     }
     if (response.status === 200) {
       return Promise.resolve(response);
     } else {
       return Promise.reject(response);
     }
-  },error => {
-    if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
+  }, error => {
+    if (error.message.includes('timeout')) {   // 判断请求异常信息中是否含有超时timeout字符串
       alert(window.vm.$t("m.key4"));
       return Promise.reject(error);          // reject这个错误信息
-    }else {
+    } else {
       alert(window.vm.$t("m.key"));
     }
     return Promise.reject(error);
@@ -113,9 +113,9 @@ axios.interceptors.response.use(
 //校验手机号
 Vue.prototype.IsPhone = function (phone) {
   var myreg = /^[1][1-9]\d{9}$/;
-  if (myreg.test(phone) !== true){
+  if (myreg.test(phone) !== true) {
     return false;
-  }else {
+  } else {
     return true;
   }
   return true;
@@ -147,8 +147,19 @@ Vue.prototype.verifyUsername = function (str) {
     return true
   }
 },
+  //限制输入特殊字符
+  Vue.prototype.btKeyUp = function (e) {
+    e.target.value = e.target.value.replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, "");
+  },
   //千位分隔符
   Vue.prototype.format = function (num, index) {
+     num=Number(num)
+    if (num == 0||num=='0') {
+      return num
+    }
+    if (typeof (num) == 'undefined') {
+      return num
+    }
     if (num) {
       if (typeof num === "string") {
         num = parseFloat(num)
@@ -158,27 +169,63 @@ Vue.prototype.verifyUsername = function (str) {
       // return (num + '').replace(reg, '$&,');
       return b;
     }
-
   },
-  //转化M,G,T
-  Vue.prototype.changpow = function (val) {
-    val = Number(val)
-    let val1 = new Number()
-    var num = 1024.00;
-    if (val < Math.pow(num, 2)) {
-      val1 = val / Math.pow(num, 2)
-      val1 = val1.toFixed(2)
-      return val1 + "M";
-    } else if (val < Math.pow(num, 3)) {
-      val1 = val / Math.pow(num, 3)
-      val1 = val1.toFixed(2)
-      return val1 + "G"
-    } else if (val > Math.pow(num, 3)) {
-      val1 = val / Math.pow(num, 4)
-      val1 = val1.toFixed(2)
-      return val1 + "T";
+  Vue.prototype.comdify = function (num) {
+    num=Number(num)
+    if (num == 0) {
+      return num
+    }
+    if (typeof (num) == 'undefined') {
+      return num
+    }
+    if (num) {
+      //将num中的$,去掉，将num变成一个纯粹的数据格式字符串
+      num = num.toString().replace(/\$|\,/g, '');
+      //如果num不是数字，则将num置0，并返回
+      if ('' == num || isNaN(num)) { return 'Not a Number ! '; }
+      //如果num是负数，则获取她的符号
+      var sign = num.indexOf("-") > 0 ? '-' : '';
+      //如果存在小数点，则获取数字的小数部分
+      var cents = num.indexOf(".") > 0 ? num.substr(num.indexOf(".")) : '';
+      cents = cents.length > 1 ? cents : '';//注意：这里如果是使用change方法不断的调用，小数是输入不了的
+      //获取数字的整数数部分
+      num = num.indexOf(".") > 0 ? num.substring(0, (num.indexOf("."))) : num;
+      //如果没有小数点，整数部分不能以0开头
+      if ('' == cents) { if (num.length > 1 && '0' == num.substr(0, 1)) { return 'Not a Number ! '; } }
+      else { if (num.length > 1 && '0' == num.substr(0, 1)) { return 'Not a Number ! '; } }
+      for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
+        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+      }
+      return (sign + num + cents);
     }
   }
+//只显示20个字段
+Vue.prototype.filterFun = function (value) {
+  if (value && value.length > 20) {
+    value = value.substring(0, 20) + '...';
+  }
+  return value;
+}
+//转化M,G,T
+Vue.prototype.changpow = function (val) {
+  
+  val = Number(val)
+  let val1 = new Number()
+  var num = 1024.00;
+  if (val < Math.pow(num, 2)) {
+    val1 = val / Math.pow(num, 2)
+    val1 = val1.toFixed(2)
+    return val1 + "M";
+  } else if (val < Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(2)
+    return val1 + "G"
+  } else if (val > Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(2)
+    return val1 + "T";
+  }
+}
 //设置cookie
 Vue.prototype.setCookie = function (key, val, time) {
   var date = new Date(); //获取当前时间

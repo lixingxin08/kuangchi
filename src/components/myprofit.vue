@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="nprecord" v-else>
-                    暂无数据
+                   {{$t("m.wallet.key39")}}
                 </div>
             </div>
         </div>

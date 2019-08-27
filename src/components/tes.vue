@@ -596,3 +596,14 @@ li {
   }
 }
 </style>
+
+                 <!-- <div class="flex_a ltc_main" v-for="(item,index) in wokerListdata" :key="index">
+                        <span  :key="index" class="ltc_main_item">{{item.wokerName}}</span>
+                          <span  :key="index" class="ltc_main_item">{{item.latestHr}}</span>
+                            <span  :key="index" class="ltc_main_item">{{item.minHr}}</span>
+                            <span  :key="index" class="ltc_main_item">{{item.dayHr}}</span>
+                        <div class="flex_b ltc_main_item_last">
+                            <span>{{timestampToTime(item.time)}}</span>
+                            <span @click="eject_open(item)"><img src="../assets/img/data_checked.png" alt=""></span>
+                        </div>
+                    </div> -->

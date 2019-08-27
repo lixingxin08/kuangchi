@@ -21,19 +21,19 @@
                 <li class="sonset_list6">{{sonset_head[5]}}</li>
             </ul>
             <ul class="sonset_main_item" v-for="(item,indexs) in sonset_list" :key="indexs">
-                <li class="sonset_list1">{{sonset_head[0]}}</li>
-                <li class="sonset_list2">{{sonset_head[1]}}</li>
-                <li class="sonset_list3">{{sonset_head[2]}}</li>
+                <li class="sonset_list1">{{sonset_list[indexs].name}}</li>
+                <li class="sonset_list2">{{sonset_list[indexs].workerNumber}}</li>
+                <li class="sonset_list3">{{timestampToTime(sonset_list[indexs].createTime)}}</li>
                 <li class="sonset_list4">
-                    <span v-if="edit_son!==indexs">{{sonset_head[3]}}</span>
+                    <span v-if="edit_son!==indexs">{{sonset_list[indexs].address}}</span>
                     <input v-if="edit_son==indexs" type="text" :placeholder="sonset_inp" class="add_adress">
                 </li>
                 <li class="sonset_list5">
                     <span class="color1" v-if="edit_son!==indexs" @click="edit_sons(indexs)">{{$t("m.sonset.key7")}}</span>
-                    <span class="color1" v-if="edit_son==indexs" @click="sure_edit(indexs)">{{$t("m.wallet.key19")}}</span>
-                    <span class="sonset_list5_cancel" v-if="edit_son==indexs"  @click="cancel_edit()">{{$t("m.sonset.key15")}}</span>
+                    <span class="color1" v-if="edit_son==indexs" @click="address_edit(indexs)">{{$t("m.wallet.key19")}}11</span>
+                    <span class="sonset_list5_cancel" v-if="edit_son==indexs" @click="cancel_edit()">{{$t("m.sonset.key15")}}</span>
                 </li>
-                <li class="sonset_list6" @click="remove_item(indexs)">{{$t("m.sonset.key8")}}</li>
+                <li class="sonset_list6 color1" @click="delete_item(indexs)">{{$t("m.sonset.key8")}}</li>
             </ul>
         </div>
         <div class="share" v-if="this.pop_type!==0" @click.stop="remove()">
@@ -63,11 +63,12 @@
             <div class="remove_son_c">
                 <div class="flex_c remove_son_c_item">
                     <span>{{$t("m.sonset.key10")}}</span>
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="delete_sonmsg.paypassword">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="delete_params.paypassword">
                 </div>
                 <div class="flex_c remove_son_c_item">
-                    <span>{{$t("m.sonset.key13")}}</span>
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_sonmsg.code">
+                    <span>{{$t("m.sonset.key12")}}</span>
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_params.code">
+                    <span class="delete_tips">{{delete_tips}}</span>
                 </div>
             </div>
             <div class="add_son_b">
@@ -83,10 +84,10 @@
             </div>
             <div class="remove_son_c">
                 <div class="flex_c remove_son_c_item">
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="delete_sonmsg.paypassword">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="delete_params.paypassword">
                 </div>
                 <div class="flex_c remove_son_c_item">
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_sonmsg.code">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_params.code">
                 </div>
             </div>
             <div class="add_son_b">
@@ -97,34 +98,44 @@
     </div>
 </template>
 <script>
+import { setCookie, getCookie, delCookie } from "../assets/cookie";
 export default {
     data() {
         return {
             pop_type: 0,
-            edit_son:null,          
+            edit_son: null,
             sonset_head: [this.$t("m.sonset.key3"), this.$t("m.sonset.key14"), this.$t("m.sonset.key4"), this.$t("m.sonset.key5"), this.$t("m.sonset.key6"), ''],
             sonset_data: ['子账户', '矿机数', '创建时间', '钱包地址'],
             sonset_inp: this.$t("m.sonset.key16"),
             sonset_inp_0: this.$t("m.sonset.key17"),
             sonset_inp_1: this.$t("m.sonset.key11"),
             sonset_inp_2: this.$t("m.sonset.key13"),
-            sonset_list: [1, 2, 3, 4],
+            sonset_list: [],
+            item_index: '',
+            subList_params: {
+                username: '',
+                token: '',
+                subusername: '',
+                address: ''
+            },
             add_sons: {
                 username: "",
                 usersub: ""
             },
             setGoogleAuth: '',
             setPaymentCode: '',
-            delete_sonmsg: {
+            delete_params: {
                 subusername: "",
                 username: "",
                 token: "",
                 code: "",
                 paypassword: "",
-            }
+            },
+            delete_tips: '',
         }
     },
     created() {
+        this.get_sonlist()
         this.add_sons.username = localStorage.getItem('subusername')
         this.setGoogleAuth = localStorage.getItem('setGoogleAuth')
         this.setPaymentCode = localStorage.getItem('setPaymentCode')
@@ -132,49 +143,111 @@ export default {
     },
     methods: {
         add_son() {
-            this.pop_type=1
+            this.pop_type = 1
         },
-        cancel_edit(){
-            this.edit_son=null
+        cancel_edit() {
+            this.edit_son = null
         },
         remove() {
-            this.pop_type=0
-            this.edit_son=null
+            this.pop_type = 0
+            this.edit_son = null
         },
-        sure_edit(){
-            console.log("sure")
+        //子账户管理页面
+        get_sonlist() {
+            let _that = this
+            let res = {
+                "code": 200,
+                "msg": "success",
+                "subList": [
+                    {
+                        "name": "lilinskt1",
+                        "address": "0x90990117dbaac41df782cb712df4155c58e90a6c",
+                        "workerNumber": 0,
+                        "createTime": "1566369359"
+                    },
+                    {
+                        "name": "asdjkl",
+                        "address": "",
+                        "workerNumber": 0,
+                        "createTime": "1566477212000"
+                    },
+                    {
+                        "name": "asdjkl3",
+                        "address": "",
+                        "workerNumber": 0,
+                        "createTime": "1566477238000"
+                    }
+                ]
+            }
+            _that.sonset_list = res.subList
+            // this.$ajax('post', 'http://127.0.0.1:7001/v2/accountSubList', this.subList_params, function(res) {
+            //     console.log(res)
+            //     _that.sonset_list = res.subList
+
+            // }, function(error) {
+            //     console.log(error);
+            // })
         },
+        //删除子账户
         delete_son() {
-            this.pop_type=0
-            this.delete_sonmsg.username = localStorage.getItem('username')
-            this.delete_sonmsg.subusername = localStorage.getItem('username')
-            this.delete_sonmsg.token = this.getCookie("isLogin")
-            //  this.delete_sonmsg.subusername=
-            console.log(this.delete_sonmsg)
+            this.delete_tips = ''
+            if (this.delete_params.paypassword == '') {
+                this.delete_tips = "请输入资金密码"
+                return
+            } else if (this.delete_params.code == '') {
+                this.delete_tips = "请输入谷歌验证码"
+                return
+            }
+            console.log(this.sonset_list[this.item_index].name)
+            this.pop_type = 0
+            this.delete_params.username = localStorage.getItem('username')
+            this.delete_params.subusername = this.sonset_list[this.item_index].name
+            this.delete_params.token = getCookie("token")
+            this.$ajax('post', 'http://127.0.0.1:7001/v2/deleteAccountSub', this.delete_params, function(data) {
+                console.log(data)
+            }, function(error) {
+                console.log(error);
+            })
         },
-        remove_item(indexs) {
-            this.pop_type=2
-            console.log(this.sonset_list[indexs])
+        delete_item(indexs) {
+            this.item_index = indexs
+            if (this.sonset_list[indexs].name == this.add_sons.username) {
+                this.item_index = -2
+                return
+            }
+            this.pop_type = 2
+            console.log(this.item_index)
             // this.sonset_list.splice(indexs, 1)
         },
+        //编辑   判断是否有子账户
         edit_sons(indexs) {
-            this.pop_type=3
-            this.edit_son=indexs
-            console.log(this.edit_son)
-            // if (!val) {
-            //     console.log(123)
-            //     //编辑   判断是否有子账户
-            //     this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser', this.add_sons.username, function(data) {
-            //         console.log(data)
-            //     }, function(error) {
-            //         console.log(error);
-            //     })
-            // }
+            this.pop_type = 3
+            this.edit_son = indexs
+            console.log(this.sonset_list[indexs].name)
+            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser',{username:this.sonset_list[indexs].name}, function(data) {
+                console.log(data)
+            }, function(error) {
+                console.log(error);
+            })
         },
-        get_edit(){
-              this.pop_type=0
+        //编辑地址
+        address_edit_edit() {
+            console.log("sure")
+            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser', this.add_sons.username, function(data) {
+                console.log(data)
+            }, function(error) {
+                console.log(error);
+            })
         },
+        get_edit() {
+            this.pop_type = 0
+        },
+        //创建子账户
         createdson() {
+            if (!this.verifyUsername(this.add_sons.usersub)) {
+                this.add_sons.usersub=''
+                return      alert(this.$t("m.sonset.key9"))
+            }
             this.addson = false
             this.removeson = false
             console.log(JSON.stringify(this.add_sons))
@@ -183,6 +256,7 @@ export default {
             }, function(error) {
                 console.log(error);
             })
+            this.pop_type=0
         }
     }
 }
@@ -275,7 +349,10 @@ export default {
 }
 
 .sonset_list4 {
-    flex: 8
+    flex: 8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 0.15rem
 }
 
 .sonset_list5 {
@@ -310,7 +387,6 @@ export default {
 
 .add_son {
     width: 2rem;
-    height: 1.4rem;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -376,10 +452,10 @@ export default {
     justify-content: flex-start;
     align-items: center;
     text-align: center;
+    height: 0.37rem;
 }
 
 .remove_son {
-    height: 1.7rem;
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.3);
     border-radius: 4px;
 }
@@ -390,7 +466,6 @@ export default {
 }
 
 .remove_son_c {
-    height: 1.07rem;
     padding-top: 0.15rem;
     margin-bottom: 0.1rem;
     border-bottom: 1px solid rgba(238, 238, 238, 1);
@@ -403,9 +478,16 @@ export default {
     text-align: left;
 }
 
+.delete_tips {
+    font-size: 12px;
+    height: 14px;
+    color: rgb(255, 51, 0);
+}
+
 .btn {
     width: 0.45rem;
-    height: 0.18rem;
+    line-height: 0.18rem;
+    text-overflow: ellipsis;
     border-radius: 4px;
     border: solid 1px rgba(204, 204, 204, 1);
 }
@@ -416,7 +498,7 @@ export default {
 }
 
 .btn_cancel {
-    margin-left: 0.52rem;
+    margin-left: 0.53rem;
     margin-right: 0.04rem;
 }
 

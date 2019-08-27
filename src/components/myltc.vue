@@ -6,7 +6,9 @@
                 <div class="flex_a">
                     <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
                         <span class="mylcted_top_item">{{item}}</span>
-                        <span class="mylcted_top_item font_b">475.55TH/s</span>
+                        <span class="mylcted_top_item font_b" v-if="index==0">{{wokerAlldata[0].latestHrInfo}}MH/s</span>
+                        <span class="mylcted_top_item font_b" v-if="index==1">{{wokerAlldata[0].minHrInfo}}GH/s</span>
+                        <span class="mylcted_top_item font_b" v-if="index==2">{{wokerAlldata[0].dayHrInfo}}TH/s</span>
                     </div>
                 </div>
             </div>
@@ -18,11 +20,14 @@
                     <div class="flex_a ltc_main">
                         <span v-for="(item,index) in ltc_main" :key="index" class="ltc_main_item ltc_main_bg">{{item}}</span>
                     </div>
-                    <div class="flex_a ltc_main" v-for="item in 3" :key="item">
-                        <span v-for="(item,index) in ltc_item" :key="index" class="ltc_main_item">{{item}}{{index}}</span>
+                    <div class="flex_a ltc_main" v-for="(item,index) in wokerListdata" :key="index">
+                        <span class="ltc_main_item">{{item.wokerName}}</span>
+                        <span class="ltc_main_item">{{item.latestHr}}</span>
+                        <span class="ltc_main_item">{{item.minHr}}</span>
+                        <span class="ltc_main_item">{{item.dayHr}}</span>
                         <div class="flex_b ltc_main_item_last">
-                            <span>time</span>
-                            <span @click="eject_open(item)"><img src="../assets/img/data_checked.png" alt=""></span>
+                            <span>{{timestampToTime(item.time)}}</span>
+                            <span @click="eject_open(index)"><img src="../assets/img/data_checked.png" alt=""></span>
                         </div>
                     </div>
                 </div>
@@ -30,8 +35,8 @@
                 <div class="ltc_c_title flex_b">
                     <span> {{$t("m.myMill.key33")}}</span>
                     <div class="ltc_c_title_r flex_b">
-                        <span class="ltc_c_time" :class="select_type?'bg_click':''" @click="selecttype(1)">小时</span>
-                        <span class="ltc_c_time" :class="select_type?'':'bg_click'" @click="selecttype(2)">日期</span>
+                        <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">小时</span>
+                        <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">日期</span>
                     </div>
                 </div>
                 <!--曲线图-->
@@ -45,10 +50,10 @@
                     <div class="flex_b eject_top">
                         <span>{{eject_data}}</span>
                         <div class="flex_b">
-                            <span class="eject_t_time" :class="eject_time?'eject_t_timeed':''" @click.stop="selecttype(3)">
+                            <span class="eject_t_time" :class="eject_time=='hour'?'eject_t_timeed':''" @click.stop="selecttype(3)">
                                 <span>{{$t("m.myMill.key34")}}</span>
                             </span>
-                            <span class="eject_t_time" :class="eject_time?'':'eject_t_timeed'" @click.stop="selecttype(4)">
+                            <span class="eject_t_time" :class="eject_time=='hour'?'':'eject_t_timeed'" @click.stop="selecttype(4)">
                                 <span>{{$t("m.myMill.key35")}}</span>
                             </span>
                             <span class="el-icon-close close" @click="eject_off()"></span>
@@ -85,13 +90,13 @@
                             {{$t("m.myltc.key9")}}
                         </div>
                         <div class="flex_b myltct_t_bt_b">
-                            
-                            <span>SMN：</span>
-                            <span>GMN：</span>
+
+                            <span>SMN：0%</span>
+                            <span>GMN：0%</span>
                         </div>
                         <div class="flex_b myltct_t_bt_b">
-                            <span>MN：</span>
-                            <span>{{$t("m.myltc.key10")}}:</span>
+                            <span>MN：0%</span>
+                            <span>{{$t("m.myltc.key10")}}:1%</span>
                         </div>
                     </div>
                 </div>
@@ -103,12 +108,11 @@
 export default {
     data() {
         return {
-            ltc_center: ['矿机', '实时算力', '矿机', '实时算力'],
             ltc_top: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32")],
             ltc_main: [this.$t("m.myMill.key5"), this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key37"), this.$t("m.myMill.key36")],
             ltc_item: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32"), this.$t("m.myMill.key30")],
             myltctype: true,
-            select_type: true,
+            select_type: 'hour',
             activities: [{
                 content: this.$t("m.myltc.key2"),
                 timestamp: this.$t("m.myltc.key3"),
@@ -123,12 +127,41 @@ export default {
             ],
             xAxisdata: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             yAxisdata: [0, 500, 1000, 1500],
+            AllKlinedata: { //总曲线数据
+                xAxisdata: [],
+                val: []
+            },
+            ListKlinedata: {//单台矿机曲线
+                xAxisdata: [],
+                val: []
+            },
             eject_switch: false,
             eject_data: [],
-            eject_time: true
+            eject_time: 'hour',
+            myltc_param: {
+                subusername: '',
+                token: '',
+                username: ''
+            },
+            List_k_params: {
+                subusername: '',
+                type: this.eject_time,
+                wokername: ''
+            },
+            wokerListdata: [],
+            wokerAlldata: [
+                {
+                    "latestHrInfo": 200000004,
+                    "minHrInfo": 20000000,
+                    "dayHrInfo": 20000000
+                }
+            ],
         }
     },
     mounted() {
+        this.wokerAllKlinedata()
+        this.wokerList()
+        this.wokerListKlinedata()
         if (this.myltctype) {
             this.drawLine();
         }
@@ -136,13 +169,21 @@ export default {
     methods: {
         selecttype(index) {
             if (index == 1) {
-                this.select_type = true
+                this.select_type = 'hour'
             } else if (index == 2) {
-                this.select_type = false
+                this.select_type = 'day'
             } else if (index == 3) {
-                this.eject_time = true
+                this.eject_time = 'hour'
             } else if (index == 4) {
-                this.eject_time = false
+                this.eject_time = 'day'
+            }
+        },
+        getValueByKey(data, val1, val2) {
+            var i = 0
+            for (var key in data) {
+                val1[i] = key
+                val2[i] = data[key]
+                i++
             }
         },
         //主图表
@@ -172,10 +213,16 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    data: _that.xAxisdata,
+                    data: _that.AllKlinedata.xAxisdata,
                     boundaryGap: false,
+                    min: _that.AllKlinedata.xAxisdata[0],
+                    splitNumber: _that.AllKlinedata.xAxisdata.length,
                     axisTick: {
                         show: false
+                    },
+                    axisLine: {                 //坐标 轴线
+                        show: true,             //是否显示坐标轴轴线
+                        onZero: true,           //X 轴或者 Y 轴的轴线是否在另一个轴的 0 刻度上，只有在另一个轴为数值轴且包含 0 刻度时有效
                     },
                 },
                 yAxis: {
@@ -235,7 +282,7 @@ export default {
                     }
                 },
                 series: [{
-                    data: [300, 550, 400, 100, 500, 100, 200],
+                    data: _that.AllKlinedata.val,
                     type: 'line',
                     smooth: true,
                     color: 'rgba(46, 115, 232, 1)',
@@ -270,10 +317,85 @@ export default {
         eject_open(index) {
             this.eject_switch = true;
             this.eject_data = this.ltc_item[index]
+            console.log(index)
+            this.wokerListKlinedata()
             this.eject_chart()
         },
         eject_off() {
             this.eject_switch = false
+        },
+        //子账户下总矿机算力
+        getmyltcdata() {
+            let _that = this
+            this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllInfo', myltc_param, function(data) {
+                _that.wokerAlldata = JSON.parse(res).minerPow
+            }, function(error) {
+            })
+        },
+        //子账户下单个矿机的列表
+        wokerList() {
+            let _that = this
+            let res = [
+                {
+                    "wokerName": "3",
+                    "latestHr": 100000003,
+                    "minHr": 10000000,
+                    "dayHr": 10000000,
+                    "time": 1552296607
+                }
+            ];
+            _that.wokerListdata = res
+            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerListInfo', myltc_param, function(res) {
+            //     _that.wokerListdata = JSON.parse(res).minerPow
+            // }, function(error) {
+            //     console.log(error);
+            // })
+        },
+        //总矿机曲线
+        wokerAllKlinedata() {
+            let _that = this
+            let data = {
+                "hourInfo": [
+                    {
+                        "1:00": 0,
+                        "4:00": 400,
+                        "2:00": 600,
+                        "14:00": 523,
+                        "15:00": 200,
+                        "16:00": 600,
+                        "17:00": 100,
+
+                    }]
+            }
+            _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllKlineInfo', { subusername: localStorage.getItem(subusername), type: this.select_type }, function(data) {
+
+            // }, function(error) {
+            // })
+        },
+        //单台矿机内k线
+        wokerListKlinedata() {
+            let _that = this
+            let res = {
+                "code": 200,
+                "dayInfo": [
+                    {
+                        "1:00": 0,
+                        "4:00": 400,
+                        "2:00": 600,
+                        "14:00": 523,
+                        "15:00": 200,
+                        "16:00": 600,
+                        "17:00": 100,
+
+                    }
+                ]
+            }
+            _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+            console.log(_that.ListKlinedata)
+            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', myltc_param, function(data) {
+            // }, function(error) {
+            // })
         },
         //弹出框图表
         eject_chart() {
@@ -300,7 +422,9 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    data: _that.xAxisdata,
+                    data: _that.ListKlinedata.xAxisdata,
+                    min: _that.ListKlinedata.xAxisdata[0],
+                    splitNumber: _that.ListKlinedata.xAxisdata.length,
                     boundaryGap: false,
                     axisLine: {
                         lineStyle: {
@@ -377,7 +501,7 @@ export default {
                     }
                 },
                 series: [{
-                    data: [300, 550, 400, 100, 500, 100, 200],
+                    data: _that.ListKlinedata.val,
                     type: 'line',
                     smooth: true,
                     color: 'rgba(46, 115, 232, 1)',
@@ -614,6 +738,41 @@ export default {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**图表弹出框**/
 
 .share {
@@ -683,6 +842,41 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
