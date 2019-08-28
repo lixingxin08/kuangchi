@@ -50,7 +50,10 @@ const en = {
       key26: "Miner Mall",
       key27: "My Benefits",
       key28: "Tool Download",
-      key29: "Common problem"
+      key29: "Common problem",
+      key30: "Personal Center",
+      key31: "Account number",
+      key32: "Subuser settings"
     },
     home: {
       key1: "Log in",
@@ -104,6 +107,13 @@ const en = {
       key10: "Other",
       key11: "",
       key12: "",
+    },
+    noson: {
+      key1: "New sub-account",
+      key2: "Before you configure the miner, you must have a sub-account for the worker, and up to 10 sub-accounts can be set under a mailbox account.",
+      key3: "To add new sub-accounts ",
+      key4: "When the sub-account is created, you can link the miner to the mine.",
+      key5: "Enjoy the benefits. Configuration is complete, everything is ready. After a while, the mine will be automatically added to the mine website."
     },
     myprofit: {
       key1: "Earnings Today",

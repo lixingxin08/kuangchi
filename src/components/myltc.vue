@@ -1,117 +1,124 @@
 <template>
     <div id="myltc">
-        <div class="mylcted_top" v-if="myltctype">
+        <div class="myltcs" v-if="!noson_type">
+            <div class="mylcted_top" v-if="myltctype">
+                <div class="content_box">
+                    <div class="mylcted_top_title">{{$t("m.myMill.key29")}}</div>
+                    <div class="flex_a">
+                        <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
+                            <span class="mylcted_top_item">{{item}}</span>
+                            <span class="mylcted_top_item font_b" v-if="index==0">{{wokerAlldata[0].latestHrInfo}}MH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==1">{{wokerAlldata[0].minHrInfo}}GH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==2">{{wokerAlldata[0].dayHrInfo}}TH/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="content_box">
-                <div class="mylcted_top_title">{{$t("m.myMill.key29")}}</div>
-                <div class="flex_a">
-                    <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
-                        <span class="mylcted_top_item">{{item}}</span>
-                        <span class="mylcted_top_item font_b" v-if="index==0">{{wokerAlldata[0].latestHrInfo}}MH/s</span>
-                        <span class="mylcted_top_item font_b" v-if="index==1">{{wokerAlldata[0].minHrInfo}}GH/s</span>
-                        <span class="mylcted_top_item font_b" v-if="index==2">{{wokerAlldata[0].dayHrInfo}}TH/s</span>
+                <div class="myltcted" v-if="myltctype">
+                    <!--头部-->
+                    <div class="ltc_center">
+                        <div class="flex_a ltc_main">
+                            <span v-for="(item,index) in ltc_main" :key="index" class="ltc_main_item ltc_main_bg">{{item}}</span>
+                        </div>
+                        <div class="flex_a ltc_main" v-for="(item,index) in wokerListdata" :key="index">
+                            <span class="ltc_main_item">{{item.wokerName}}</span>
+                            <span class="ltc_main_item">{{item.latestHr}}</span>
+                            <span class="ltc_main_item">{{item.minHr}}</span>
+                            <span class="ltc_main_item">{{item.dayHr}}</span>
+                            <div class="flex_b ltc_main_item_last">
+                                <span>{{timestampToTime(item.time)}}</span>
+                                <span @click="eject_open(index)"><img src="../assets/img/data_checked.png" alt=""></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--底部-->
+                    <div class="ltc_c_title flex_b">
+                        <span> {{$t("m.myMill.key33")}}</span>
+                        <div class="ltc_c_title_r flex_b">
+                            <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">小时</span>
+                            <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">日期</span>
+                        </div>
+                    </div>
+                    <!--曲线图-->
+                    <div class="charts">
+                        <div id="myChart"></div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="content_box">
-            <div class="myltcted" v-if="myltctype">
-                <!--头部-->
-                <div class="ltc_center">
-                    <div class="flex_a ltc_main">
-                        <span v-for="(item,index) in ltc_main" :key="index" class="ltc_main_item ltc_main_bg">{{item}}</span>
-                    </div>
-                    <div class="flex_a ltc_main" v-for="(item,index) in wokerListdata" :key="index">
-                        <span class="ltc_main_item">{{item.wokerName}}</span>
-                        <span class="ltc_main_item">{{item.latestHr}}</span>
-                        <span class="ltc_main_item">{{item.minHr}}</span>
-                        <span class="ltc_main_item">{{item.dayHr}}</span>
-                        <div class="flex_b ltc_main_item_last">
-                            <span>{{timestampToTime(item.time)}}</span>
-                            <span @click="eject_open(index)"><img src="../assets/img/data_checked.png" alt=""></span>
+                <!--图表弹出框-->
+                <div class="share" v-show="eject_switch">
+                    <div class="eject">
+                        <div class="flex_b eject_top">
+                            <span>{{eject_data}}</span>
+                            <div class="flex_b">
+                                <span class="eject_t_time" :class="eject_time=='hour'?'eject_t_timeed':''" @click.stop="selecttype(3)">
+                                    <span>{{$t("m.myMill.key34")}}</span>
+                                </span>
+                                <span class="eject_t_time" :class="eject_time=='hour'?'':'eject_t_timeed'" @click.stop="selecttype(4)">
+                                    <span>{{$t("m.myMill.key35")}}</span>
+                                </span>
+                                <span class="el-icon-close close" @click="eject_off()"></span>
+                            </div>
+                        </div>
+                        <div id="eject_main">
                         </div>
                     </div>
                 </div>
-                <!--底部-->
-                <div class="ltc_c_title flex_b">
-                    <span> {{$t("m.myMill.key33")}}</span>
-                    <div class="ltc_c_title_r flex_b">
-                        <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">小时</span>
-                        <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">日期</span>
-                    </div>
-                </div>
-                <!--曲线图-->
-                <div class="charts">
-                    <div id="myChart"></div>
-                </div>
-            </div>
-            <!--图表弹出框-->
-            <div class="share" v-show="eject_switch">
-                <div class="eject">
-                    <div class="flex_b eject_top">
-                        <span>{{eject_data}}</span>
-                        <div class="flex_b">
-                            <span class="eject_t_time" :class="eject_time=='hour'?'eject_t_timeed':''" @click.stop="selecttype(3)">
-                                <span>{{$t("m.myMill.key34")}}</span>
-                            </span>
-                            <span class="eject_t_time" :class="eject_time=='hour'?'':'eject_t_timeed'" @click.stop="selecttype(4)">
-                                <span>{{$t("m.myMill.key35")}}</span>
-                            </span>
-                            <span class="el-icon-close close" @click="eject_off()"></span>
-                        </div>
-                    </div>
-                    <div id="eject_main">
-                    </div>
-                </div>
-            </div>
-            <!--矿机未配置-->
-            <div class="myltct" v-if="!myltctype">
-                <div class="myltct_t">
-                    <div class="myltct_t_head">
-                        {{$t("m.myltc.key1")}}
-                    </div>
-                    <div class="myltct_t_head_main">
-                        <el-timeline>
-                            <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.timestamp" size="normal" class="myltc_tips">
-                                {{activity.content}}
-                            </el-timeline-item>
-                        </el-timeline>
-                    </div>
-                </div>
-                <div class="myltct_t_bt">
-                    <div class="myltct_t_bt_item">
+                <!--矿机未配置-->
+                <div class="myltct" v-if="!myltctype">
+                    <div class="myltct_t">
                         <div class="myltct_t_head">
-                            {{$t("m.myltc.key7")}}
+                            {{$t("m.myltc.key1")}}
                         </div>
-                        <div class="flex_c myltct_t_b_main"> {{$t("m.myltc.key8")}}</div>
-                        <div class="flex_c myltct_t_b_main" v-for="item in 3" :key="item">www.kirinpool.com:5555</div>
+                        <div class="myltct_t_head_main">
+                            <el-timeline>
+                                <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.timestamp" size="normal" class="myltc_tips">
+                                    {{activity.content}}
+                                </el-timeline-item>
+                            </el-timeline>
+                        </div>
                     </div>
-                    <div class="myltct_t_bt_item">
-                        <div class="myltct_t_head">
-                            {{$t("m.myltc.key9")}}
+                    <div class="myltct_t_bt">
+                        <div class="myltct_t_bt_item">
+                            <div class="myltct_t_head">
+                                {{$t("m.myltc.key7")}}
+                            </div>
+                            <div class="flex_c myltct_t_b_main"> {{$t("m.myltc.key8")}}</div>
+                            <div class="flex_c myltct_t_b_main" v-for="item in 3" :key="item">www.kirinpool.com:5555</div>
                         </div>
-                        <div class="flex_b myltct_t_bt_b">
+                        <div class="myltct_t_bt_item">
+                            <div class="myltct_t_head">
+                                {{$t("m.myltc.key9")}}
+                            </div>
+                            <div class="flex_b myltct_t_bt_b">
 
-                            <span>SMN：0%</span>
-                            <span>GMN：0%</span>
-                        </div>
-                        <div class="flex_b myltct_t_bt_b">
-                            <span>MN：0%</span>
-                            <span>{{$t("m.myltc.key10")}}:1%</span>
+                                <span>SMN：0%</span>
+                                <span>GMN：0%</span>
+                            </div>
+                            <div class="flex_b myltct_t_bt_b">
+                                <span>MN：0%</span>
+                                <span>{{$t("m.myltc.key10")}}:1%</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <noson v-if="noson_type"></noson>
     </div>
 </template>
 <script>
+import noson from './no_son.vue'
 export default {
+    components: {
+        noson,
+    },
     data() {
         return {
             ltc_top: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32")],
             ltc_main: [this.$t("m.myMill.key5"), this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key37"), this.$t("m.myMill.key36")],
             ltc_item: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32"), this.$t("m.myMill.key30")],
-            myltctype: true,
+            myltctype: false,
             select_type: 'hour',
             activities: [{
                 content: this.$t("m.myltc.key2"),
@@ -149,7 +156,8 @@ export default {
             //     wokername: ''
             // },
             wokerListdata: [],
-            wokerAlldata:'',
+            wokerAlldata: '',
+            noson_type: false
         }
     },
     mounted() {
@@ -334,8 +342,8 @@ export default {
                     }
                 ]
             }
-            _that.wokerAlldata=data.minerPow
-            console.log( _that.wokerAlldata[0].latestHrInfo)
+            _that.wokerAlldata = data.minerPow
+            console.log(_that.wokerAlldata[0].latestHrInfo)
             // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerAllInfo', this.myltc_param, function(data) {
             //     _that.wokerAlldata = JSON.parse(res).minerPow
             // }, function(error) {
@@ -549,6 +557,10 @@ export default {
                 }]
             });
         },
+        //无子账号
+        have_son() {
+
+        }
     }
 }
 </script>
@@ -791,6 +803,7 @@ export default {
 
 
 
+
 /**图表弹出框**/
 
 .share {
@@ -860,6 +873,7 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
 
 
 

@@ -94,14 +94,14 @@
                         </div>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_center">
-                        <li class="user_email">账号：{{head_username}} </li>
+                        <li class="user_email">{{$t("m.header.key30")}}{{head_username}} </li>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_bottom">
                         <li class="user_b_main">
-                          <span>个人中心</span>
+                          <span>{{$t("m.header.key31")}}</span>
                           <span>
                             <router-link to="/sonset">
-                              <span class="text_color"> 子用户设置</span>
+                              <span class="text_color"> {{$t("m.header.key32")}}</span>
                             </router-link>
                           </span>
                           <span @click="sing_up">{{$t("m.header.key13")}}</span>
@@ -176,8 +176,7 @@ export default {
       },
       payfee: "",
       user_head: localStorage.getItem('username'),
-      user_List: ["admin1", "admin2", "admin3", "admin4", "admin5", "admin4", "admin5"],
-      lang_title: 'English',
+      lang_title: '中文',
       user_msg: "",
       setGoogleAuth: '',
       setPaymentCode: '',
@@ -248,7 +247,7 @@ export default {
         localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
         console.log(res)
         if (res.data.code === 1) {
-          setCookie("isLogin", "isTrue");
+          // setCookie("isLogin", "isTrue");
           // vueThis.reload();
           // vueThis.reloadTwo();
         } else if (res.data.code === 1068) {

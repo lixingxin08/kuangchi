@@ -627,7 +627,6 @@ li {
 
 .main-box__bg-1 {
   margin-top: 0.4rem;
-  overflow: auto;
   width: 100%;
   text-align: center;
   display: flex;

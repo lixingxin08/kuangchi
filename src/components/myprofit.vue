@@ -1,97 +1,103 @@
 <template>
     <div class="myMill">
-        <!--收益头部-->
-        <div class="mylcted_top flex_a">
+        <div class="mymills"  v-if="!noson_type">
+            <!--收益头部-->
+            <div class="mylcted_top flex_a">
+                <div class="content_box">
+                    <div class="flex_a">
+                        <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
+                            <span class="mylcted_top_item">{{item}}</span>
+                            <span class="mylcted_top_item font_b" v-if="index==0">{{format(profit_data.todayEarningsAndAllEarnings.todatEarnings ,8)}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==1">{{format(profit_data.todayEarningsAndAllEarnings.allEarnings,8)}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==2">{{format(profit_data.needPayAndPayHistory.waitPay,8)}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==3">{{format(profit_data.needPayAndPayHistory.paidTotal,8)}}WTC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="content_box">
-                <div class="flex_a">
-                    <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
-                        <span class="mylcted_top_item">{{item}}</span>
-                        <span class="mylcted_top_item font_b" v-if="index==0">{{format(profit_data.todayEarningsAndAllEarnings.todatEarnings ,8)}}WTC</span>
-                        <span class="mylcted_top_item font_b" v-if="index==1">{{format(profit_data.todayEarningsAndAllEarnings.allEarnings,8)}}WTC</span>
-                        <span class="mylcted_top_item font_b" v-if="index==2">{{format(profit_data.needPayAndPayHistory.waitPay,8)}}WTC</span>
-                        <span class="mylcted_top_item font_b" v-if="index==3">{{format(profit_data.needPayAndPayHistory.paidTotal,8)}}WTC</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="content_box">
-            <div class="mymill_bottom">
-                <div class="record flex_b">
-                    <div class="record_l flex_f">
-                        <div class="record_item" @click="change_record(true)" :class="recordtype?'record_item_active':''"> {{$t("m.myprofit.key5")}}</div>
-                        <div class="record_item" @click="change_record(false)" :class="recordtype?'':'record_item_active'">{{$t("m.myprofit.key6")}}</div>
-                    </div>
-                    <div class="record_r flex_f">
-                        <div class="record_r_item">
-                            <el-dropdown trigger="click" placement="bottom">
-                                <span class="el-dropdown-link">
-                                    <span class="flex_b all">
-                                        <span>{{derive_top}}</span>
-                                        <i class="el-icon-arrow-down el-icon--right"></i>
+                <div class="mymill_bottom">
+                    <div class="record flex_b">
+                        <div class="record_l flex_f">
+                            <div class="record_item" @click="change_record(true)" :class="recordtype?'record_item_active':''"> {{$t("m.myprofit.key5")}}</div>
+                            <div class="record_item" @click="change_record(false)" :class="recordtype?'':'record_item_active'">{{$t("m.myprofit.key6")}}</div>
+                        </div>
+                        <div class="record_r flex_f">
+                            <div class="record_r_item">
+                                <el-dropdown trigger="click" placement="bottom">
+                                    <span class="el-dropdown-link">
+                                        <span class="flex_b all">
+                                            <span>{{derive_top}}</span>
+                                            <i class="el-icon-arrow-down el-icon--right"></i>
+                                        </span>
                                     </span>
-                                </span>
-                                <el-dropdown-menu slot="dropdown" class="myprofit_head">
-                                    <el-dropdown-item>
-                                        <div class="myprofit_slide" @click="timeprofitdata(1)">{{$t("m.myprofit.key21")}}</div>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item>
-                                        <div class="myprofit_slide" @click="timeprofitdata(2)">{{$t("m.myprofit.key22")}}</div>
-                                    </el-dropdown-item>
-                                    <el-dropdown-item>
-                                        <div class="myprofit_slide" @click="timeprofitdata(3)">{{$t("m.myprofit.key17")}}</div>
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+                                    <el-dropdown-menu slot="dropdown" class="myprofit_head">
+                                        <el-dropdown-item>
+                                            <div class="myprofit_slide" @click="timeprofitdata(1)">{{$t("m.myprofit.key21")}}</div>
+                                        </el-dropdown-item>
+                                        <el-dropdown-item>
+                                            <div class="myprofit_slide" @click="timeprofitdata(2)">{{$t("m.myprofit.key22")}}</div>
+                                        </el-dropdown-item>
+                                        <el-dropdown-item>
+                                            <div class="myprofit_slide" @click="timeprofitdata(3)">{{$t("m.myprofit.key17")}}</div>
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </div>
+                            <div class="record_r_item export" @click="exportExcel()">
+                                {{export_name}}
+                            </div>
                         </div>
-                        <div class="record_r_item export" @click="exportExcel()">
-                            {{export_name}}
+                    </div>
+                    <div class="have_record" v-if="haverecord">
+                        <!--收益-->
+                        <div class="record_main" v-if="recordtype">
+                            <ul class="flex_b record_main_item record_head">
+                                <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
+                            </ul>
+
+                            <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserEarningsListInfo.array" :key="index">
+                                <li class="record_main_li">{{Formatdate(profit_data.subUserEarningsListInfo.array[index].date,'yyyy-MM-dd')}}</li>
+                                <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].earningsMoney,8)}}</li>
+                                <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].dayHr,2)}}</li>
+                                <li class="record_main_li">{{profit_data.subUserEarningsListInfo.array[index].rewardType==2?'挖块':'pplns'}}</li>
+                                <li class="record_main_li" :class="profit_data.subUserEarningsListInfo.array[index].status>0?'color_3':'color_4'">{{profit_data.subUserEarningsListInfo.array[index].status>0?'已支付':'未支付'}}</li>
+                            </ul>
+                        </div>
+                        <!--支付-->
+                        <div class="record_main" v-if="!recordtype">
+                            <ul class="flex_b record_main_item record_head">
+                                <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
+                            </ul>
+
+                            <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserPayListInfo.array" :key="index">
+                                <li class="record_main_li">{{Formatdate(profit_data.subUserPayListInfo.array[index].paytime,'yyyy-MM-dd')}}</li>
+                                <li class="record_main_li">{{Formatdate(Number(profit_data.subUserPayListInfo.array[index].paytime)-86400,'yyyy-MM-dd')}}</li>
+                                <li class="record_main_li">{{format(profit_data.subUserPayListInfo.array[index].payMoney,8)}}</li>
+                                <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].toAddress)}}</li>
+                                <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].hash)}}</li>
+                            </ul>
+                        </div>
+                        <div class="record_page">
+                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10,20,50]" :page-size="100" layout="sizes, prev, pager, next, jumper" :total="totalSize">
+                            </el-pagination>
                         </div>
                     </div>
-                </div>
-                <div class="have_record" v-if="haverecord">
-                    <!--收益-->
-                    <div class="record_main" v-if="recordtype">
-                        <ul class="flex_b record_main_item record_head">
-                            <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
-                        </ul>
-
-                        <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserEarningsListInfo.array" :key="index">
-                            <li class="record_main_li">{{Formatdate(profit_data.subUserEarningsListInfo.array[index].date,'yyyy-MM-dd')}}</li>
-                            <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].earningsMoney,8)}}</li>
-                            <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].dayHr,2)}}</li>
-                            <li class="record_main_li">{{profit_data.subUserEarningsListInfo.array[index].rewardType==2?'挖块':'pplns'}}</li>
-                            <li class="record_main_li" :class="profit_data.subUserEarningsListInfo.array[index].status>0?'color_3':'color_4'">{{profit_data.subUserEarningsListInfo.array[index].status>0?'已支付':'未支付'}}</li>
-                        </ul>
+                    <div class="nprecord" v-else>
+                        {{$t("m.wallet.key39")}}
                     </div>
-                    <!--支付-->
-                    <div class="record_main" v-if="!recordtype">
-                        <ul class="flex_b record_main_item record_head">
-                            <li v-for="item in recorddata" :key="item" class="record_main_li">{{item}}</li>
-                        </ul>
-
-                        <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserPayListInfo.array" :key="index">
-                            <li class="record_main_li">{{Formatdate(profit_data.subUserPayListInfo.array[index].paytime,'yyyy-MM-dd')}}</li>
-                            <li class="record_main_li">{{Formatdate(Number(profit_data.subUserPayListInfo.array[index].paytime)-86400,'yyyy-MM-dd')}}</li>
-                            <li class="record_main_li">{{format(profit_data.subUserPayListInfo.array[index].payMoney,8)}}</li>
-                            <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].toAddress)}}</li>
-                            <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].hash)}}</li>
-                        </ul>
-                    </div>
-                    <div class="record_page">
-                        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10,20,50]" :page-size="100" layout="sizes, prev, pager, next, jumper" :total="totalSize">
-                        </el-pagination>
-                    </div>
-                </div>
-                <div class="nprecord" v-else>
-                    {{$t("m.wallet.key39")}}
                 </div>
             </div>
         </div>
-
+<noson v-if="noson_type"></noson>
     </div>
 </template>
 <script>
+import noson from './no_son.vue'
 export default {
+    components: {
+        noson,
+    },
     data() {
         return {
             recordtype: true,
@@ -110,10 +116,10 @@ export default {
             profit_data: '',
             pay_data: '',
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
-            derive_item:[this.$t("m.myprofit.key17"),this.$t("m.myprofit.key21"),this.$t("m.myprofit.key22"),this.$t("m.myprofit.key17")],
-            derive_top:this.$t("m.myprofit.key1"),
-            tableData: ''
-            
+            derive_item: [this.$t("m.myprofit.key17"), this.$t("m.myprofit.key21"), this.$t("m.myprofit.key22"), this.$t("m.myprofit.key17")],
+            derive_top: this.$t("m.myprofit.key1"),
+            tableData: '',
+            noson_type:false,
         }
     },
     created() {
@@ -256,7 +262,7 @@ export default {
         //时间选择导出类型
         timeprofitdata(index = 1) {
             this.profit_params.type = index
-            this.derive_top=this.derive_item[index]
+            this.derive_top = this.derive_item[index]
             console.log(index)
             let _that = this
             if (_that.recordtype) {
@@ -342,7 +348,7 @@ export default {
                         }
                     ]
                 }
-                  _that.tableData = data.allEarningsInfo
+                _that.tableData = data.allEarningsInfo
                 // this.$ajax('post', '120.77.241.114:7011/v2/exportPayInfo', this.profit_params, function(data) {
                 //     _that.wokerAlldata = JSON.parse(res).minerPow
                 // }, function(error) {
