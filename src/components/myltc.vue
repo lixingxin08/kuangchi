@@ -1,15 +1,15 @@
 <template>
     <div id="myltc">
-        <div class="myltcs" v-if="!noson_type">
+        <div class="myltc_mains" v-if="!noson_type">
             <div class="mylcted_top" v-if="myltctype">
                 <div class="content_box">
                     <div class="mylcted_top_title">{{$t("m.myMill.key29")}}</div>
                     <div class="flex_a">
                         <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
-                            <span class="mylcted_top_item font_b" v-if="index==0">{{wokerAlldata[0].latestHrInfo}}MH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==0">{{Number(wokerAlldata[0].latestHrInfo).toFixed(2)}}MH/s</span>
                             <span class="mylcted_top_item font_b" v-if="index==1">{{wokerAlldata[0].minHrInfo}}GH/s</span>
-                            <span class="mylcted_top_item font_b" v-if="index==2">{{wokerAlldata[0].dayHrInfo}}TH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==2">{{Number(wokerAlldata[0].dayHrInfo).toFixed(2)}}TH/s</span>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@ export default {
             ltc_top: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32")],
             ltc_main: [this.$t("m.myMill.key5"), this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key37"), this.$t("m.myMill.key36")],
             ltc_item: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32"), this.$t("m.myMill.key30")],
-            myltctype: false,
+            myltctype: true,
             select_type: 'hour',
             activities: [{
                 content: this.$t("m.myltc.key2"),
@@ -157,7 +157,7 @@ export default {
             // },
             wokerListdata: [],
             wokerAlldata: '',
-            noson_type: false
+            noson_type: false,
         }
     },
     mounted() {
@@ -165,9 +165,8 @@ export default {
         this.wokerAllKlinedata()
         this.wokerList()
         this.wokerListKlinedata()
-        if (this.myltctype) {
-            this.drawLine();
-        }
+        this.$nextTick(() => { if(!this.noson_type){this.drawLine()} })
+  
     },
     methods: {
         selecttype(index) {
@@ -557,10 +556,6 @@ export default {
                 }]
             });
         },
-        //无子账号
-        have_son() {
-
-        }
     }
 }
 </script>

@@ -8,9 +8,9 @@
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
             <!-- <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
-                  <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
+                      <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
-                                                        <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+                                                            <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
           </ul>
         </div>
       </div>
@@ -113,14 +113,14 @@
                 </li>
                 <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
                 <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
-                                                              <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
-                                                              <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
-                                                                <router-link to="/setting">
-                                                                  <li>{{$t("m.wallet.key7")}}</li>
-                                                                </router-link>
-                                                                <li @click="sing_up">{{$t("m.header.key13")}}</li>
-                                                              </ul>
-                                                            </li>  -->
+                                                                  <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                                  <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                                    <router-link to="/setting">
+                                                                      <li>{{$t("m.wallet.key7")}}</li>
+                                                                    </router-link>
+                                                                    <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                                  </ul>
+                                                                </li>  -->
                 <li v-if="!getCookie('isLogin')">
                   <a :href="baseHerf + $i18n.locale">
                     <div class="login-box register_li">
@@ -190,6 +190,7 @@ export default {
     this.getTopMsg();
     this.getAccountMsg();
     this.getsubusername()
+    localStorage.setItem('token', this.getCookie('token'))
     if (!getCookie("isLogin")) {
       this.isLogin = false
     } else if (getCookie("isLogin")) {
@@ -200,7 +201,6 @@ export default {
     })
   },
   mounted() {
-
     // if (localStorage.getItem("lang") === "zh") {
     //   $("#lang-span").text("中文");
     //   // document.title = "WTC主子链后台管理系统"
@@ -221,7 +221,6 @@ export default {
     select_user(index) {
       this.user_head = this.subnameList[index].subsernameU
       localStorage.setItem('username', this.user_head)
-      console.log(localStorage.getItem('username'))
     },
     //获取账号信息
     getAccountMsg() {
@@ -245,9 +244,9 @@ export default {
         localStorage.setItem('setGoogleAuth', _that.setGoogleAuth);
         localStorage.setItem('setPaymentCode', _that.setPaymentCode);
         localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
-        console.log(res)
+
         if (res.data.code === 1) {
-          // setCookie("isLogin", "isTrue");
+          setCookie("isLogin", "isTrue");
           // vueThis.reload();
           // vueThis.reloadTwo();
         } else if (res.data.code === 1068) {
@@ -675,6 +674,8 @@ ul {
 .arrow__down {
   font-size: 12px
 }
+
+
 
 
 

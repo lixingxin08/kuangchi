@@ -44,7 +44,8 @@ export default {
             addson: true,
             sonset_inp_0:this.$t("m.sonset.key17"),
             add_sons: {
-                usersub: ''
+                usersub: '',
+                token:this.getCookie('token')
             },
             activities: [{
                 content: this.$t("m.noson.key2"),

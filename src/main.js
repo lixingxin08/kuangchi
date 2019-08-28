@@ -100,7 +100,7 @@ axios.interceptors.response.use(
     }
   }, error => {
     if (error.message.includes('timeout')) {   // 判断请求异常信息中是否含有超时timeout字符串
-      alert(window.vm.$t("m.key4"));
+      // alert(window.vm.$t("m.key4"));
       return Promise.reject(error);          // reject这个错误信息
     } else {
       alert(window.vm.$t("m.key"));
