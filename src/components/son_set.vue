@@ -183,8 +183,8 @@ export default {
             let _that = this
                 // _that.sonset_list = this.testdata.subList
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/accountSubList', this.subList_params, function(res) {
-                console.log(res)
-                _that.sonset_list = res.subList
+                console.log(res,"子账户管理页面")
+                _that.sonset_list = JSON.parse(res).subList
             }, function(error) {
                 console.log(error);
             })
@@ -205,7 +205,7 @@ export default {
             this.delete_params.subusername = this.sonset_list[this.item_index].name
             this.delete_params.token = getCookie("token")
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/deleteAccountSub', this.delete_params, function(data) {
-               alert(data.msg)
+               alert(JSON.parse(data).msg)
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
@@ -240,8 +240,10 @@ export default {
         //编辑地址
         address_edit_edit() {
             console.log("sure")
+            let _that=this
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
-               alert(data.msg)
+               alert(JSON.parse(data).msg)
+                _that.get_sonlist()
             }, function(error) {
                 console.log(error);
             })
@@ -253,6 +255,7 @@ export default {
         createdson() {
             console.log(this.add_sons)
             let _that = this
+            
             if (!this.verifyUsername(this.add_sons.usersub)) {
                 this.add_sons.usersub = ''
                 return alert(this.$t("m.sonset.key9"))
@@ -261,7 +264,8 @@ export default {
             this.removeson = false
             console.log(JSON.stringify(this.add_sons))
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/createAccountSub', this.add_sons, function(data) {
-                 alert(data.msg)
+                 alert(JSON.parse(data).msg)
+
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);

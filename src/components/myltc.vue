@@ -7,9 +7,9 @@
                     <div class="flex_a">
                         <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
-                            <span class="mylcted_top_item font_b" v-if="index==0">{{Number(wokerAlldata[0].latestHrInfo).toFixed(2)}}MH/s</span>
-                            <span class="mylcted_top_item font_b" v-if="index==1">{{Number(wokerAlldata[0].minHrInfo).toFixed(2)}}GH/s</span>
-                            <span class="mylcted_top_item font_b" v-if="index==2">{{Number(wokerAlldata[0].dayHrInfo).toFixed(2)}}TH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==0">{{changpow(Number(wokerAlldata[0].latestHrInfo))}}H/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==1">{{changpow(Number(wokerAlldata[0].minHrInfo))}}H/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==2">{{changpow(Number(wokerAlldata[0].dayHrInfo))}}H/s</span>
                         </div>
                     </div>
                 </div>
@@ -109,6 +109,7 @@
 </template>
 <script>
 import noson from './no_son.vue'
+import bus from "../assets/eventBus"
 export default {
     components: {
         noson,
@@ -155,15 +156,17 @@ export default {
                 type: 'hour',
                 wokername: '',
                 token: localStorage.getItem('token'),
+                username: localStorage.getItem('username'),
             },
             allkline_params: {
-                subusername: localStorage.getItem('username'),
+                subusername: localStorage.getItem('subusername'),
                 type: 'hour',
                 token: localStorage.getItem('token'),
+                username: localStorage.getItem('username'),
             },
             wokerListdata: [],
             wokerAlldata: [
-
+                { latestHrInfo: '', minHrInfo: '', dayHrInfo: '' }
             ],
             noson_type: false,
             timer: ''
@@ -171,12 +174,11 @@ export default {
     },
     mounted() {
         this.wokerList()
-        console.log(localStorage.getItem('token'), "my23777766667")
-        console.log(localStorage.getItem('username'), "username1111")
-        console.log(localStorage.getItem('subusername'), "subusername4444")
-        console.log(localStorage.getItem('subnameList'), "subusername4444")
-        if(localStorage.getItem('subnameList')<1){this.noson_type=true}
-        this.$nextTick(() => { if (!this.noson_type) { this.wokerAllKlinedata() } }, this.getmyltcdata(), )
+        this.getmyltcdata()
+        if (localStorage.getItem('subnameList') < 1) { this.noson_type = true }
+        if (!this.noson_type) { this.wokerAllKlinedata() }
+        this.$nextTick(() => { })
+
     },
     methods: {
         selecttype(index) {
@@ -202,7 +204,7 @@ export default {
             var i = 0
             for (var key in data) {
                 val1[i] = key
-                val2[i] = data[key]
+                val2[i] = this.changpow2(data[key])
                 i++
             }
         },
@@ -211,6 +213,7 @@ export default {
             let _that = this
             let myChart = this.$echarts.init(document.getElementById('myChart'))
             // 绘制图表
+            myChart.showLoading()
             myChart.setOption({
                 title: { text: '' },
                 tooltip: {
@@ -333,6 +336,7 @@ export default {
                     }
                 }]
             });
+            myChart.hideLoading()
         },
         eject_open(index) {
             this.eject_switch = true;
@@ -342,7 +346,7 @@ export default {
             console.log(index)
             console.log(this.List_k_params.wokername)
             this.wokerListKlinedata()
-            this.eject_chart()
+
         },
         eject_off() {
             this.eject_switch = false
@@ -364,6 +368,7 @@ export default {
             // _that.wokerAlldata = data.minerPow
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
                 _that.wokerAlldata = JSON.parse(data).minerPow
+
             }, function(error) {
             })
         },
@@ -412,10 +417,18 @@ export default {
                     }]
             }
             // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+            console.log(this.allkline_params, "总矿机曲线")
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
                 console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
-                _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                _that.drawLine()
+                if (_that.select_type == 'hour') {
+                    _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                }else{
+                    _that.getValueByKey(JSON.parse(data).dayAllKlineInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                }
+
+                console.log(JSON.parse(data).hourInfo[0], "ssssss1")
+                console.log(_that.AllKlinedata)
+                _that.$nextTick(() => { _that.drawLine() })
             }, function(error) {
             })
 
@@ -441,8 +454,13 @@ export default {
             // _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerListKlineInfo', this.List_k_params, function(data) {
                 console.log(data, "ssss11111111111")
-                _that.getValueByKey(data.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
-                console.log(data, "1kkkkkkk")
+                     if (_that.eject_time == 'hour') {
+                          _that.getValueByKey(JSON.parse(data).dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                     }else{
+                         _that.getValueByKey(JSON.parse(data).dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                     }
+                console.log(_that.ListKlinedata, "sssss22111s1")
+                _that.$nextTick(() => { _that.eject_chart() })
             }, function(error) {
             })
         },
@@ -830,6 +848,8 @@ export default {
 
 
 
+
+
 /**图表弹出框**/
 
 .share {
@@ -899,6 +919,8 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
+
 
 
 

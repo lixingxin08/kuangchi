@@ -225,6 +225,25 @@ Vue.prototype.changpow = function (val) {
     return val1 + "T";
   }
 }
+Vue.prototype.changpow2 = function (val) {
+  
+  val = Number(val)
+  let val1 = new Number()
+  var num = 1024.00;
+  if (val < Math.pow(num, 2)) {
+    val1 = val / Math.pow(num, 2)
+    val1 = val1.toFixed(2)
+    return val1 ;
+  } else if (val < Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(2)
+    return val1 
+  } else if (val > Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(2)
+    return val1 ;
+  }
+}
 //设置cookie
 Vue.prototype.setCookie = function (key, val, time) {
   var date = new Date(); //获取当前时间

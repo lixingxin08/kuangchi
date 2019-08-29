@@ -7,10 +7,10 @@
                     <div class="flex_a">
                         <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
-                            <span class="mylcted_top_item font_b" v-if="index==0">{{format(profit_data.todayEarningsAndAllEarnings.todatEarnings ,8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==1">{{format(profit_data.todayEarningsAndAllEarnings.allEarnings,8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==2">{{format(profit_data.needPayAndPayHistory.waitPay,8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==3">{{format(profit_data.needPayAndPayHistory.paidTotal,8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==0">{{format(Number(profit_data.accountInfo.todayEarningsAndAllEarnings.todatEarnings),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==1">{{format(Number(profit_data.accountInfo.todayEarningsAndAllEarnings.allEarnings),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==2">{{format(Number(profit_data.accountInfo.needPayAndPayHistory.waitPay),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==3">{{format(Number(profit_data.accountInfo.needPayAndPayHistory.paidTotal),8)||0}}WTC</span>
                         </div>
                     </div>
                 </div>
@@ -109,14 +109,66 @@ export default {
                 username:localStorage.getItem('username'),
                 token:localStorage.getItem('token'),
                 subusername:localStorage.getItem('subusername'),
-                type: ''
+                type: 3
             },
-            profit_paylist: '',
             profit_type: true,
             profit_data: {
-                
+                code: 200,
+                accountInfo: {
+                    needPayAndPayHistory: {
+                        waitPay: 0,
+                        paidTotal:0
+                    },
+                    todayEarningsAndAllEarnings: {
+                        todatEarnings: 0,
+                        allEarnings: 0
+                    },
+                    subUserPayListInfo: {
+                        array: [
+                            {
+                                paytime: 0,
+                                payType:0,
+                                payMoney: 0,
+                                toAddress: "0",
+                                hash: "0"
+                            },
+                            {
+                                paytime: 0,
+                                payType: 0,
+                                payMoney: 0,
+                                toAddress: "0",
+                                hash: "0"
+                            },
+                        ],
+                        total: 3,
+                        totalPage: 1
+                    },
+                    subUserEarningsListInfo: {
+                        array: [
+                            {
+                                date: 0,
+                                waitpay: 0,
+                                paidTotal: 0,
+                                earningsMoney: "0",
+                                dayHr: "0",
+                                rewardType: 1,
+                                status: 1
+                            },
+                            {
+                                date: 0,
+                                waitpay: 0,
+                                paidTotal: 0,
+                            earningsMoney: "0",
+                                dayHr: "",
+                                rewardType: 1,
+                                status: 1
+                            },
+                        ],
+                        total: 4,
+                        totalPage: 1
+                    }
+                },
             },
-            pay_data: '',
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             derive_item: [this.$t("m.myprofit.key17"), this.$t("m.myprofit.key21"), this.$t("m.myprofit.key22"), this.$t("m.myprofit.key17")],
             derive_top: this.$t("m.myprofit.key1"),
@@ -129,6 +181,7 @@ export default {
         this.change_record(true)
         this.getprofitdata()
         this.timeprofitdata(3)
+        console.log(this.profit_data)
     },
     methods: {
         change_record(val) {
@@ -255,11 +308,11 @@ export default {
                 "msg": "success"
             }
             // this.profit_data = data.accountInfo
-            console.log(this.profit_data)
+            console.log(this.profit_params)
 
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPaymen', this.profit_params, function(data) {
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPayment', this.profit_params, function(data) {
                 console.log(data,"profit111")
-                 _that.profit_data = data.accountInfo
+                 _that.profit_data = data
                 _that.wokerAlldata = JSON.parse(res).minerPow
             }, function(error) {
             })
@@ -318,7 +371,8 @@ export default {
                 }
                 // _that.tableData = data.allEarningsInfo
                 console.log(_that.tableData)
-                this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPaymen', this.profit_params, function(data) {
+                this.$ajax('post', this.GLOBAL.baseUrl+'v2/exportEarningsInfo', this.profit_params, function(data) {
+                    console.log(data,"时间选择导出类型111")
                     _that.wokerAlldata = JSON.parse(data).minerPow
                        _that.tableData = data.allEarningsInfo
                 }, function(error) {

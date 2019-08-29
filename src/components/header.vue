@@ -194,7 +194,7 @@ export default {
     this.head_username = localStorage.getItem('username')
       localStorage.setItem('subusername', this.head_username )
     var vueThis = this;
-    // this.getTopMsg();
+    this.getTopMsg();
     this.getAccountMsg();
      this.$nextTick(() => {  this.getsubusername()  },  )
         localStorage.setItem('token', this.getCookie('token'))
@@ -224,6 +224,8 @@ export default {
     select_user(index) {
       this.user_head = this.subnameList[index].subUsername
       localStorage.setItem('subusername', this.user_head)
+        localStorage.setItem('change',this.user_head)
+          this.reloadTwo();
     },
     //获取账号信息
     getAccountMsg() {
@@ -302,7 +304,7 @@ export default {
     },
     // 切换语言
     switchLang(index) {
-      // this.getTopMsg()
+      this.getTopMsg()
       console.log(index)
       if (index === "zh") {
         localStorage.setItem('lang', "zh");
