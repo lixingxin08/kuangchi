@@ -46,7 +46,7 @@
             </div>
             <div class="add_con_c">
                 <span>{{$t("m.sonset.key3")}}</span>
-                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.usersub">
+                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.subusername">
                 <div class="inp_label">{{$t("m.sonset.key9")}}</div>
             </div>
             <div class="add_son_b">
@@ -113,22 +113,22 @@ export default {
             sonset_list: [],
             item_index: '',
             subList_params: {
-                username:localStorage.getItem('username'),
-               token:  localStorage.getItem('token'),
+                username: localStorage.getItem('username'),
+                token: localStorage.getItem('token'),
                 subusername: localStorage.getItem('subusername'),
                 address: ''
             },
             add_sons: {
-                username:localStorage.getItem('username'),
-             subusername: localStorage.getItem('subusername'),
-                token:  localStorage.getItem('token'),
+                username: localStorage.getItem('username'),
+                subusername:'',
+                token: localStorage.getItem('token'),
             },
             setGoogleAuth: '',
             setPaymentCode: '',
             delete_params: {
                 subusername: localStorage.getItem('subusername'),
                 username: localStorage.getItem('username'),
-                token: getCookie('token'),
+                token: localStorage.getItem('token'),
                 code: "",
                 paypassword: "",
             },
@@ -160,8 +160,6 @@ export default {
         }
     },
     created() {
-        console.log('RELOAD')
-        console.log(this.subList_params)
         this.get_sonlist()
         this.add_sons.username = localStorage.getItem('subusername')
         this.setGoogleAuth = localStorage.getItem('setGoogleAuth')
@@ -182,9 +180,9 @@ export default {
         //子账户管理页面
         get_sonlist() {
             let _that = this
-                // _that.sonset_list = this.testdata.subList
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/accountSubList', this.subList_params, function(res) {
-                console.log(res,"子账户管理页面")
+            // _that.sonset_list = this.testdata.subList
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/accountSubList', this.subList_params, function(res) {
+                console.log(res, "子账户管理页面")
                 _that.sonset_list = JSON.parse(res).subList
             }, function(error) {
                 console.log(error);
@@ -202,14 +200,15 @@ export default {
             }
             console.log(this.sonset_list[this.item_index].name)
             this.pop_type = 0
-            this.delete_params.username = localStorage.getItem('username')
             this.delete_params.subusername = this.sonset_list[this.item_index].name
             this.delete_params.token = getCookie("token")
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/deleteAccountSub', this.delete_params, function(data) {
-               alert(JSON.parse(data).msg)
+            console.log(this.delete_params)
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/deleteAccountSub', this.delete_params, function(data) {
+                alert(JSON.parse(data).msg)
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
+                alert("删除失败")
             })
         },
         delete_item(indexs) {
@@ -224,29 +223,30 @@ export default {
         },
         //编辑   判断是否有子账户
         edit_sons(indexs) {
-            let _that=this
+            let _that = this
             this.pop_type = 3
             this.edit_son = indexs
             console.log(this.sonset_list[indexs].name)
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name }, function(data) {
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name, token: localStorage.getItem('token') }, function(data) {
                 console.log(data)
-                if(data.msg!=="该用户有子账户"){
-                       _that.pop_type=0
-                       alert(data.msg)
+                if (data.msg !== "该用户有子账户") {
+                    _that.pop_type = 0
+                    alert(data.msg)
                 }
             }, function(error) {
                 console.log(error);
+                  alert("网络出现一点问题，请稍后再试")
             })
         },
         //编辑地址
         address_edit() {
             console.log("sure")
-            let _that=this
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
-               alert(JSON.parse(data).msg)
+            let _that = this
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
+                alert("编辑失败，请稍后再试")
             })
         },
         get_edit() {
@@ -256,7 +256,6 @@ export default {
         createdson() {
             console.log(this.add_sons)
             let _that = this
-            
             if (!this.verifyUsername(this.add_sons.usersub)) {
                 this.add_sons.usersub = ''
                 return alert(this.$t("m.sonset.key9"))
@@ -264,12 +263,12 @@ export default {
             this.addson = false
             this.removeson = false
             console.log(JSON.stringify(this.add_sons))
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/createAccountSub', this.add_sons, function(data) {
-                 alert(JSON.parse(data).msg)
-
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
+                console.log(data)
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
+                alert("网络出现一点点问题，请稍后再试")
             })
             this.pop_type = 0
         }

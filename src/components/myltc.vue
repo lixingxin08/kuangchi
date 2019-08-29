@@ -368,8 +368,8 @@ export default {
             // _that.wokerAlldata = data.minerPow
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
                 _that.wokerAlldata = JSON.parse(data).minerPow
-
             }, function(error) {
+                 alert("网络出现一点点问题，请稍后再试")
             })
         },
         //子账户下单个矿机的列表
@@ -398,6 +398,7 @@ export default {
                 }
             }, function(error) {
                 console.log(error);
+                 alert("网络出现一点点问题，请稍后再试")
             })
         },
         //总矿机曲线
@@ -430,6 +431,7 @@ export default {
                 console.log(_that.AllKlinedata)
                 _that.$nextTick(() => { _that.drawLine() })
             }, function(error) {
+                 alert("网络出现一点点问题，请稍后再试")
             })
 
         },
@@ -462,6 +464,7 @@ export default {
                 console.log(_that.ListKlinedata, "sssss22111s1")
                 _that.$nextTick(() => { _that.eject_chart() })
             }, function(error) {
+                 alert("网络出现一点点问题，请稍后再试")
             })
         },
         //弹出框图表

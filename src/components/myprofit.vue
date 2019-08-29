@@ -1,16 +1,16 @@
 <template>
     <div class="myMill">
-        <div class="mymills"  v-if="!noson_type">
+        <div class="mymills" v-if="!noson_type">
             <!--收益头部-->
             <div class="mylcted_top flex_a">
                 <div class="content_box">
                     <div class="flex_a">
                         <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
-                            <span class="mylcted_top_item font_b" v-show="index==0">{{format(Number(profit_data.accountInfo.todayEarningsAndAllEarnings.todatEarnings),8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-show="index==1">{{format(Number(profit_data.accountInfo.todayEarningsAndAllEarnings.allEarnings),8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-show="index==2">{{format(Number(profit_data.accountInfo.needPayAndPayHistory.waitPay),8)||0}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-show="index==3">{{format(Number(profit_data.accountInfo.needPayAndPayHistory.paidTotal),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==0">{{format(Number(profit_data.todayEarningsAndAllEarnings.todatEarnings),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==1">{{format(Number(profit_data.todayEarningsAndAllEarnings.allEarnings),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==2">{{format(Number(profit_data.needPayAndPayHistory.waitPay),8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-show="index==3">{{format(Number(profit_data.needPayAndPayHistory.paidTotal),8)||0}}WTC</span>
                         </div>
                     </div>
                 </div>
@@ -72,8 +72,8 @@
 
                             <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserPayListInfo.array" :key="index">
                                 <li class="record_main_li">{{Formatdate(profit_data.subUserPayListInfo.array[index].paytime,'yyyy-MM-dd')}}</li>
-                                <li class="record_main_li">{{Formatdate(Number(profit_data.subUserPayListInfo.array[index].paytime)-86400,'yyyy-MM-dd')}}</li>
-                                <li class="record_main_li">{{format(profit_data.subUserPayListInfo.array[index].payMoney,8)}}</li>
+                                <li class="record_main_li">{{Formatdate(Number(profit_data.subUserPayListInfo.array[index].paytime-86400),'yyyy-MM-dd')}}</li>
+                                <li class="record_main_li">{{format(profit_data.subUserPayListInfo.array[index].payMoney,8)}}{{profit_data.subUserPayListInfo.array[index].payType==2?'（ERC20）':''}}</li>
                                 <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].toAddress)}}</li>
                                 <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].hash)}}</li>
                             </ul>
@@ -83,13 +83,13 @@
                             </el-pagination>
                         </div>
                     </div>
-                    <div class="nprecord" v-else>
-                        {{$t("m.wallet.key39")}}
+                    <div class="nprecord" v-if="!haverecord">
+                        {{$t("m.wallet.key39")}}11
                     </div>
                 </div>
             </div>
         </div>
-<noson v-if="noson_type"></noson>
+        <noson v-if="noson_type"></noson>
     </div>
 </template>
 <script>
@@ -104,80 +104,78 @@ export default {
             recorddata: [],
             totalSize: 0,
             export_name: '',
-            haverecord: false,
+            haverecord: true,
             profit_params: {
-                username:localStorage.getItem('username'),
-                token:localStorage.getItem('token'),
-                subusername:localStorage.getItem('subusername'),
+                username: localStorage.getItem('username'),
+                token: localStorage.getItem('token'),
+                subusername: localStorage.getItem('subusername'),
                 type: 3
             },
             profit_type: true,
             profit_data: {
-                code: 200,
-                accountInfo: {
-                    needPayAndPayHistory: {
-                        waitPay: 0,
-                        paidTotal:0
-                    },
-                    todayEarningsAndAllEarnings: {
-                        todatEarnings: 0,
-                        allEarnings: 0
-                    },
-                    subUserPayListInfo: {
-                        array: [
-                            {
-                                paytime: 0,
-                                payType:0,
-                                payMoney: 0,
-                                toAddress: "0",
-                                hash: "0"
-                            },
-                            {
-                                paytime: 0,
-                                payType: 0,
-                                payMoney: 0,
-                                toAddress: "0",
-                                hash: "0"
-                            },
-                        ],
-                        total: 3,
-                        totalPage: 1
-                    },
-                    subUserEarningsListInfo: {
-                        array: [
-                            {
-                                date: 0,
-                                waitpay: 0,
-                                paidTotal: 0,
-                                earningsMoney: "0",
-                                dayHr: "0",
-                                rewardType: 1,
-                                status: 1
-                            },
-                            {
-                                date: 0,
-                                waitpay: 0,
-                                paidTotal: 0,
-                            earningsMoney: "0",
-                                dayHr: "",
-                                rewardType: 1,
-                                status: 1
-                            },
-                        ],
-                        total: 4,
-                        totalPage: 1
-                    }
+                needPayAndPayHistory: {
+                    waitPay: 0,
+                    paidTotal: 0
                 },
+                todayEarningsAndAllEarnings: {
+                    todatEarnings: 0,
+                    allEarnings: 0
+                },
+                subUserPayListInfo: {
+                    array: [
+                        {
+                            paytime: 0,
+                            payType: 0,
+                            payMoney: 0,
+                            toAddress: "0",
+                            hash: "0"
+                        },
+                        {
+                            paytime: 0,
+                            payType: 0,
+                            payMoney: 0,
+                            toAddress: "0",
+                            hash: "0"
+                        },
+                    ],
+                    total: 3,
+                    totalPage: 1
+                },
+                subUserEarningsListInfo: {
+                    array: [
+                        {
+                            date: 0,
+                            waitpay: 0,
+                            paidTotal: 0,
+                            earningsMoney: "0",
+                            dayHr: "0",
+                            rewardType: 1,
+                            status: 1
+                        },
+                        {
+                            date: 0,
+                            waitpay: 0,
+                            paidTotal: 0,
+                            earningsMoney: "0",
+                            dayHr: "",
+                            rewardType: 1,
+                            status: 1
+                        },
+                    ],
+                    total: 4,
+                    totalPage: 1
+                }
             },
+            profit_topdata: '',
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             derive_item: [this.$t("m.myprofit.key17"), this.$t("m.myprofit.key21"), this.$t("m.myprofit.key22"), this.$t("m.myprofit.key17")],
             derive_top: this.$t("m.myprofit.key1"),
             tableData: '',
-            noson_type:false,
+            noson_type: false,
         }
     },
     created() {
-              if(localStorage.getItem('subnameList')<1){this.noson_type=true}
+        if (localStorage.getItem('subnameList') < 1) { this.noson_type = true }
         this.change_record(true)
         this.getprofitdata()
         this.timeprofitdata(3)
@@ -203,25 +201,32 @@ export default {
             require.ensure([], () => {
                 const { export_json_to_excel } = require('../vendor/Export2Excel');
                 const tHeader = this.recorddata;
-                let filterVal = ''
-                let list = ''
+                let filterVal = []
+                let list = []
+                let keylist = []
                 //导出收益页
+                console.log(tHeader, filterVal, list, '8888888888')
                 if (_that.recordtype) {
                     filterVal = ['date', 'earningsMoney', 'dayHr', 'rewardType', 'status'];
-                    list = _that.profit_data.subUserEarningsListInfo.array;
+                    list = _that.profit_data.subUserEarningsListInfo.array
                 }
                 //导出支付页
                 else if (!_that.recordtype) {
                     // 上面的index、nickName、name是tableData里对象的属性
-                    filterVal = ['paytime', 'paytime', 'payMoney', 'toAddress', 'hash'];
-                    list = _that.profit_data.subUserPayListInfo.array; //把data里的tableData存到list
+                    console.log(_that.profit_data.subUserPayListInfo.array, "33444444")
+                    filterVal = ['paytime','paytime', 'payMoney',  'toAddress', 'hash'];
+                    console.log(list, '999999')
+                    list = _that.profit_data.subUserPayListInfo.array
+                    // _that.getValueByKey(_that.profit_data.subUserPayListInfo.array[0], filterVal, list)
+                    console.log(list, 'list15555555', filterVal)
                 }
-                const data = this.formatJson(filterVal, list);
+                const data = _that.formatJson(filterVal, list);
                 export_json_to_excel(tHeader, data, 'this_excel');
             })
         },
         //我的收益页
         getprofitdata() {
+            let _that = this
             let data = {
                 "code": 200,
                 "accountInfo": {
@@ -308,19 +313,24 @@ export default {
             // this.profit_data = data.accountInfo
             console.log(this.profit_params)
 
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPayment', this.profit_params, function(data) {
-                console.log(data,"profit111")
-                 _that.profit_data = data
-                _that.wokerAlldata = JSON.parse(res).minerPow
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/earningsAndPayment', this.profit_params, function(data) {
+                console.log(data, "profit111")
+                _that.profit_data = JSON.parse(data).accountInfo
+                if (_that.profit_data.subUserEarningsListInfo.array.length == 0 && _that.profit_data.subUserPayListInfo.array.length == 0) {
+                    _that.haverecord = false
+                }
+                console.log(_that.profit_data.subUserPayListInfo.array, "profit1222222221")
             }, function(error) {
+                 alert("网络出现一点点问题，请稍后再试")
             })
         },
         //时间选择导出类型
         timeprofitdata(index = 3) {
+            let _that = this
             this.profit_params.type = index
             this.derive_top = this.derive_item[index]
             console.log(index)
-            let _that = this
+
             if (_that.recordtype) {
                 let data = {
                     "code": 200,
@@ -369,11 +379,12 @@ export default {
                 }
                 // _that.tableData = data.allEarningsInfo
                 console.log(_that.tableData)
-                this.$ajax('post', this.GLOBAL.baseUrl+'v2/exportEarningsInfo', this.profit_params, function(data) {
-                    console.log(data,"时间选择导出类型111")
-                    _that.wokerAlldata = JSON.parse(data).minerPow
-                       _that.tableData = data.allEarningsInfo
+                this.$ajax('post', this.GLOBAL.baseUrl + 'v2/exportEarningsInfo', this.profit_params, function(data) {
+                    console.log(data, "时间选择导出类型111")
+
+                    _that.tableData = JSON.parse(data).allEarningsInfo
                 }, function(error) {
+                     alert("网络出现一点点问题，请稍后再试")
                 })
             }
             if (!_that.recordtype) {
@@ -407,12 +418,12 @@ export default {
                     ]
                 }
                 // _that.tableData = data.allEarningsInfo
-                this.$ajax('post', this.GLOBAL.baseUrl+'v2/exportPayInfo', this.profit_params, function(data) {
-                      console.log(data,"时间选择导出类型1113333")
-                    _that.wokerAlldata = JSON.parse(data).minerPow
-                     _that.tableData = data.allEarningsInfo
+                this.$ajax('post', this.GLOBAL.baseUrl + 'v2/exportPayInfo', this.profit_params, function(data) {
+                    console.log(data, "时间选择导出类型1113333")
+                    _that.tableData = JSON.parse(data).allEarningsInfo
                 }, function(error) {
-                })         
+                     alert("网络出现一点点问题，请稍后再试")
+                })
             }
         },
         formatJson(filterVal, jsonData) {
