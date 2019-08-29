@@ -186,7 +186,6 @@ export default {
   created() {
     if (getCookie("isLogin")) {
       this.getAccountMill();
-      this.getRate();
     }
   },
   mounted() {
@@ -214,6 +213,7 @@ export default {
       }
     },
     sethomedata() {
+      console.log(this.GLOBAL.baseUrl,2124)
       if (this.hometype == 1) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
       } else if (this.hometype == 4) {
@@ -272,22 +272,22 @@ export default {
             "gasPrice": "2000000000",
             "gas": 155545,
           }
-        _that.user_detail_data[0] = [_that.comdify(blockInfo.blockNumber), blockInfo.hash]
-        _that.user_detail_data[1] = [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), blockInfo.value]
-        _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress]
+        // _that.user_detail_data[0] = [_that.comdify(blockInfo.blockNumber), blockInfo.hash]
+        // _that.user_detail_data[1] = [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), blockInfo.value]
+        // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress]
         this.block_top_data = [[this.$t("m.home.key36")],
         [this.$t("m.home.key37"), this.$t("m.home.key24"), this.$t("m.home.key25")],
         [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
-        // this.$ajax('post', 'http://120.77.241.114:7011/v2/searchBlockInfo', this.blockListObj, function(data) {
-        //   let blockInfo = JSON.parse(data).TxArray[0]
-        //   _that.user_detail_data[0] = [blockInfo.number, blockInfo.hash]
-        //   _that.user_detail_data[1] = [blockInfo.hash,(blockInfo.gasPrice/Math.pow(10,18))*blockInfo.gas, blockInfo.fromAddress]
-        //   _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.transactionNumber]
-        //   console.log(JSON.parse(data))
-        //   console.log(_that.user_detail_data)
-        // }, function(error) {
-        //   console.log(error)
-        // })
+        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchBlockInfo', this.blockListObj, function(data) {
+          let blockInfo = JSON.parse(data).TxArray[0]
+          _that.user_detail_data[0] = [blockInfo.number, blockInfo.hash]
+          _that.user_detail_data[1] = [blockInfo.hash,(blockInfo.gasPrice/Math.pow(10,18))*blockInfo.gas, blockInfo.fromAddress]
+          _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.transactionNumber]
+          console.log(JSON.parse(data))
+          console.log(_that.user_detail_data)
+        }, function(error) {
+          console.log(error)
+        })
       } else if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 42) {
         //搜索钱包地址
         _that.wallet_changes = false;
@@ -298,7 +298,7 @@ export default {
         _that.blockListObj.address = _that.search_data
         _that.hometype = 3;
         _that.datas = []
-        this.$ajax('post', 'http://120.77.241.114:7011/v2/searchMinerInfo', this.blockListObj, function(data) {
+        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchMinerInfo', this.blockListObj, function(data) {
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
           _that.user_detail_data[0] = [_that.search_data]
           _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
@@ -336,7 +336,7 @@ export default {
         [this.$t("m.myMill.key10"), this.$t("m.home.key18"), this.$t("m.home.key6"), this.$t("m.home.key35")],
         [this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key21")]]
         console.log(2222222)
-        this.$ajax('post', 'http://120.77.241.114:7011/v2/searchBlockInfo', this.blockListObj, function(data) {
+        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchBlockInfo', this.blockListObj, function(data) {
           let blockInfo = JSON.parse(data).blockInfo[0]
           _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
           _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward)]
@@ -351,7 +351,7 @@ export default {
         _that.hometype = 1;
         console.log(1111111)
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
-        this.$ajax('get', 'http://120.77.241.114:7011/v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
+        this.$ajax('get', this.GLOBAL.baseUrl+'v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
           _that.homedatalist = JSON.parse(data).chainInfo
           _that.totalSize = JSON.parse(data).chainCount
           for (let i = 0; i < _that.homedatalist.length; i++) {
@@ -395,27 +395,6 @@ export default {
       })
     },
     //获取汇率
-    getRate() {
-      var vueThis = this;
-      this.$axios({
-        method: "get",
-        url: this.baseUrl + "v1/rate/getRate",
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        },
-        withCredentials: false
-      }).then(function(res) {
-
-        if (res.data.code === 200) {
-          if (res.data.msg === "success") {
-            vueThis.rate = res.data.rate.rate;
-          }
-        } else {
-        }
-      }).catch(function(err) {
-
-      })
-    },
     handleSizeChange(val) {
       this.blockListObj.pageSize = val;
       // this.getWtcPoolBlockInfo();

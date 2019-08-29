@@ -87,7 +87,6 @@ axios.interceptors.response.use(
           path: "/",
           // query:{redirect:router.currentRoute.fullPath}
         });
-        alert(window.vm.$t("m.main.key3"));
         // window.history.go(0);
         return false;
       }

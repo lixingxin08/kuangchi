@@ -8,7 +8,7 @@
                         <div v-for="(item,index) in ltc_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
                             <span class="mylcted_top_item font_b" v-if="index==0">{{Number(wokerAlldata[0].latestHrInfo).toFixed(2)}}MH/s</span>
-                            <span class="mylcted_top_item font_b" v-if="index==1">{{wokerAlldata[0].minHrInfo}}GH/s</span>
+                            <span class="mylcted_top_item font_b" v-if="index==1">{{Number(wokerAlldata[0].minHrInfo).toFixed(2)}}GH/s</span>
                             <span class="mylcted_top_item font_b" v-if="index==2">{{Number(wokerAlldata[0].dayHrInfo).toFixed(2)}}TH/s</span>
                         </div>
                     </div>
@@ -145,39 +145,57 @@ export default {
             eject_switch: false,
             eject_data: [],
             eject_time: 'hour',
-            // myltc_param: {
-            //     subusername:localStorage.getItem('subusername'),
-            //     token:localStorage.getItem('token'),
-            //     username: localStorage.getItem('username'),
-            // },
-            // List_k_params: {
-            //     subusername:localStorage.getItem('subusername'),
-            //     type: this.eject_time,
-            //     wokername: ''
-            // },
+            myltc_param: {
+                subusername: localStorage.getItem('subusername'),
+                token: localStorage.getItem('token'),
+                username: localStorage.getItem('username'),
+            },
+            List_k_params: {
+                subusername: localStorage.getItem('subusername'),
+                type: 'hour',
+                wokername: '',
+                token: localStorage.getItem('token'),
+            },
+            allkline_params: {
+                subusername: localStorage.getItem('username'),
+                type: 'hour',
+                token: localStorage.getItem('token'),
+            },
             wokerListdata: [],
-            wokerAlldata: '',
+            wokerAlldata: [
+
+            ],
             noson_type: false,
+            timer: ''
         }
     },
     mounted() {
-        this.getmyltcdata()
-        this.wokerAllKlinedata()
         this.wokerList()
-        this.wokerListKlinedata()
-        this.$nextTick(() => { if(!this.noson_type){this.drawLine()} })
-  
+        console.log(localStorage.getItem('token'), "my23777766667")
+        console.log(localStorage.getItem('username'), "username1111")
+        console.log(localStorage.getItem('subusername'), "subusername4444")
+        console.log(localStorage.getItem('subnameList'), "subusername4444")
+        if(localStorage.getItem('subnameList')<1){this.noson_type=true}
+        this.$nextTick(() => { if (!this.noson_type) { this.wokerAllKlinedata() } }, this.getmyltcdata(), )
     },
     methods: {
         selecttype(index) {
             if (index == 1) {
                 this.select_type = 'hour'
+                this.allkline_params.type = 'hour'
+                this.wokerAllKlinedata()
             } else if (index == 2) {
                 this.select_type = 'day'
+                this.allkline_params.type = 'day'
+                this.wokerAllKlinedata()
             } else if (index == 3) {
                 this.eject_time = 'hour'
+                this.List_k_params.type = 'day'
+                this.wokerListKlinedata()
             } else if (index == 4) {
+                this.List_k_params.type = 'day'
                 this.eject_time = 'day'
+                this.wokerListKlinedata()
             }
         },
         getValueByKey(data, val1, val2) {
@@ -319,8 +337,10 @@ export default {
         eject_open(index) {
             this.eject_switch = true;
             this.eject_data = this.ltc_item[index]
-            // this.List_k_params.wokername=this.wokerListdata[index].wokerName
+            console.log(this.wokerListdat)
+            this.List_k_params.wokername = this.wokerListdata[index].wokerName
             console.log(index)
+            console.log(this.List_k_params.wokername)
             this.wokerListKlinedata()
             this.eject_chart()
         },
@@ -330,23 +350,22 @@ export default {
         //子账户下总矿机算力
         getmyltcdata() {
             let _that = this
-            let data = {
-                "code": 1,
-                "msg": "success",
-                "minerPow": [
-                    {
-                        "latestHrInfo": 200000004,
-                        "minHrInfo": 20000000,
-                        "dayHrInfo": 20000000
-                    }
-                ]
-            }
-            _that.wokerAlldata = data.minerPow
-            console.log(_that.wokerAlldata[0].latestHrInfo)
-            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerAllInfo', this.myltc_param, function(data) {
-            //     _that.wokerAlldata = JSON.parse(res).minerPow
-            // }, function(error) {
-            // })
+            // let data = {
+            //     "code": 1,
+            //     "msg": "success",
+            //     "minerPow": [
+            //         {
+            //             "latestHrInfo": 200000004,
+            //             "minHrInfo": 20000000,
+            //             "dayHrInfo": 20000000
+            //         }
+            //     ]
+            // }
+            // _that.wokerAlldata = data.minerPow
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
+                _that.wokerAlldata = JSON.parse(data).minerPow
+            }, function(error) {
+            })
         },
         //子账户下单个矿机的列表
         wokerList() {
@@ -365,13 +384,16 @@ export default {
                 ],
                 "minerNumber": 1
             };
-            _that.wokerListdata = res.minerPow
-            // this.$ajax('post', '127.0.0.1:7001/v2/wokerListInfo', this.myltc_param, function(res) {
-            //     _that.wokerListdata = JSON.parse(res).minerPow
-            //     console.log(res)
-            // }, function(error) {
-            //     console.log(error);
-            // })
+            // _that.wokerListdata = res.minerPow
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerListInfo', this.myltc_param, function(data) {
+                _that.wokerListdata = JSON.parse(data).minerPow
+                if (_that.wokerListdata.length < 1) {
+                    console.log(this.wokerListdata.length)
+                    _that.myltctype = false
+                }
+            }, function(error) {
+                console.log(error);
+            })
         },
         //总矿机曲线
         wokerAllKlinedata() {
@@ -389,11 +411,14 @@ export default {
 
                     }]
             }
-            _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-            // this.$ajax('get', 'http://120.77.241.114:7011/v2/wokerAllKlineInfo', { subusername: localStorage.getItem('username'), type: this.select_type }, function(data) {
-            //      _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-            // }, function(error) {
-            // })
+            // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
+                console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
+                _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                _that.drawLine()
+            }, function(error) {
+            })
+
         },
         //单台矿机内k线
         wokerListKlinedata() {
@@ -413,11 +438,13 @@ export default {
                     }
                 ]
             }
-            _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
-            console.log(_that.ListKlinedata)
-            // this.$ajax('post', 'http://120.77.241.114:7011/v2/wokerListKlineInfo', this.List_k_params, function(data) {
-            // }, function(error) {
-            // })
+            // _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerListKlineInfo', this.List_k_params, function(data) {
+                console.log(data, "ssss11111111111")
+                _that.getValueByKey(data.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                console.log(data, "1kkkkkkk")
+            }, function(error) {
+            })
         },
         //弹出框图表
         eject_chart() {
@@ -569,7 +596,7 @@ export default {
 
 .mylcted_top {
     height: 1.85rem;
-    background: url('../assets/img/myltc_bg.jpg') no-repeat;
+    background: url('../assets/img/myltc11.png') 100% 100% no-repeat;
     background-size: 100% 100%;
     overflow: hidden;
     color: #fff;
@@ -799,6 +826,10 @@ export default {
 
 
 
+
+
+
+
 /**图表弹出框**/
 
 .share {
@@ -868,6 +899,10 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
+
+
+
 
 
 

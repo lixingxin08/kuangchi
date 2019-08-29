@@ -181,15 +181,13 @@ export default {
         //子账户管理页面
         get_sonlist() {
             let _that = this
-            let res =
-                _that.sonset_list = this.testdata.subList
-            // this.$ajax('post', 'http://127.0.0.1:7001/v2/accountSubList', this.subList_params, function(res) {
-            //     console.log(res)
-            //     _that.sonset_list = res.subList
-
-            // }, function(error) {
-            //     console.log(error);
-            // })
+                // _that.sonset_list = this.testdata.subList
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/accountSubList', this.subList_params, function(res) {
+                console.log(res)
+                _that.sonset_list = res.subList
+            }, function(error) {
+                console.log(error);
+            })
         },
         //删除子账户
         delete_son() {
@@ -206,8 +204,8 @@ export default {
             this.delete_params.username = localStorage.getItem('username')
             this.delete_params.subusername = this.sonset_list[this.item_index].name
             this.delete_params.token = getCookie("token")
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/deleteAccountSub', this.delete_params, function(data) {
-                console.log(data)
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/deleteAccountSub', this.delete_params, function(data) {
+               alert(data.msg)
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
@@ -225,11 +223,16 @@ export default {
         },
         //编辑   判断是否有子账户
         edit_sons(indexs) {
+            let _that=this
             this.pop_type = 3
             this.edit_son = indexs
             console.log(this.sonset_list[indexs].name)
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name }, function(data) {
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name }, function(data) {
                 console.log(data)
+                if(data.msg!=="该用户有子账户"){
+                       this.pop_type=0
+                       alert(data.msg)
+                }
             }, function(error) {
                 console.log(error);
             })
@@ -237,8 +240,8 @@ export default {
         //编辑地址
         address_edit_edit() {
             console.log("sure")
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/userIsHaveSubUser', this.add_sons.username, function(data) {
-                console.log(data)
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
+               alert(data.msg)
             }, function(error) {
                 console.log(error);
             })
@@ -257,8 +260,8 @@ export default {
             this.addson = false
             this.removeson = false
             console.log(JSON.stringify(this.add_sons))
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/createAccountSub', this.add_sons, function(data) {
-                console.log(data)
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/createAccountSub', this.add_sons, function(data) {
+                 alert(data.msg)
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);

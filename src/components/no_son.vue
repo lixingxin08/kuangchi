@@ -74,9 +74,12 @@ export default {
             }
             this.addson = false
             console.log(JSON.stringify(this.add_sons))
-            this.$ajax('post', 'http://127.0.0.1:7001/v2/createAccountSub', this.add_sons, function(data) {
-                console.log(data)
-                _that.get_sonlist()
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/createAccountSub', this.add_sons, function(data) {
+                 if(data.msg=="创建子账户成功"){
+                     alert(data.msg)
+                     _that.$router.go(0)
+                 }
+             
             }, function(error) {
                 console.log(error);
             })

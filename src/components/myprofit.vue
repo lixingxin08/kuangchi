@@ -7,10 +7,10 @@
                     <div class="flex_a">
                         <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
                             <span class="mylcted_top_item">{{item}}</span>
-                            <span class="mylcted_top_item font_b" v-if="index==0">{{format(profit_data.todayEarningsAndAllEarnings.todatEarnings ,8)}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==1">{{format(profit_data.todayEarningsAndAllEarnings.allEarnings,8)}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==2">{{format(profit_data.needPayAndPayHistory.waitPay,8)}}WTC</span>
-                            <span class="mylcted_top_item font_b" v-if="index==3">{{format(profit_data.needPayAndPayHistory.paidTotal,8)}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==0">{{format(profit_data.todayEarningsAndAllEarnings.todatEarnings ,8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==1">{{format(profit_data.todayEarningsAndAllEarnings.allEarnings,8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==2">{{format(profit_data.needPayAndPayHistory.waitPay,8)||0}}WTC</span>
+                            <span class="mylcted_top_item font_b" v-if="index==3">{{format(profit_data.needPayAndPayHistory.paidTotal,8)||0}}WTC</span>
                         </div>
                     </div>
                 </div>
@@ -104,16 +104,18 @@ export default {
             recorddata: [],
             totalSize: 0,
             export_name: '',
-            haverecord: true,
+            haverecord: false,
             profit_params: {
-                username: '',
-                token: '',
-                subusername: '',
+                username:localStorage.getItem('username'),
+                token:localStorage.getItem('token'),
+                subusername:localStorage.getItem('subusername'),
                 type: ''
             },
             profit_paylist: '',
             profit_type: true,
-            profit_data: '',
+            profit_data: {
+                
+            },
             pay_data: '',
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             derive_item: [this.$t("m.myprofit.key17"), this.$t("m.myprofit.key21"), this.$t("m.myprofit.key22"), this.$t("m.myprofit.key17")],
@@ -123,6 +125,7 @@ export default {
         }
     },
     created() {
+              if(localStorage.getItem('subnameList')<1){this.noson_type=true}
         this.change_record(true)
         this.getprofitdata()
         this.timeprofitdata(3)
@@ -251,13 +254,15 @@ export default {
                 },
                 "msg": "success"
             }
-            this.profit_data = data.accountInfo
+            // this.profit_data = data.accountInfo
             console.log(this.profit_data)
 
-            // this.$ajax('post', '120.77.241.114:7011/v2/earningsAndPaymen', this.profit_params, function(data) {
-            //     _that.wokerAlldata = JSON.parse(res).minerPow
-            // }, function(error) {
-            // })
+            this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPaymen', this.profit_params, function(data) {
+                console.log(data,"profit111")
+                 _that.profit_data = data.accountInfo
+                _that.wokerAlldata = JSON.parse(res).minerPow
+            }, function(error) {
+            })
         },
         //时间选择导出类型
         timeprofitdata(index = 1) {
@@ -311,12 +316,13 @@ export default {
                         }
                     ]
                 }
-                _that.tableData = data.allEarningsInfo
+                // _that.tableData = data.allEarningsInfo
                 console.log(_that.tableData)
-                // this.$ajax('post', '120.77.241.114:7011/v2/earningsAndPaymen', this.profit_params, function(data) {
-                //     _that.wokerAlldata = JSON.parse(res).minerPow
-                // }, function(error) {
-                // })
+                this.$ajax('post', this.GLOBAL.baseUrl+'v2/earningsAndPaymen', this.profit_params, function(data) {
+                    _that.wokerAlldata = JSON.parse(data).minerPow
+                       _that.tableData = data.allEarningsInfo
+                }, function(error) {
+                })
             }
             if (!_that.recordtype) {
                 let data = {
@@ -348,11 +354,12 @@ export default {
                         }
                     ]
                 }
-                _that.tableData = data.allEarningsInfo
-                // this.$ajax('post', '120.77.241.114:7011/v2/exportPayInfo', this.profit_params, function(data) {
-                //     _that.wokerAlldata = JSON.parse(res).minerPow
-                // }, function(error) {
-                // })         
+                // _that.tableData = data.allEarningsInfo
+                this.$ajax('post', this.GLOBAL.baseUrl+'v2/exportPayInfo', this.profit_params, function(data) {
+                    _that.wokerAlldata = JSON.parse(data).minerPow
+                     _that.tableData = data.allEarningsInfo
+                }, function(error) {
+                })         
             }
         },
         formatJson(filterVal, jsonData) {
@@ -369,7 +376,7 @@ export default {
 
 .mylcted_top {
     height: 1.85rem;
-    background: url('../assets/img/myltc_bg.jpg') no-repeat;
+    background: url('../assets/img/myltc11.png') no-repeat;
     background-size: 100% 100%;
     overflow: hidden;
     color: #fff;
