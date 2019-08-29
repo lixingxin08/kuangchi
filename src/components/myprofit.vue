@@ -216,8 +216,6 @@ export default {
                     filterVal = ['paytime', 'paytime', 'payMoney', 'toAddress', 'hash'];
                     list = _that.profit_data.subUserPayListInfo.array; //把data里的tableData存到list
                 }
-
-
                 const data = this.formatJson(filterVal, list);
                 export_json_to_excel(tHeader, data, 'this_excel');
             })
@@ -318,7 +316,7 @@ export default {
             })
         },
         //时间选择导出类型
-        timeprofitdata(index = 1) {
+        timeprofitdata(index = 3) {
             this.profit_params.type = index
             this.derive_top = this.derive_item[index]
             console.log(index)
@@ -410,6 +408,7 @@ export default {
                 }
                 // _that.tableData = data.allEarningsInfo
                 this.$ajax('post', this.GLOBAL.baseUrl+'v2/exportPayInfo', this.profit_params, function(data) {
+                      console.log(data,"时间选择导出类型1113333")
                     _that.wokerAlldata = JSON.parse(data).minerPow
                      _that.tableData = data.allEarningsInfo
                 }, function(error) {

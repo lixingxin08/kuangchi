@@ -27,7 +27,7 @@
                             <span class="ltc_main_item">{{item.minHr}}</span>
                             <span class="ltc_main_item">{{item.dayHr}}</span>
                             <div class="flex_b ltc_main_item_last">
-                                <span>{{timestampToTime(item.time)}}</span>
+                                <span>{{Formatdate(item.time,'yyyy-MM-dd-HH-mm')}}</span>
                                 <span @click="eject_open(index)"><img src="../assets/img/data_checked.png" alt=""></span>
                             </div>
                         </div>

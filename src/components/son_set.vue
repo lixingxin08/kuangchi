@@ -113,14 +113,15 @@ export default {
             sonset_list: [],
             item_index: '',
             subList_params: {
-                username: getCookie('username'),
-                token: getCookie('token'),
+                username:localStorage.getItem('username'),
+               token:  localStorage.getItem('token'),
                 subusername: localStorage.getItem('subusername'),
                 address: ''
             },
             add_sons: {
-                username: getCookie('username'),
-                usersub: ""
+                username:localStorage.getItem('username'),
+             subusername: localStorage.getItem('subusername'),
+                token:  localStorage.getItem('token'),
             },
             setGoogleAuth: '',
             setPaymentCode: '',
@@ -230,7 +231,7 @@ export default {
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name }, function(data) {
                 console.log(data)
                 if(data.msg!=="该用户有子账户"){
-                       this.pop_type=0
+                       _that.pop_type=0
                        alert(data.msg)
                 }
             }, function(error) {
@@ -238,7 +239,7 @@ export default {
             })
         },
         //编辑地址
-        address_edit_edit() {
+        address_edit() {
             console.log("sure")
             let _that=this
             this.$ajax('post', this.GLOBAL.baseUrl+'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
