@@ -1004,6 +1004,7 @@ input:-ms-input-placeholder {
   text-overflow: ellipsis;
   overflow: hidden;
   color: #2e73e8;
+  cursor: pointer;
 }
 
 .li1 {
@@ -1016,6 +1017,7 @@ input:-ms-input-placeholder {
   flex: 4;
   text-overflow: ellipsis;
   overflow: hidden;
+   cursor: pointer;
 }
 
 .li3 {
@@ -1023,6 +1025,7 @@ input:-ms-input-placeholder {
   text-overflow: ellipsis;
   overflow: hidden;
   color: #2e73e8;
+   cursor: pointer;
 }
 
 .li4 {

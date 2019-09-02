@@ -26,7 +26,7 @@
                 <li class="sonset_list3">{{timestampToTime(sonset_list[indexs].createTime)}}</li>
                 <li class="sonset_list4">
                     <span v-if="edit_son!==indexs">{{sonset_list[indexs].address}}</span>
-                    <input v-if="edit_son==indexs" type="text" :placeholder="sonset_inp" class="add_adress">
+                    <input v-if="edit_son==indexs" type="text" :placeholder="sonset_inp" class="add_adress" v-model="add_sons.address">
                 </li>
                 <li class="sonset_list5">
                     <span class="color1" v-if="edit_son!==indexs" @click="edit_sons(indexs)">{{$t("m.sonset.key7")}}</span>
@@ -77,7 +77,7 @@
             </div>
         </div>
         <!--编辑-->
-        <div class="add_son remove_son" v-if="this.pop_type==3">
+        <div class="add_son remove_son" v-show="this.pop_type==3">
             <div class="add_son_t remove_son_t">
                 <span>{{$t("m.wallet.key15")}}</span>
                 <span class="el-icon-close close_add" @click="remove()"></span>
@@ -120,8 +120,9 @@ export default {
             },
             add_sons: {
                 username: localStorage.getItem('username'),
-                subusername:'',
+                subusername: '',
                 token: localStorage.getItem('token'),
+                address: ''
             },
             setGoogleAuth: '',
             setPaymentCode: '',
@@ -190,6 +191,7 @@ export default {
         },
         //删除子账户
         delete_son() {
+            let _that = this
             this.delete_tips = ''
             if (this.delete_params.paypassword == '') {
                 this.delete_tips = "请输入资金密码"
@@ -212,6 +214,7 @@ export default {
             })
         },
         delete_item(indexs) {
+            let _that = this
             this.item_index = indexs
             if (this.sonset_list[indexs].name == this.add_sons.username) {
                 this.item_index = -2
@@ -224,33 +227,52 @@ export default {
         //编辑   判断是否有子账户
         edit_sons(indexs) {
             let _that = this
-            this.pop_type = 3
-            this.edit_son = indexs
-            console.log(this.sonset_list[indexs].name)
-            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name, token: localStorage.getItem('token') }, function(data) {
-                console.log(data)
-                if (data.msg !== "该用户有子账户") {
-                    _that.pop_type = 0
-                    alert(data.msg)
-                }
-            }, function(error) {
-                console.log(error);
-                  alert("网络出现一点问题，请稍后再试")
-            })
+            _that.edit_son = indexs
+            this.item_index = indexs
+            // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name, token: localStorage.getItem('token') }, function(data) {
+            //     if (JSON.parse(data).date) {
+            //         _that.pop_type = 0
+            //         _that.edit_son = -1
+            //         alert(JSON.parse(data).msg)
+            //     } else {
+            //         console.log(111111)
+            //     }
+            // }, function(error) {
+            //     console.log(error);
+            //     alert("网络出现一点问题，请稍后再试")
+            // })
         },
         //编辑地址
         address_edit() {
-            console.log("sure")
             let _that = this
-            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', this.add_sons.username, function(data) {
+
+            if (_that.add_sons.address.indexOf("0x") !== 0 && _that.add_sons.address.length !== 42) {
+                alert('请输入正确钱包地址')
+                _that.add_sons.address = ''
+                return
+            }
+            _that.pop_type = 3
+            // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', this.add_sons, function(data) {
+            //     _that.get_sonlist()
+            // }, function(error) {
+            //     console.log(error);
+            //     alert("编辑失败，请稍后再试")
+            // })
+        },
+        get_edit() {
+            let _that = this
+            this.pop_type = 0
+            console.log(_that.add_sons.address)
+            this.add_sons.subusername = _that.sonset_list[this.item_index].name
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/addressForAccountSub', this.add_sons, function(data) {
+                console.log(data)
+                console.log(_that)
+                 _that.edit_son = -1
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
                 alert("编辑失败，请稍后再试")
             })
-        },
-        get_edit() {
-            this.pop_type = 0
         },
         //创建子账户
         createdson() {
@@ -265,6 +287,7 @@ export default {
             console.log(JSON.stringify(this.add_sons))
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
                 console.log(data)
+                this.add_sons.subusername = ''
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
@@ -376,6 +399,7 @@ export default {
 
 .sonset_list6 {
     flex: 1;
+    cursor: pointer;
 }
 
 .sonset_list5_cancel {

@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="nprecord" v-if="!haverecord">
-                        {{$t("m.wallet.key39")}}11
+                        {{$t("m.wallet.key39")}}
                     </div>
                 </div>
             </div>
@@ -214,9 +214,14 @@ export default {
                 else if (!_that.recordtype) {
                     // 上面的index、nickName、name是tableData里对象的属性
                     console.log(_that.profit_data.subUserPayListInfo.array, "33444444")
-                    filterVal = ['paytime','paytime', 'payMoney',  'toAddress', 'hash'];
+                    filterVal = ['paytime', 'paytime', 'payMoney', 'toAddress', 'hash'];
                     console.log(list, '999999')
                     list = _that.profit_data.subUserPayListInfo.array
+                    for (var i = 0; i < list.length; i++) {
+                        list[i].paytime = _that.Formatdate(list[i].paytime, 'yyyy-MM-dd')
+                        list[i].paytime2 = _that.Formatdate(Number(list[i].paytime) - 86400, 'yyyy-MM-dd')
+                        list[i].payMoney = _that.format(list[i].payMoney, 8) + list[i].payType == 2 ? '（ERC20）' : ''
+                    }
                     // _that.getValueByKey(_that.profit_data.subUserPayListInfo.array[0], filterVal, list)
                     console.log(list, 'list15555555', filterVal)
                 }
@@ -321,7 +326,7 @@ export default {
                 }
                 console.log(_that.profit_data.subUserPayListInfo.array, "profit1222222221")
             }, function(error) {
-                 alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试")
             })
         },
         //时间选择导出类型
@@ -384,7 +389,7 @@ export default {
 
                     _that.tableData = JSON.parse(data).allEarningsInfo
                 }, function(error) {
-                     alert("网络出现一点点问题，请稍后再试")
+                    alert("网络出现一点点问题，请稍后再试")
                 })
             }
             if (!_that.recordtype) {
@@ -422,7 +427,7 @@ export default {
                     console.log(data, "时间选择导出类型1113333")
                     _that.tableData = JSON.parse(data).allEarningsInfo
                 }, function(error) {
-                     alert("网络出现一点点问题，请稍后再试")
+                    alert("网络出现一点点问题，请稍后再试")
                 })
             }
         },
