@@ -53,7 +53,8 @@ const en = {
       key29: "Common problem",
       key30: "Personal Center",
       key31: "Account number",
-      key32: "Subuser settings"
+      key32: "Subuser settings",
+        key33:"Current login",
     },
     home: {
       key1: "Log in",
@@ -113,7 +114,7 @@ const en = {
       key2: "Before you configure the miner, you must have a sub-account for the worker, and up to 10 sub-accounts can be set under a mailbox account.",
       key3: "To add new sub-accounts ",
       key4: "When the sub-account is created, you can link the miner to the mine.",
-      key5: "Enjoy the benefits. Configuration is complete, everything is ready. After a while, the mine will be automatically added to the mine website."
+      key5: "Enjoy the benefits. Configuration is complete, everything is ready. After a while, the miner will automatically be added to the mine site."
     },
     myprofit: {
       key1: "Earnings Today",

@@ -26,13 +26,16 @@
             </div>
             <div class="add_con_c">
                 <span>{{$t("m.sonset.key3")}}</span>
-                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.usersub">
+                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.subusername" @keyup.enter="createdson()">
                 <div class="inp_label">{{$t("m.sonset.key9")}}</div>
             </div>
             <div class="add_son_b">
                 <div class="btn btn_cancel" @click="remove()">{{$t("m.sonset.key15")}}</div>
                 <div class="btn btn_click" @click="createdson()">{{$t("m.wallet.key19")}}</div>
             </div>
+        </div>
+        <div class="tips">
+            
         </div>
     </div>
 </template>
@@ -42,10 +45,12 @@ export default {
         return {
             pop_type: 0,
             addson: true,
-            sonset_inp_0:this.$t("m.sonset.key17"),
+            sonset_inp_0: this.$t("m.sonset.key17"),
             add_sons: {
-                usersub: '',
-                token:this.getCookie('token')
+                username: localStorage.getItem('username'),
+                subusername: '',
+                token: localStorage.getItem('token'),
+                address: ''
             },
             activities: [{
                 content: this.$t("m.noson.key2"),
@@ -59,27 +64,45 @@ export default {
                 timestamp: '',
             },
             ],
+            timer: ''
         }
     },
+    created() {
+
+        this.$nextTick(() => {
+            this.timer = setTimeout(function() {
+                alert("暂无子账户，请先创建子账户")
+            }, 0);
+        })
+    },
+    beforeDestroy() {
+        this.timer = null
+    },
     methods: {
-        add_son(){
-            this.pop_type=1
+        add_son() {
+            this.pop_type = 1
         },
         createdson() {
-            console.log(this.add_sons)
             let _that = this
-            if (!this.verifyUsername(this.add_sons.usersub)) {
-                this.add_sons.usersub = ''
+            console.log(this.add_sons, "ssssssssssss111")
+            if (!this.verifyUsername(this.add_sons.subusername)) {
+                this.add_sons.subusername = ''
                 return alert(this.$t("m.sonset.key9"))
             }
             this.addson = false
+            this.add_sons.username = localStorage.getItem('username')
             console.log(JSON.stringify(this.add_sons))
-            this.$ajax('post', this.GLOBAL.baseUrl+'v2/createAccountSub', this.add_sons, function(data) {
-                 if(data.msg=="创建子账户成功"){
-                     alert(data.msg)
-                     _that.$router.go(0)
-                 }
-             
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
+                console.log(data)
+                if (JSON.parse(data).code !== 200) {
+                    alert(JSON.parse(data).msg)
+                    console.log(JSON.parse(data))
+                    _that.add_sons.subusername = ''
+                    return
+                }
+
+                _that.add_sons.subusername = ''
+                _that.$router.go(-1)
             }, function(error) {
                 console.log(error);
             })
@@ -87,6 +110,7 @@ export default {
         },
         remove() {
             this.pop_type = 0
+            this.add_sons.subusername = ''
         },
     }
 }
@@ -96,9 +120,11 @@ export default {
     width: 6rem;
     margin: 0 auto;
 }
-.color1{
-color: #2e73e8;
+
+.color1 {
+    color: #2e73e8;
 }
+
 .myltct {
     margin-top: 0.5rem;
     margin-bottom: 1rem;
@@ -205,6 +231,7 @@ color: #2e73e8;
 .btn_click {
     background-color: rgba(51, 51, 255, 1);
     color: #fff;
+    cursor: pointer;
 }
 
 .btn_click:hover {

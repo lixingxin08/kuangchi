@@ -5,10 +5,12 @@ let home = ''
 
 const mobile_home = resolve => require(['@/components/mobile_home'], resolve);
 const pc_home = resolve => require(['@/components/pc_home'], resolve)
+const homeitem = resolve => require(['@/components/homeitem'], resolve)
 const myprofit = resolve => require(['@/components/myprofit'], resolve);
+const nothing = resolve => require(['@/components/nothing'], resolve);
 const myltc = resolve => require(['@/components/myltc'], resolve);
-const sonset = resolve => require(['@/components/son_set'], resolve);
-const no_son = resolve => require(['@/components/no_son'], resolve);
+const sublist = resolve => require(['@/components/son_set'], resolve);
+const unsub = resolve => require(['@/components/no_son'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
 // import register from '@/components/register'
@@ -50,10 +52,16 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+        { path: '/', redirect: '/home' },
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: home
+    },
+        {
+      path: '/homeitem',
+      name: 'homeitem',
+      component: homeitem
     },
     // {
     //   path: '/miner',
@@ -72,9 +80,9 @@ export default new Router({
       }
     },
     {
-      path: '/no_son',
-      name: 'no_son',
-      component:no_son,
+      path: '/unsub',
+      name: 'unsub',
+      component: unsub,
       meta: {
         requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       }
@@ -88,9 +96,9 @@ export default new Router({
       }
     },
     {
-      path: '/sonset',
-      name: 'sonset',
-      component: sonset,
+      path: '/sublist',
+      name: 'sublist',
+      component: sublist,
       meta: {
         requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
       }
@@ -107,6 +115,13 @@ export default new Router({
       path: '/download',
       name: 'download',
       component: download,
+      meta: {
+      }
+    },
+    {
+      path: '/nothing',
+      name: 'nothing',
+      component: nothing,
       meta: {
       }
     },

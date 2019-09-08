@@ -42,6 +42,13 @@ export default {
         this.isRouterAliveTwo = true;
       })
     },
+  },
+  beforeDestroy() {
+    // localStorage.removeItem('change')
+    // localStorage.removeItem('username')
+    // localStorage.removeItem('subusername')
+    // localStorage.removeItem('token')
+    // localStorage.removeItem('subnameList')
   }
 }
 </script>
@@ -70,6 +77,7 @@ a li {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  min-width: 810px;
   /*margin-top: 60px;*/
 }
 
@@ -96,6 +104,12 @@ input::-webkit-inner-spin-button {
   color: #999999;
 }
 
+.el-timeline-item__tail{
+  top:0.1rem !important;
+}
+.el-timeline-item__node--normal{
+  top: 0.1rem!important;
+}
 
 /* 火狐 */
 

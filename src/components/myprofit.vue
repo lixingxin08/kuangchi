@@ -59,7 +59,7 @@
                             <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserEarningsListInfo.array" :key="index">
                                 <li class="record_main_li">{{Formatdate(profit_data.subUserEarningsListInfo.array[index].date,'yyyy-MM-dd')}}</li>
                                 <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].earningsMoney,8)}}</li>
-                                <li class="record_main_li">{{format(profit_data.subUserEarningsListInfo.array[index].dayHr,2)}}</li>
+                                <li class="record_main_li">{{changpow(profit_data.subUserEarningsListInfo.array[index].dayHr,2)}}H/s</li>
                                 <li class="record_main_li">{{profit_data.subUserEarningsListInfo.array[index].rewardType==2?'挖块':'pplns'}}</li>
                                 <li class="record_main_li" :class="profit_data.subUserEarningsListInfo.array[index].status>0?'color_3':'color_4'">{{profit_data.subUserEarningsListInfo.array[index].status>0?'已支付':'未支付'}}</li>
                             </ul>
@@ -71,7 +71,7 @@
                             </ul>
 
                             <ul class="flex_b record_main_item" v-for="(item,index) in profit_data.subUserPayListInfo.array" :key="index">
-                                <li class="record_main_li">{{Formatdate(profit_data.subUserPayListInfo.array[index].paytime,'yyyy-MM-dd')}}</li>
+                                <li class="record_main_li">{{timestampToTime3(profit_data.subUserPayListInfo.array[index].paytime)}}</li>
                                 <li class="record_main_li">{{Formatdate(Number(profit_data.subUserPayListInfo.array[index].paytime-86400),'yyyy-MM-dd')}}</li>
                                 <li class="record_main_li">{{format(profit_data.subUserPayListInfo.array[index].payMoney,8)}}{{profit_data.subUserPayListInfo.array[index].payType==2?'（ERC20）':''}}</li>
                                 <li class="record_main_li">{{filterFun(profit_data.subUserPayListInfo.array[index].toAddress)}}</li>
@@ -166,20 +166,23 @@ export default {
                     totalPage: 1
                 }
             },
+
             profit_topdata: '',
             profit_top: [this.$t("m.myprofit.key1"), this.$t("m.myprofit.key2"), this.$t("m.myprofit.key3"), this.$t("m.myprofit.key4")],
             derive_item: [this.$t("m.myprofit.key17"), this.$t("m.myprofit.key21"), this.$t("m.myprofit.key22"), this.$t("m.myprofit.key17")],
             derive_top: this.$t("m.myprofit.key1"),
             tableData: '',
             noson_type: false,
+            list: []
         }
     },
     created() {
-        if (localStorage.getItem('subnameList') < 1) { this.noson_type = true }
-        this.change_record(true)
-        this.getprofitdata()
-        this.timeprofitdata(3)
-        console.log(this.profit_data)
+        if (localStorage.getItem('subnameList') == null) { this.$router.push({ name: 'unsub' }) }
+        else {
+            this.change_record(true)
+            this.getprofitdata()
+            this.timeprofitdata(3)
+        }
     },
     methods: {
         change_record(val) {
@@ -195,40 +198,6 @@ export default {
         },
         handleSizeChange() { },
         handleCurrentChange() { },
-        //导出excel
-        exportExcel() {
-            let _that = this
-            require.ensure([], () => {
-                const { export_json_to_excel } = require('../vendor/Export2Excel');
-                const tHeader = this.recorddata;
-                let filterVal = []
-                let list = []
-                let keylist = []
-                //导出收益页
-                console.log(tHeader, filterVal, list, '8888888888')
-                if (_that.recordtype) {
-                    filterVal = ['date', 'earningsMoney', 'dayHr', 'rewardType', 'status'];
-                    list = _that.profit_data.subUserEarningsListInfo.array
-                }
-                //导出支付页
-                else if (!_that.recordtype) {
-                    // 上面的index、nickName、name是tableData里对象的属性
-                    console.log(_that.profit_data.subUserPayListInfo.array, "33444444")
-                    filterVal = ['paytime', 'paytime', 'payMoney', 'toAddress', 'hash'];
-                    console.log(list, '999999')
-                    list = _that.profit_data.subUserPayListInfo.array
-                    for (var i = 0; i < list.length; i++) {
-                        list[i].paytime = _that.Formatdate(list[i].paytime, 'yyyy-MM-dd')
-                        list[i].paytime2 = _that.Formatdate(Number(list[i].paytime) - 86400, 'yyyy-MM-dd')
-                        list[i].payMoney = _that.format(list[i].payMoney, 8) + list[i].payType == 2 ? '（ERC20）' : ''
-                    }
-                    // _that.getValueByKey(_that.profit_data.subUserPayListInfo.array[0], filterVal, list)
-                    console.log(list, 'list15555555', filterVal)
-                }
-                const data = _that.formatJson(filterVal, list);
-                export_json_to_excel(tHeader, data, 'this_excel');
-            })
-        },
         //我的收益页
         getprofitdata() {
             let _that = this
@@ -329,6 +298,47 @@ export default {
                 alert("网络出现一点点问题，请稍后再试")
             })
         },
+        //导出excel
+        exportExcel() {
+            let _that = this
+            require.ensure([], () => {
+                const { export_json_to_excel } = require('../vendor/Export2Excel');
+                const tHeader = this.recorddata;
+                let filterVal = []
+                let list = []
+                let keylist = []
+                //导出收益页
+                console.log(tHeader, filterVal, list, '8888888888')
+                if (_that.recordtype) {
+                    filterVal = ['date', 'earningsMoney', 'dayHr', 'rewardType', 'status'];
+                     list = JSON.parse(JSON.stringify(_that.profit_data.subUserEarningsListInfo.array))
+                    for (var i = 0; i < list.length; i++) {
+                       list[i].rewardType = list[i].rewardType == 2 ? '挖块' : 'pplns'
+                       list[i].status = list[i].status > 0 ? '已支付' : '未支付'
+                         list[i].dayHr = _that.changpow(list[i].dayHr,2)+'H/s'
+                    }
+                }
+                //导出支付页
+                else if (!_that.recordtype) {
+                    // 上面的index、nickName、name是tableData里对象的属性
+                    console.log(_that.profit_data.subUserPayListInfo.array, "33444444")
+                    filterVal = ['paytime', 'paytime', 'payMoney', 'toAddress', 'hash'];
+                    this.$set(_that.list, 0, _that.profit_data.subUserPayListInfo.array)
+                    console.log(_that.list, "lisst12222222222")
+                    list = JSON.parse(JSON.stringify(_that.profit_data.subUserPayListInfo.array))
+                    console.log(list)
+                    for (var i = 0; i < list.length; i++) {
+                        list[i].paytime = _that.timestampToTime3(list[i].paytime)
+                        // list[i].payMoney = _that.format(list[i].payMoney,8) + list[i].payType == 2 ? '（ERC20）' : ''
+                    }
+                    // _that.getValueByKey(_that.profit_data.subUserPayListInfo.array[0], filterVal, list)
+                    console.log(list, 'list15555555', filterVal)
+                }
+                const data = _that.formatJson(filterVal, list);
+                export_json_to_excel(tHeader, data, 'this_excel');
+            })
+        },
+
         //时间选择导出类型
         timeprofitdata(index = 3) {
             let _that = this
@@ -458,7 +468,9 @@ export default {
 .color_4 {
     color: green
 }
-
+.font_b{
+    font-size: 0.24rem
+}
 .mylcted_top_main {
     width: 1.4rem;
     padding: 0.1rem;
@@ -570,6 +582,7 @@ export default {
 
 .mymill_bottom {
     margin-top: 0.22rem;
+    min-width: 810px;
 }
 
 .record_r_item:hover {

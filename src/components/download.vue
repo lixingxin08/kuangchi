@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-
     <div class="center-box">
       <div class="main-box__bg-1">
         <div class="main-box-left-1">
@@ -10,19 +9,19 @@
             </span>
           </div>
           <ul class="main-box-left-ul">
-            <li v-if="downloadtype==1"></li>
-            <li v-if="downloadtype==2" :class="this.switch?'systemActive':''">
+            <li v-show="downloadtype[0]==1"></li>
+            <li v-show="downloadtype[0]==2" :class="this.switch?'systemActive':''">
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key27")}}</li>
-            <li v-if="downloadtype==3" :class="this.switch?'systemActive':''">
+            <li v-show="downloadtype[0]==3" :class="this.switch?'systemActive':''">
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key28")}}</li>
-            <li v-if="downloadtype==4" :class="this.switch?'systemActive':''">
+            <li v-show="downloadtype[0]==4" :class="this.switch?'systemActive':''">
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key38")}}</li>
           </ul>
         </div>
 
-        <div class="main-box-right1" v-if="this.downloadtype!==3">
+        <div class="main-box-right1" v-show="this.downloadtype[0]!==3">
           <!--帮助中心-->
-          <div class="help_main" v-if="this.downloadtype==1">
+          <div class="help_main" v-if="this.downloadtype[0]==1">
             <ul class="flex_a_c help_box" v-for="(item,index) in helplist" :key="index" @click="switchBox(index+1)">
               <li class="help_boxli1"><img :src="imgsrc[index]" alt=""></li>
               <li class="flex_a_c help_boxli2">
@@ -33,7 +32,7 @@
           </div>
 
           <!--工具下载-->
-          <div class="main-box__content" v-if="this.downloadtype==2">
+          <div class="main-box__content" v-if="this.downloadtype[0]==2">
             <div class="flex_b Download_item">
               <div class="flex_b header-text">
                 <img src="../assets/img/down_logo1.png" alt="">
@@ -43,11 +42,11 @@
                 </div>
               </div>
               <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=" target="_blank">{{$t("m.download.key30")}}</a>
+                <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=">{{$t("m.download.key30")}}</a>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="_blank">{{$t("m.download.key32")}}</a>
+                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
             </div>
@@ -60,11 +59,11 @@
                 </div>
               </div>
               <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=" target="_blank">{{$t("m.download.key34")}}</a>
+                <a href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=">{{$t("m.download.key34")}}</a>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="_blank" class="tool-btn">{{$t("m.download.key32")}}</a>
+                  <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="" class="tool-btn">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
             </div>
@@ -77,18 +76,18 @@
                 </div>
               </div>
               <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=" target="_blank">{{$t("m.download.key36")}}</a>
+                <a href="http://file.kirinpool.com/download/Test%20machine%20configuration.pdf?attname=">{{$t("m.download.key36")}}</a>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="_blank">{{$t("m.download.key32")}}</a>
+                  <a href="http://file.kirinpool.com/download/GpuMiner.zip?attname=" target="">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <!--常见问题-->
-        <div class="main-box__content" v-if="this.downloadtype==3">
+        <div class="main-box__content" v-show="this.downloadtype[0]==3">
           <el-collapse class="problem_main">
             <el-collapse-item :title="problem_tile[0]" name="1" class="problem_item">
               <p>{{$t("m.download.key2")}}</p>
@@ -104,11 +103,11 @@
               <p>{{$t("m.download.key10")}}</p>
               <p>{{$t("m.download.key11")}}
                 <span>{{$t("m.download.key12")}}</span>
-                <a target="_blank" href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/FINDMINER</a>
+                <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname="> http://file.kirinpool.com/download/FINDMINER</a>
               </p>
               <p>{{$t("m.download.key13")}}
                 <span>{{$t("m.download.key14")}}</span>
-                <a target="_blank" href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=">http://file.kirinpool.com/download/KIRINMINER</a>
+                <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname="> http://file.kirinpool.com/download/KIRINMINER</a>
               </p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[3]" name="4" class="problem_item">
@@ -132,8 +131,9 @@
             </el-collapse-item>
           </el-collapse>
         </div>
-        <div class="main-box__content" v-if="this.downloadtype==4">
-
+        <div class="main-box__content" v-show="this.downloadtype[0]==4">
+          <div class="gonggao">
+          </div>
         </div>
       </div>
       <!--<div class="center-bottom-box">-->
@@ -158,7 +158,7 @@ export default {
   data() {
     return {
       switch: false,
-      downloadtype: 1,
+      downloadtype: [1],
       imgsrc: [img1, img2, img3],
       helplist: [
         { top: "ICON", center: this.$t("m.header.key28"), bottom: this.$t("m.download.key40") },
@@ -176,23 +176,46 @@ export default {
   },
   mounted() {
   },
+  created() {
+    console.log(localStorage.getItem('to_down2'))
+    if (localStorage.getItem('to_down2')) {
+      this.$set(this.downloadtype, 0, localStorage.getItem('to_down2'))
+      localStorage.removeItem('to_down2')
+    }
+  },
   methods: {
     switchBox(index) {
+      console.log(index)
       if (index == 0) {
         this.switch = false
-        this.downloadtype = 1
+        // this.downloadtype[0] = 1
+        this.$set(this.downloadtype,0,1)
       } else if (index == 1) {
-        this.downloadtype = 2
+        this.downloadtype[0] = 2
         this.switch = true
       }
       else if (index == 2) {
         this.switch = true
-        this.downloadtype = 3
+        this.downloadtype[0] = 3
       } else if (index == 3) {
         this.switch = true
-        this.downloadtype = 4
+        this.downloadtype[0] = 4
+      }
+      if (localStorage.getItem('to_down2')) {
+        this.$set(this.downloadtype, 0, localStorage.getItem('to_down2'))
+        localStorage.removeItem('to_down2')
+        return
       }
     },
+
+  },
+  watch: {
+    '$route'(to, from) {
+      if (to.query.t !== from.query.t) {
+        console.log(to.query)     // 在此调用函数
+        this.switchBox(localStorage.getItem('to_down2'))
+      }
+    }
   }
 }
 </script>
@@ -252,8 +275,15 @@ li {
   flex-direction: column;
 }
 
+.gonggao {
+  height: 3rem;
+}
 
 .problem_main {}
+
+
+
+
 
 
 
@@ -404,12 +434,16 @@ li {
 
 
 
+
+
+
+
 /*卡片*/
 
 .center-box {
   margin: 0 auto;
-  width: 1200px;
-  min-width: 1200px;
+  width: 6rem;
+  min-width: 810px;
   min-height: 100px;
   display: flex;
   justify-content: space-between;
@@ -436,6 +470,10 @@ li {
   font-size: 14px;
   padding-left: 7px;
 }
+
+
+
+
 
 
 
@@ -508,6 +546,10 @@ li {
 
 
 
+
+
+
+
 /*下载挖矿工具方法*/
 
 .addMiner-box {
@@ -541,7 +583,6 @@ li {
 
 .main-box-right1 {
   width: 100%;
-  height: 2.3rem;
   box-sizing: border-box;
   border: 2px solid rgba(242, 242, 242, 1);
   border-radius: 4px;

@@ -5,12 +5,14 @@
     </div>
     <div class="home_tips" v-if="hometype==1">
       <div class="center-box">
-        <div class="tips_l"> <img src="../assets/img/u68.png" alt="">
-          <span class="tips_main">{{$t("m.home.key34")}}</span>
-        </div>
-        <div class="tips_r">
-          {{$t("m.home.key33")}}>
-        </div>
+        <router-link :to="{name:'download',query:{t:6}}">
+          <div class="tips_l" @click="to_down2(4)"> <img src="../assets/img/u68.png" alt="">
+            <span class="tips_main">{{$t("m.home.key34")}}</span>
+          </div>
+          <div class="tips_r" @click="to_down2(4)">
+            {{$t("m.home.key33")}}>
+          </div>
+        </router-link>
       </div>
     </div>
     <!--搜索-->
@@ -24,7 +26,7 @@
           </div>
           <div>
             <div class="go_search">
-              <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp">
+              <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()">
               <span class="el-icon-search search" @click="tosearch()"></span>
             </div>
           </div>
@@ -46,13 +48,16 @@
             <div class="block_c_main" :class="hometype!==3?'':'flex_f'">
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index" :class="hometype!==3?'':'wallet_top_c'">
                 <span>{{item}}</span>
-                <span @click="item_search(user_detail_data[1][index])">{{filterFun(user_detail_data[1][index])}}</span>
+                <span v-if="hometype!==4">{{filterFun(user_detail_data[1][index])}}</span>
+                <span v-if="hometype==4&&index==0" @click="item_search(user_detail_data[1][0])">{{user_detail_data[1][index]}}</span>
+                <span v-if="hometype==4&&index!==0">{{user_detail_data[1][index]}}</span>
               </div>
             </div>
             <div class="block_c_main" v-if="hometype!==3">
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[2]" :key="index">
                 <span>{{item}}</span>
-                <span @click="item_search(user_detail_data[2][index])">{{filterFun(user_detail_data[2][index])}}</span>
+                <span v-if="hometype!==4">{{filterFun(user_detail_data[2][index])}}</span>
+                <span v-if="hometype==4" @click="item_search(user_detail_data[2][index])">{{user_detail_data[2][index]}}</span>
               </div>
             </div>
           </div>
@@ -108,13 +113,13 @@
           <!--搜索钱包地址 交易数-->
           <div v-if="hometype==3&&wallet_changes==true">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-              <li class="li0">{{comdify(item.blockNumber)}}</li>
+              <!-- <li class="li0" >{{comdify(item.blockNumber)}}</li>   -->
               <li class="li1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
               <li class="li2" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
               <li class="li3" @click="item_search(item.toAddress)">{{item.toAddress}}</li>
               <li class="li4">{{((item.gasPrice / Math.pow(10, 18)) * item.gas).toFixed(8)}}</li>
-              <li class="li5">{{comdify(item.value).toFixed(8)}}</li>
-              <li class="li6" v-if="!wallet_changes">{{comdify(item.value).toFixed(8)}}222</li>
+              <li class="li5">{{comdify(item.value / Math.pow(10, 18).toFixed(8))}}</li>
+              <li class="li6" v-if="!wallet_changes">{{comdify(item.value / Math.pow(10, 18).toFixed(8))}}</li>
             </ul>
           </div>
           <!--搜索钱包地址 挖块统计-->
@@ -135,13 +140,15 @@
         </div>
         <!--分页-->
         <div class="page-box">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize">
+          <div class="nomore nomorecolor" v-if="no_list">
+            {{$t("m.home.key30")}}
+          </div>
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize[0]">
           </el-pagination>
+
         </div>
       </div>
-      <div class="nomore nomorecolor" v-if="hometype==4">
-        {{$t("m.home.key30")}}
-      </div>
+
     </div>
   </div>
   </div>
@@ -159,7 +166,8 @@ export default {
       baseHerf: this.GLOBAL.baseHerf,
       blockList: "",
       username: "",
-      totalSize: 0,
+      totalSize: [0],
+      no_list: false,
       target_data: '',
       rate: "",
       placehoder: this.$t("m.home.key8"),
@@ -173,27 +181,44 @@ export default {
       page_bg: false,
       hometype: 1,
       homedata: { pagination: [] },
-      search_data: '',
+      search_data:"",
       homedatalist: {
         block: '',
         transcationArray: ''
       },
       paginationdata: '',
-      datas: [],
+      datas: {
+        number: 0,
+        timestamp: 0,
+        difficulty: 0,
+        transactionNumber: 0,
+        reward: 0,
+        fromAddress: '',
+        hash: '',
+        toAddress: '',
+        gas: 0,
+        gasPrice: 0
+      },
       wallet_changes: false,
     }
   },
   created() {
     if (getCookie("isLogin")) {
-      this.getAccountMill();
+      // this.getAccountMill();
     }
   },
   mounted() {
+    if (localStorage.getItem('nosearch') !== '') {
+      this.search_data = localStorage.getItem('nosearch')
+      localStorage.setItem('nosearch', '')
+    }
     this.sethomedata()
     this.tosearch()
+    if (this.hometype == 3) {
+      this.wallet_change()
+    }
   },
   methods: {
-
     wallet_change(val) {
       this.wallet_changes = val,
         this.datas = []
@@ -201,19 +226,29 @@ export default {
       if (this.wallet_changes) {
         console.log("block")
         this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
-        for (let i = 0; i < this.homedatalist.transcationArray.length; i++) {
-          this.datas[i] = JSON.parse(this.homedatalist.transcationArray[i])
+        if (this.homedatalist.transcationArray.length == 0) {
+          this.no_list = true
+        } else {
+          this.no_list = false
         }
+        for (let i = 0; i < this.homedatalist.transcationArray.length; i++) {
+          this.datas[i] = this.homedatalist.transcationArray[i]
+        }
+        console.log(this.datas, "jiaoyishu")
       } else if (!this.wallet_changes) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
-
+        if (this.homedatalist.block.length == 0) {
+          this.no_list = true
+        } else {
+          this.no_list = false
+        }
         for (let i = 0; i < this.homedatalist.block.length; i++) {
           this.datas[i] = JSON.parse(this.homedatalist.block[i])
         }
       }
     },
     sethomedata() {
-      console.log(this.GLOBAL.baseUrl,2124)
+      console.log(this.GLOBAL.baseUrl, 2124)
       if (this.hometype == 1) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
       } else if (this.hometype == 4) {
@@ -229,7 +264,7 @@ export default {
       if (this.hometype == 1) {
         // console.log(11)
         val = Number(val)
-        this.search_data = val+''
+        this.search_data = val + ''
         this.tosearch()
       } else if (this.hometype == 2) {
         console.log(22)
@@ -247,63 +282,73 @@ export default {
     },
     /**搜索**/
     tosearch(val) {
+      if (this.search_data !== '') {
+        localStorage.setItem('search_data', this.search_data)
+        this.$router.push({ name: 'homeitem' })
+        return
+      }
+      
       let _that = this;
-      if (typeof (this.search_data) !== 'number') {
-      this.search_data = this.search_data.replace(/\s/g, "")
+      this.datas = []
+      if (typeof (this.search_data) !== 'number'&&this.search_data!=='') {
+        this.search_data = this.search_data.replace(/\s/g, "")
         this.search_data = this.search_data.toLocaleLowerCase()
       }
       let regPos = /^\d+(\.\d+)?$/; //非负浮点数
       let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
       let datalist = []
-      if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length >= 64) {
+
+      if (this.search_data.indexOf("0x") == 0 && this.search_data.length >= 64) {
         //搜索交易哈希
+        localStorage.setItem('search_data', this.search_data)
+        this.$router.push({ name: 'homeitem' })
         _that.hometype = 4
         console.log(44444444)
-        let blockInfo =
-          {
-            "hash": "0xf1656e65801aedc71c7df2b0fa0a8b7b1961a46b0a2082b0e9a5e35a23653b89",
-            "nonce": 7554,
-            "blockHash": "0x43e00d2933ea4dff07d14f77b956108a065ef828abc1d759803fb17dbc5fb920",
-            "blockNumber": 302475,
-            "transactionIndex": 0,
-            "fromAddress": "0xf08a5446dbefa1e52aa1aa50c7b7de1781133d3f",
-            "toAddress": "0xfc324806ab31d5fd9d5459046b58d520deb4b4de",
-            "value": "0",
-            "gasPrice": "2000000000",
-            "gas": 155545,
-          }
-        // _that.user_detail_data[0] = [_that.comdify(blockInfo.blockNumber), blockInfo.hash]
-        // _that.user_detail_data[1] = [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), blockInfo.value]
-        // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress]
+
         this.block_top_data = [[this.$t("m.home.key36")],
         [this.$t("m.home.key37"), this.$t("m.home.key24"), this.$t("m.home.key25")],
         [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
-        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchBlockInfo', this.blockListObj, function(data) {
+        console.log(this.search_data)
+        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchTxInfo', { param: this.search_data }, function(data) {
+          if (JSON.parse(data).code !== 200) {
+            _that.$router.push({ name: 'nothing' })
+            return
+          }
+
           let blockInfo = JSON.parse(data).TxArray[0]
-          _that.user_detail_data[0] = [blockInfo.number, blockInfo.hash]
-          _that.user_detail_data[1] = [blockInfo.hash,(blockInfo.gasPrice/Math.pow(10,18))*blockInfo.gas, blockInfo.fromAddress]
-          _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.transactionNumber]
-          console.log(JSON.parse(data))
-          console.log(_that.user_detail_data)
+          _that.$set(_that.user_detail_data, 0, [blockInfo.blockNumber])
+          _that.$set(_that.user_detail_data, 1, [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), _that.comdify((blockInfo.value / Math.pow(10, 18)).toFixed(8))])
+          _that.$set(_that.user_detail_data, 2, [blockInfo.fromAddress, blockInfo.toAddress, ''])
+          // _that.user_detail_data[0] = [blockInfo.blockNumber]
+          // _that.user_detail_data[1] = [ blockInfo.hash, (blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas, _that.comdify(blockInfo.value / Math.pow(10, 18).toFixed(8))]
+          // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress,'']
+
+
         }, function(error) {
           console.log(error)
         })
-      } else if (_that.search_data.indexOf("0x") == 0 && _that.search_data.length == 42) {
+      } else if (this.search_data.indexOf("0x") == 0 && this.search_data.length == 42) {
         //搜索钱包地址
+        localStorage.setItem('search_data', this.search_data)
+        this.$router.push({ name: 'homeitem' })
+        console.log(3333333)
         _that.wallet_changes = false;
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
         this.block_top_data = [[this.$t("m.home.key28")],
         [this.$t("m.setting.key1"), this.$t("m.home.key26")],]
-        console.log(3333333)
         _that.blockListObj.address = _that.search_data
         _that.hometype = 3;
         _that.datas = []
-        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchMinerInfo', this.blockListObj, function(data) {
+        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchMinerInfo', this.blockListObj, function(data) {
+          if (JSON.parse(data).code !== 200) {
+            _that.$router.push({ name: 'nothing' })
+            return
+          }
           let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
           _that.user_detail_data[0] = [_that.search_data]
           _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
           _that.homedatalist = JSON.parse(data)
-          console.log(_that.homedatalist)
+          console.log(JSON.parse(_that.homedatalist.block[1]))
           //账户交易
           // if (JSON.parse(data).transcationArray.length>0) {
           //   console.log(1231)
@@ -316,19 +361,27 @@ export default {
           //挖块统计
           _that.datas = JSON.parse(data).block
           _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
-          _that.totalSize = _that.homedatalist.block.length||0
+          _that.$set(_that.totalSize, 0, _that.homedatalist.block.length || 0)
+
+          if (_that.homedatalist.block.length < 1) {
+            console.log(342121)
+            _that.no_list = true
+          } else {
+            _that.no_list = false
+          }
           for (let i = 0; i < _that.homedatalist.block.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist.block[i])
           }
-          console.log(_that.datas)
           // }
         }, function(error) {
           console.log(error)
         })
-      } else if (regPos.test(_that.search_data) || regNeg.test(_that.search_data)) {
+      } else if (regPos.test(this.search_data) || regNeg.test(this.search_data)) {
         //搜索块详情
+        localStorage.setItem('search_data', this.search_data)
+        this.$router.push({ name: 'homeitem' })
         _that.hometype = 2;
-             _that.search_data=Number(_that.search_data)
+        _that.search_data = Number(_that.search_data)
         _that.target_data = _that.search_data
         _that.blockListObj.param = this.search_data;
         this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
@@ -336,35 +389,61 @@ export default {
         [this.$t("m.myMill.key10"), this.$t("m.home.key18"), this.$t("m.home.key6"), this.$t("m.home.key35")],
         [this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key21")]]
         console.log(2222222)
-        this.$ajax('post', this.GLOBAL.baseUrl+'v2/searchBlockInfo', this.blockListObj, function(data) {
+        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchBlockInfo', this.blockListObj, function(data) {
+          console.log(data)
+          if (JSON.parse(data).code !== 200) {
+            _that.$router.push({ name: 'nothing' })
+            return
+          }
+
+
           let blockInfo = JSON.parse(data).blockInfo[0]
-          _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
-          _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size, _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward)]
-          _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
+          _that.$set(_that.user_detail_data, 0, [_that.comdify(blockInfo.number), blockInfo.hash])
+          _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + 'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward, 8)])
+          _that.$set(_that.user_detail_data, 2, [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner])
+
+          // _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
+          // _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size+'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)]
+          // _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
+          console.log(JSON.parse(data).TxArray.length)
+
           _that.datas = JSON.parse(data).TxArray
-          _that.totalSize = JSON.parse(data).TxArray.length
+          _that.$set(_that.totalSize, 0, JSON.parse(data).TxArray.length || 0)
+          if (JSON.parse(data).TxArray.length < 1) {
+            _that.no_list = true
+            console.log(_that.hometype, '342121')
+          } else {
+            _that.no_list = false
+          }
         }, function(error) {
           console.log(error)
         })
-      } else if (_that.search_data == '') {
+      } else if (this.search_data == '') {
         //首页
         _that.hometype = 1;
         console.log(1111111)
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
-        this.$ajax('get', this.GLOBAL.baseUrl+'v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
+        this.$ajax('get', this.GLOBAL.baseUrl + 'v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
           _that.homedatalist = JSON.parse(data).chainInfo
-          _that.totalSize = JSON.parse(data).chainCount
+          _that.$set(_that.totalSize, 0, JSON.parse(data).chainCount || 0)
+          if (JSON.parse(data).code !== 200) {
+            alert(JSON.parse(data).msg)
+          }
+          console.log(_that.homedatalist, "_that.homedatalistsss11111111")
           for (let i = 0; i < _that.homedatalist.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist[i])
-            if (_that.datas[i].reward.length < 6) {
-              _that.datas[i].reward = Number(_that.datas[i].reward).toFixed(9)
-            }
             _that.$set(_that.datas, i, _that.datas[i])
           }
         }, function(error) {
           console.log(error);
         })
       }
+      // else {
+      //   alert("请输入正确块高度，钱包地址，交易哈希")
+      //   _that.search_data = ''
+      //   _that.$router.push({ name: 'nothing' })
+      //   return
+      // }
     },
 
     //上一个或下一个块
@@ -373,29 +452,34 @@ export default {
       this.search_data = this.target_data + '';
       this.tosearch()
     },
-    //用户矿机信息
-    getAccountMill() {
-      var vueThis = this;
-      this.$axios({
-        method: "post",
-        url: this.baseUrl + "v1/wtcPool/minerAccountInfo",
-        data: { "username": getCookie("username"), "token": getCookie("token") },
-        withCredentials: false
-      }).then(function(res) {
-        if (res.data.code === 200) {
-          bus.$emit("payfee", res.data.accountInfo.payFee);
-        } else {
-          if (res.data.code === 402) {
-            alert(vueThis.$t("m.myMill.key13"))
-          } else if (res.data.code === 404) {
-            alert(vueThis.$t("m.myMill.key14"))
-          }
-        }
-      }).catch(function(err) {
-      })
+    to_down2(val) {
+      localStorage.removeItem('to_down2')
+      localStorage.setItem('to_down2', val)
     },
-    //获取汇率
+    //用户矿机信息
+    // getAccountMill() {
+    //   var vueThis = this;
+    //   this.$axios({
+    //     method: "post",
+    //     url: this.baseUrl + "v1/wtcPool/minerAccountInfo",
+    //     data: { "username": getCookie("username"), "token": getCookie("token") },
+    //     withCredentials: false
+    //   }).then(function(res) {
+    //     if (res.data.code === 200) {
+    //       bus.$emit("payfee", res.data.accountInfo.payFee);
+    //     } else {
+    //       if (res.data.code === 402) {
+    //         alert(vueThis.$t("m.myMill.key13"))
+    //       } else if (res.data.code === 404) {
+    //         alert(vueThis.$t("m.myMill.key14"))
+    //       }
+    //     }
+    //   }).catch(function(err) {
+    //   })
+    // },
+
     handleSizeChange(val) {
+      console.log(val)
       this.blockListObj.pageSize = val;
       // this.getWtcPoolBlockInfo();
       this.tosearch()
@@ -403,6 +487,7 @@ export default {
 
     handleCurrentChange(val) {
       this.blockListObj.page = val;
+      console.log(this.blockListObj, " this.blockListObj")
       // this.getWtcPoolBlockInfo();
       this.tosearch()
       this.page_bg = true
@@ -435,6 +520,25 @@ li {
 .color1 {
   color: #2e73e8;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -580,6 +684,7 @@ li {
   width: 1.5rem;
   font-size: 14px;
   border: none;
+  font-weight: normal;
   margin-left: 0.1rem;
 }
 
@@ -720,6 +825,25 @@ input:-ms-input-placeholder {
   margin-left: 0.03rem;
   margin-right: 0.29rem;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -931,6 +1055,25 @@ input:-ms-input-placeholder {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*成熟块*/
 
 .bottom-box-text {
@@ -1017,7 +1160,7 @@ input:-ms-input-placeholder {
   flex: 4;
   text-overflow: ellipsis;
   overflow: hidden;
-   cursor: pointer;
+  cursor: pointer;
 }
 
 .li3 {
@@ -1025,7 +1168,7 @@ input:-ms-input-placeholder {
   text-overflow: ellipsis;
   overflow: hidden;
   color: #2e73e8;
-   cursor: pointer;
+  cursor: pointer;
 }
 
 .li4 {
@@ -1128,6 +1271,25 @@ input:-ms-input-placeholder {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*分页*/
 
 .page-box {
@@ -1135,6 +1297,25 @@ input:-ms-input-placeholder {
   margin-top: 0.3rem;
   margin-bottom: 0.6rem;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1296,12 +1477,30 @@ input:-ms-input-placeholder {
 .nomore {
   font-size: 0.14rem;
   text-align: center;
-  margin-top: 0.6rem;
 }
 
 .nomorecolor {
   color: rgba(255, 102, 0, 0.698039215686274);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -23,10 +23,10 @@
             <ul class="sonset_main_item" v-for="(item,indexs) in sonset_list" :key="indexs">
                 <li class="sonset_list1">{{sonset_list[indexs].name}}</li>
                 <li class="sonset_list2">{{sonset_list[indexs].workerNumber}}</li>
-                <li class="sonset_list3">{{timestampToTime(sonset_list[indexs].createTime)}}</li>
+                <li class="sonset_list3">{{timestampToTime2(sonset_list[indexs].createTime)}}</li>
                 <li class="sonset_list4">
                     <span v-if="edit_son!==indexs">{{sonset_list[indexs].address}}</span>
-                    <input v-if="edit_son==indexs" type="text" :placeholder="sonset_inp" class="add_adress" v-model="add_sons.address">
+                    <input v-if="edit_son==indexs" type="text" :placeholder="sonset_inp" class="add_adress" v-model="add_sons.address" @keyup.enter="address_edit(indexs)">
                 </li>
                 <li class="sonset_list5">
                     <span class="color1" v-if="edit_son!==indexs" @click="edit_sons(indexs)">{{$t("m.sonset.key7")}}</span>
@@ -46,7 +46,7 @@
             </div>
             <div class="add_con_c">
                 <span>{{$t("m.sonset.key3")}}</span>
-                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.subusername">
+                <input type="text" class="add_inp" :placeholder="sonset_inp_0" v-model="add_sons.subusername" @keyup.enter="createdson()">
                 <div class="inp_label">{{$t("m.sonset.key9")}}</div>
             </div>
             <div class="add_son_b">
@@ -67,7 +67,7 @@
                 </div>
                 <div class="flex_c remove_son_c_item">
                     <span>{{$t("m.sonset.key12")}}</span>
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_params.code">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_params.code" @keyup.enter="delete_son()">
                     <span class="delete_tips">{{delete_tips}}</span>
                 </div>
             </div>
@@ -84,10 +84,10 @@
             </div>
             <div class="remove_son_c">
                 <div class="flex_c remove_son_c_item">
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="delete_params.paypassword">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_1" v-model="address_paramgs.paypassword">
                 </div>
                 <div class="flex_c remove_son_c_item">
-                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="delete_params.code">
+                    <input type="text" class="add_inp" :placeholder="sonset_inp_2" v-model="address_paramgs.code" @keyup.enter="get_edit()">
                 </div>
             </div>
             <div class="add_son_b">
@@ -133,6 +133,13 @@ export default {
                 code: "",
                 paypassword: "",
             },
+            address_paramgs: {
+                subusername: localStorage.getItem('subusername'),
+                username: localStorage.getItem('username'),
+                token: localStorage.getItem('token'),
+                code: "",
+                paypassword: "",
+            },
             delete_tips: '',
             testdata: {
                 "code": 200,
@@ -158,6 +165,7 @@ export default {
                     }
                 ]
             },
+            timer: null
         }
     },
     created() {
@@ -165,7 +173,10 @@ export default {
         this.add_sons.username = localStorage.getItem('subusername')
         this.setGoogleAuth = localStorage.getItem('setGoogleAuth')
         this.setPaymentCode = localStorage.getItem('setPaymentCode')
-
+        let _that = this
+        this.timer = setInterval(function() {
+            _that.get_sonlist()
+        }, 10000)
     },
     methods: {
         add_son() {
@@ -173,10 +184,19 @@ export default {
         },
         cancel_edit() {
             this.edit_son = null
+            this.add_sons.address = ''
         },
         remove() {
             this.pop_type = 0
             this.edit_son = null
+            this.add_sons.address = ''
+            this.add_sons.subusername = ''
+            this.subList_params.address = ''
+            this.delete_params.paypassword = ''
+            this.delete_params.code = ''
+            this.address_paramgs.paypassword = ''
+            this.address_paramgs.code = ''
+
         },
         //子账户管理页面
         get_sonlist() {
@@ -206,68 +226,72 @@ export default {
             this.delete_params.token = getCookie("token")
             console.log(this.delete_params)
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/deleteAccountSub', this.delete_params, function(data) {
+                console.log(data, 'this.delete_paramssss')
+                _that.delete_params.paypassword = ''
+                _that.delete_params.code = ''
+                if (JSON.parse(data).code !== 200) {
+                    alert("删除失败，请输入正确的资金密码与谷歌验证码")
+                    return
+                }
                 alert(JSON.parse(data).msg)
-                _that.get_sonlist()
+                _that.$router.go(0)
+
             }, function(error) {
                 console.log(error);
                 alert("删除失败")
             })
         },
         delete_item(indexs) {
-            let _that = this
             this.item_index = indexs
-            if (this.sonset_list[indexs].name == this.add_sons.username) {
-                this.item_index = -2
-                return
-            }
             this.pop_type = 2
-            console.log(this.item_index)
             // this.sonset_list.splice(indexs, 1)
         },
-        //编辑   判断是否有子账户
+        //编辑  
         edit_sons(indexs) {
             let _that = this
+            _that.add_sons.address = ''
             _that.edit_son = indexs
             this.item_index = indexs
-            // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', { username: this.sonset_list[indexs].name, token: localStorage.getItem('token') }, function(data) {
-            //     if (JSON.parse(data).date) {
-            //         _that.pop_type = 0
-            //         _that.edit_son = -1
-            //         alert(JSON.parse(data).msg)
-            //     } else {
-            //         console.log(111111)
-            //     }
-            // }, function(error) {
-            //     console.log(error);
-            //     alert("网络出现一点问题，请稍后再试")
-            // })
         },
         //编辑地址
         address_edit() {
             let _that = this
-
             if (_that.add_sons.address.indexOf("0x") !== 0 && _that.add_sons.address.length !== 42) {
                 alert('请输入正确钱包地址')
                 _that.add_sons.address = ''
                 return
             }
+            if (!this.verifyUsername2(this.add_sons.address)) {
+                this.add_sons.address = ''
+                return alert("请输入正确的钱包地址")
+            }
             _that.pop_type = 3
-            // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', this.add_sons, function(data) {
-            //     _that.get_sonlist()
-            // }, function(error) {
-            //     console.log(error);
-            //     alert("编辑失败，请稍后再试")
-            // })
+
         },
+        //确定编辑地址
         get_edit() {
             let _that = this
             this.pop_type = 0
-            console.log(_that.add_sons.address)
+            if (_that.add_sons.address.indexOf("0x") !== 0 && _that.add_sons.address.length !== 42) {
+                alert('请输入正确钱包地址')
+                _that.add_sons.address = ''
+                return
+            }
+            this.add_sons.token = getCookie("token")
             this.add_sons.subusername = _that.sonset_list[this.item_index].name
+            this.add_sons.username = localStorage.getItem('username')
+            console.log(_that.add_sons)
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/addressForAccountSub', this.add_sons, function(data) {
                 console.log(data)
-                console.log(_that)
-                 _that.edit_son = -1
+                _that.address_paramgs.paypassword = ''
+                _that.address_paramgs.code = ''
+                if (JSON.parse(data).code !== 200) {
+                    alert("编辑失败，请输入正确的资金密码和谷歌验证码")
+                    _that.add_sons.address = ''
+
+                    return
+                }
+                _that.edit_son = -1
                 _that.get_sonlist()
             }, function(error) {
                 console.log(error);
@@ -276,19 +300,26 @@ export default {
         },
         //创建子账户
         createdson() {
-            console.log(this.add_sons)
             let _that = this
-            if (!this.verifyUsername(this.add_sons.usersub)) {
-                this.add_sons.usersub = ''
+            if (!this.verifyUsername(this.add_sons.subusername)) {
+                this.add_sons.subusername = ''
                 return alert(this.$t("m.sonset.key9"))
             }
             this.addson = false
             this.removeson = false
+            this.add_sons.username = localStorage.getItem('username')
             console.log(JSON.stringify(this.add_sons))
+            this.add_sons.token = getCookie("token")
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
+                if (JSON.parse(data).code !== 200) {
+                    alert(JSON.parse(data).msg)
+                    console.log(JSON.parse(data))
+                    _that.add_sons.subusername = ''
+                    return
+                }
                 console.log(data)
-                this.add_sons.subusername = ''
-                _that.get_sonlist()
+                _that.add_sons.subusername = ''
+                _that.$router.go(0)
             }, function(error) {
                 console.log(error);
                 alert("网络出现一点点问题，请稍后再试")
@@ -303,6 +334,7 @@ export default {
 .center-box {
     width: 6rem;
     margin: 0 auto;
+    min-width: 810px;
 }
 
 .color1 {

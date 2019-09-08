@@ -1,7 +1,7 @@
 <template>
     <div id="myltc">
         <div class="myltc_mains" v-if="!noson_type">
-            <div class="mylcted_top" v-if="myltctype">
+            <div class="mylcted_top" v-if="myltctype[0]">
                 <div class="content_box">
                     <div class="mylcted_top_title">{{$t("m.myMill.key29")}}</div>
                     <div class="flex_a">
@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="content_box">
-                <div class="myltcted" v-if="myltctype">
+                <div class="myltcted" v-if="myltctype[0]">
                     <!--头部-->
                     <div class="ltc_center">
                         <div class="flex_a ltc_main">
@@ -23,11 +23,11 @@
                         </div>
                         <div class="flex_a ltc_main" v-for="(item,index) in wokerListdata" :key="index">
                             <span class="ltc_main_item">{{item.wokerName}}</span>
-                            <span class="ltc_main_item">{{item.latestHr}}</span>
-                            <span class="ltc_main_item">{{item.minHr}}</span>
-                            <span class="ltc_main_item">{{item.dayHr}}</span>
+                            <span class="ltc_main_item">{{changpow(item.latestHr)}}H/s</span>
+                            <span class="ltc_main_item">{{changpow(item.minHr)}}H/s</span>
+                            <span class="ltc_main_item">{{changpow(item.dayHr)}}H/s</span>
                             <div class="flex_b ltc_main_item_last">
-                                <span>{{Formatdate(item.time,'yyyy-MM-dd-HH-mm')}}</span>
+                                <span>{{timestampToTime2(item.time)}}</span>
                                 <span @click="eject_open(index)"><img src="../assets/img/data_checked.png" alt=""></span>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <!--矿机未配置-->
-                <div class="myltct" v-if="!myltctype">
+                <div class="myltct" v-if="!myltctype[0]">
                     <div class="myltct_t">
                         <div class="myltct_t_head">
                             {{$t("m.myltc.key1")}}
@@ -119,7 +119,7 @@ export default {
             ltc_top: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32")],
             ltc_main: [this.$t("m.myMill.key5"), this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key37"), this.$t("m.myMill.key36")],
             ltc_item: [this.$t("m.myMill.key30"), this.$t("m.myMill.key31"), this.$t("m.myMill.key32"), this.$t("m.myMill.key30")],
-            myltctype: true,
+            myltctype: [true],
             select_type: 'hour',
             activities: [{
                 content: this.$t("m.myltc.key2"),
@@ -172,13 +172,17 @@ export default {
             timer: ''
         }
     },
-    mounted() {
-        this.wokerList()
-        this.getmyltcdata()
-        if (localStorage.getItem('subnameList') < 1) { this.noson_type = true }
-        if (!this.noson_type) { this.wokerAllKlinedata() }
-        this.$nextTick(() => { })
+    created() {
 
+    },
+    mounted() {
+
+        if (localStorage.getItem('subnameList') == 0) { this.$router.push({ name: 'unsub' }) }
+        else {
+            this.wokerList()
+            this.getmyltcdata()
+            this.wokerAllKlinedata()
+        }
     },
     methods: {
         selecttype(index) {
@@ -192,7 +196,7 @@ export default {
                 this.wokerAllKlinedata()
             } else if (index == 3) {
                 this.eject_time = 'hour'
-                this.List_k_params.type = 'day'
+                this.List_k_params.type = 'hour'
                 this.wokerListKlinedata()
             } else if (index == 4) {
                 this.List_k_params.type = 'day'
@@ -367,9 +371,10 @@ export default {
             // }
             // _that.wokerAlldata = data.minerPow
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
+                console.log(data, "子账户下总矿机算力")
                 _that.wokerAlldata = JSON.parse(data).minerPow
             }, function(error) {
-                 alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试")
             })
         },
         //子账户下单个矿机的列表
@@ -391,14 +396,15 @@ export default {
             };
             // _that.wokerListdata = res.minerPow
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerListInfo', this.myltc_param, function(data) {
+                console.log(data, "子账户下单个矿机的列表")
                 _that.wokerListdata = JSON.parse(data).minerPow
-                if (_that.wokerListdata.length < 1) {
-                    console.log(this.wokerListdata.length)
-                    _that.myltctype = false
+                if (JSON.parse(data).code == 1002) {
+                    console.log(11133)
+                    _that.$set(_that.myltctype, 0, false)
                 }
             }, function(error) {
                 console.log(error);
-                 alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试")
             })
         },
         //总矿机曲线
@@ -417,22 +423,25 @@ export default {
 
                     }]
             }
-            // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-            console.log(this.allkline_params, "总矿机曲线")
-            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
-                console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
-                if (_that.select_type == 'hour') {
-                    _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                }else{
-                    _that.getValueByKey(JSON.parse(data).dayAllKlineInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                }
-
-                console.log(JSON.parse(data).hourInfo[0], "ssssss1")
-                console.log(_that.AllKlinedata)
-                _that.$nextTick(() => { _that.drawLine() })
-            }, function(error) {
-                 alert("网络出现一点点问题，请稍后再试")
-            })
+            this.AllKlinedata = { //总曲线数据
+                xAxisdata: [],
+                val: []
+            },
+                // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
+                    console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
+                    if (_that.select_type == 'hour') {
+                        _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                        console.log(JSON.parse(data).hourInfo[0], "ssssss1")
+                    } else {
+                        _that.getValueByKey(JSON.parse(data).dayAllKlineInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                        console.log(JSON.parse(data).dayAllKlineInfo[0], "ssssss2222")
+                    }
+                    console.log(_that.AllKlinedata, "ssssss555555总矿机曲线")
+                    _that.$nextTick(() => { _that.drawLine() })
+                }, function(error) {
+                    alert("网络出现一点点问题，请稍后再试")
+                })
 
         },
         //单台矿机内k线
@@ -453,18 +462,25 @@ export default {
                     }
                 ]
             }
-            // _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+            this.ListKlinedata = {//单台矿机曲线
+                xAxisdata: [],
+                val: []
+            },
+                // _that.getValueByKey(res.dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                console.log(this.List_k_params)
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerListKlineInfo', this.List_k_params, function(data) {
-                console.log(data, "ssss11111111111")
-                     if (_that.eject_time == 'hour') {
-                          _that.getValueByKey(JSON.parse(data).dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
-                     }else{
-                         _that.getValueByKey(JSON.parse(data).dayInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
-                     }
+
+                if (_that.List_k_params.type == 'hour') {
+                    console.log(data, "ssss11111111111", )
+                    _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                } else {
+                    console.log(data, "ssss1122222221")
+                    _that.getValueByKey(JSON.parse(data).dayhrInfo[0], _that.ListKlinedata.xAxisdata, _that.ListKlinedata.val)
+                }
                 console.log(_that.ListKlinedata, "sssss22111s1")
                 _that.$nextTick(() => { _that.eject_chart() })
             }, function(error) {
-                 alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试")
             })
         },
         //弹出框图表
@@ -486,7 +502,7 @@ export default {
                 },
                 grid: {
                     left: '3%',
-                    right: '2%',
+                    right: '5%',
                     bottom: '3%',
                     containLabel: true
                 },
@@ -604,6 +620,9 @@ export default {
                 }]
             });
         },
+    },
+    beforeDestroy(){
+        this.timer=null
     }
 }
 </script>
@@ -621,6 +640,7 @@ export default {
     background-size: 100% 100%;
     overflow: hidden;
     color: #fff;
+    box-sizing: border-box;
 }
 
 .mylcted_top_title {
@@ -632,8 +652,8 @@ export default {
     line-height: 0.08rem;
     letter-spacing: 0px;
     color: rgba(255, 255, 255, 1);
-    margin-top: 0.15rem;
-    margin-bottom: 0.12rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.2rem;
     text-align: left;
 }
 
@@ -853,11 +873,18 @@ export default {
 
 
 
+
+
+
+
+
+
+
 /**图表弹出框**/
 
 .share {
-    width: 100%;
-    height: 100%;
+    width: 0%;
+    height: 0%;
     position: absolute;
     left: 0;
     right: 0;
@@ -922,6 +949,13 @@ export default {
     text-align: left;
     padding-left: 0.18rem
 }
+
+
+
+
+
+
+
 
 
 

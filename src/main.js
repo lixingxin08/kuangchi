@@ -36,7 +36,7 @@ axios.defaults.withCredentials = true;//让ajax携带cookie
 //进入路由前校验是否需要登录
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (getCookie("isLogin")) {    
+    if (getCookie("isLogin")) {
       next()
     } else {
       // next(
@@ -102,7 +102,7 @@ axios.interceptors.response.use(
       // alert(window.vm.$t("m.key4"));
       return Promise.reject(error);          // reject这个错误信息
     } else {
-      alert(window.vm.$t("m.key"));
+      // alert(window.vm.$t("m.key"));
     }
     return Promise.reject(error);
   }
@@ -145,15 +145,32 @@ Vue.prototype.verifyUsername = function (str) {
     return true
   }
 },
+//校验只能数字或字母
+Vue.prototype.verifyUsername2 = function (str) {
+  var re = /^[0-9a-zA-Z]*$/g;
+  if (re.test(str) !== true) {
+    return false;
+  } else {
+    return true
+  }
+},
+Vue.prototype.verifyUsernam3 = function (str) {
+  var re = /^[a-z][a-z0-9]{1,15}$/;
+  if (re.test(str) !== true) {
+    return false;
+  } else {
+    return true
+  }
+},
   //限制输入特殊字符
   Vue.prototype.btKeyUp = function (e) {
     e.target.value = e.target.value.replace(/[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/g, "");
-      return e.target.value
+    return e.target.value
   },
   //千位分隔符
   Vue.prototype.format = function (num, index) {
-     num=Number(num)
-    if (num == 0||num=='0') {
+    num = Number(num)
+    if (num == 0 || num == '0') {
       return num
     }
     if (typeof (num) == 'undefined') {
@@ -170,7 +187,7 @@ Vue.prototype.verifyUsername = function (str) {
     }
   },
   Vue.prototype.comdify = function (num) {
-    num=Number(num)
+    num = Number(num)
     if (num == 0) {
       return num
     }
@@ -207,42 +224,31 @@ Vue.prototype.filterFun = function (value) {
 }
 //转化M,G,T
 Vue.prototype.changpow = function (val) {
-  
+
   val = Number(val)
   let val1 = new Number()
   var num = 1024.00;
-  if (val < Math.pow(num, 2)) {
+  if (val < Math.pow(num, 3)) {
     val1 = val / Math.pow(num, 2)
     val1 = val1.toFixed(2)
     return val1 + "M";
-  } else if (val < Math.pow(num, 3)) {
+  } else if (val < Math.pow(num, 4)) {
     val1 = val / Math.pow(num, 3)
     val1 = val1.toFixed(2)
     return val1 + "G"
-  } else if (val > Math.pow(num, 3)) {
+  } else if (val > Math.pow(num, 4)) {
     val1 = val / Math.pow(num, 4)
     val1 = val1.toFixed(2)
     return val1 + "T";
   }
 }
 Vue.prototype.changpow2 = function (val) {
-  
   val = Number(val)
   let val1 = new Number()
   var num = 1024.00;
-  if (val < Math.pow(num, 2)) {
-    val1 = val / Math.pow(num, 2)
-    val1 = val1.toFixed(2)
-    return val1 ;
-  } else if (val < Math.pow(num, 3)) {
-    val1 = val / Math.pow(num, 3)
-    val1 = val1.toFixed(2)
-    return val1 
-  } else if (val > Math.pow(num, 3)) {
-    val1 = val / Math.pow(num, 4)
-    val1 = val1.toFixed(2)
-    return val1 ;
-  }
+  val1 = val / Math.pow(num, 2)
+  val1 = val1.toFixed(2)
+  return val1;
 }
 //设置cookie
 Vue.prototype.setCookie = function (key, val, time) {
@@ -312,6 +318,28 @@ Vue.prototype.timestampToTime = function (value) {
   var m = date.getMinutes();
   var s = date.getSeconds();
   return Y + "-" + M + "-" + D + " " + h + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+};
+//时间戳转化时间格式
+Vue.prototype.timestampToTime2 = function (value) {
+  let date = new Date(value * 1000);
+  var Y = date.getFullYear();
+  var M = date.getMonth() + 1;
+  var D = date.getDate();
+  var h = date.getHours();
+  var m = date.getMinutes();
+  var s = date.getSeconds();
+  return Y + "-" + M + "-" + D + " " + h + ":" + (m < 10 ? "0" + m : m) ;
+};
+//时间戳转化时间格式
+Vue.prototype.timestampToTime3 = function (value) {
+  let date = new Date(value * 1000);
+  var Y = date.getFullYear();
+  var M = date.getMonth() + 1;
+  var D = date.getDate();
+  var h = date.getHours();
+  var m = date.getMinutes();
+  var s = date.getSeconds();
+  return Y + "-" + M + "-" + D ;
 };
 //倒计时
 Vue.prototype.countDown = function (btn) {
