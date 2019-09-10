@@ -7,7 +7,7 @@
             <el-timeline>
                 <el-timeline-item size="normal" class="myltc_tips">
                     {{$t("m.noson.key2")}}
-                    <div @click="add_son()" class="color1"> {{$t("m.noson.key3")}}>>></div>
+                    <div @click="add_son()" class="color1 add_sons"> {{$t("m.noson.key3")}}>>></div>
                 </el-timeline-item>
                 <el-timeline-item size="normal" class="myltc_tips">
                     {{$t("m.noson.key4")}}
@@ -84,7 +84,6 @@ export default {
         },
         createdson() {
             let _that = this
-            console.log(this.add_sons, "ssssssssssss111")
             if (!this.verifyUsername(this.add_sons.subusername)) {
                 this.add_sons.subusername = ''
                 return alert(this.$t("m.sonset.key9"))
@@ -93,16 +92,15 @@ export default {
             this.add_sons.username = localStorage.getItem('username')
             console.log(JSON.stringify(this.add_sons))
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
-                console.log(data)
                 if (JSON.parse(data).code !== 200) {
                     alert(JSON.parse(data).msg)
                     console.log(JSON.parse(data))
                     _that.add_sons.subusername = ''
                     return
                 }
-
                 _that.add_sons.subusername = ''
-                _that.$router.go(-1)
+                localStorage.setItem('subnameList','1')
+                _that.$router.push({name:'myltc'})
             }, function(error) {
                 console.log(error);
             })
@@ -120,7 +118,9 @@ export default {
     width: 6rem;
     margin: 0 auto;
 }
-
+.add_sons{
+    cursor: pointer;
+}
 .color1 {
     color: #2e73e8;
 }

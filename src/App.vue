@@ -3,7 +3,12 @@
     <div class="pc">
       <Header class="Header" v-if="isRouterAlive" v-show="$route.path !=='/app'"></Header>
       <router-view class="router-view" v-if="isRouterAliveTwo"></router-view>
-      <foo class="Foo" v-show="$route.path !=='/app'"></foo>
+      <keep-alive>
+        <foo class="Foo" v-show="$route.path !=='/app'"></foo>
+      </keep-alive>
+      <div class="backtop" v-show="btnFlag" @click="backTop()">
+        <img src="./assets/img/backtop.png" alt />
+      </div>
     </div>
   </div>
 </template>
@@ -16,41 +21,70 @@ export default {
     return {
       reload: this.reload,
       reloadTwo: this.reloadTwo
-    }
+    };
   },
-  created() {
-  },
+  created() {},
   components: {
     Header: header,
     foo: foo
-  }, data() {
+  },
+  data() {
     return {
       isRouterAlive: true,
       isRouterAliveTwo: true,
-    }
+      scrollTop: 0,
+      btnFlag: false
+    };
   },
   methods: {
     reload() {
       this.isRouterAlive = true;
       this.$nextTick(function() {
         this.isRouterAlive = true;
-      })
+      });
     },
     reloadTwo() {
       this.isRouterAliveTwo = false;
       this.$nextTick(function() {
         this.isRouterAliveTwo = true;
-      })
+      });
     },
+    showIcon() {
+      const that = this;
+      let scrollTop =
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop;
+      that.scrollTop = scrollTop;
+      if (that.scrollTop > 60) {
+        that.btnFlag = true;
+      } else {
+        that.btnFlag = false;
+      }
+    },
+    backTop() {
+      const that = this;
+      let timer = setInterval(() => {
+        let ispeed = Math.floor(-that.scrollTop / 5);
+        window.pageYOffset = document.documentElement.scrollTop = document.body.scrollTop =
+          that.scrollTop + ispeed;
+        if (that.scrollTop === 0) {
+          clearInterval(timer);
+        }
+      }, 16);
+    }
+  },
+  mounted() {
+    window.addEventListener("scroll", this.showIcon, true);
+  },
+  destroyed() {
+    //离开该页面需要移除这个监听的事件
+    window.removeEventListener("scroll", this.showIcon);
   },
   beforeDestroy() {
-    // localStorage.removeItem('change')
-    // localStorage.removeItem('username')
-    // localStorage.removeItem('subusername')
-    // localStorage.removeItem('token')
-    // localStorage.removeItem('subnameList')
+    localStorage.removeItem('subnameList')
   }
-}
+};
 </script>
 
 <style>
@@ -70,15 +104,30 @@ a {
 a li {
   color: #fff;
 }
-
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  min-width: 810px;
+  min-width: 1300px!important;
   /*margin-top: 60px;*/
+}
+.pc{
+  min-width: 1300px!important;
+  font-size: 14px;
+}
+.backtop {
+  position: fixed;
+  bottom: 0.28rem;
+  right: 0.26rem;
+  border-radius: 50%;
+  background-color: rgba(236, 243, 251, 1);
+}
+
+.backtop img {
+  width: 0.4rem;
+  height: 0.4rem;
 }
 
 body {
@@ -104,57 +153,47 @@ input::-webkit-inner-spin-button {
   color: #999999;
 }
 
-.el-timeline-item__tail{
-  top:0.1rem !important;
-}
-.el-timeline-item__node--normal{
-  top: 0.1rem!important;
+.el-timeline-item__tail {
+  top: 0.1rem !important;
 }
 
+.el-timeline-item__node--normal {
+  top: 0.1rem !important;
+}
+@media (max-width: 1300px) {
+#app{
+  font-size: 100px!important
+}
+}
 /* 火狐 */
-
 
 /*input{*/
 
-
 /*-moz-appearance:textfield;*/
 
-
 /*}*/
-
 
 /*input::-webkit-input-placeholder ,textarea::-webkit-input-placeholder {*/
 
-
 /*color: #666*/
 
-
 /*}*/
-
 
 /*　input::-moz-placeholder textarea::-moz-placeholder {*/
 
-
 /*color: #666*/
 
-
 /*}*/
-
 
 /*input::-moz-placeholder, textarea::-moz-placeholder {*/
 
-
 /*color:#666;*/
-
 
 /*}*/
 
-
 /*　　input:-ms-input-placeholder, textarea:-ms-input-placeholder {*/
 
-
 /*color:#666;*/
-
 
 /*}*/
 </style>

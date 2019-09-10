@@ -143,14 +143,15 @@
           <div class="nomore nomorecolor" v-if="no_list">
             {{$t("m.home.key30")}}
           </div>
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize[0]">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10,20,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize[0]">
           </el-pagination>
 
         </div>
       </div>
 
     </div>
-  </div>
+    
+  </div> 
   </div>
 </template>
 <script>
@@ -173,7 +174,7 @@ export default {
       placehoder: this.$t("m.home.key8"),
       blockListObj: {
         page: 1,
-        pageSize: 20
+        pageSize: 10
       },
       block_top_data: [],
       user_detail_data: [[], [], []],
@@ -210,7 +211,7 @@ export default {
   mounted() {
     if (localStorage.getItem('nosearch') !== '') {
       this.search_data = localStorage.getItem('nosearch')
-      localStorage.setItem('nosearch', '')
+      localStorage.removeItem('nosearch')
     }
     this.sethomedata()
     this.tosearch()
@@ -219,10 +220,10 @@ export default {
     }
   },
   methods: {
+
     wallet_change(val) {
       this.wallet_changes = val,
         this.datas = []
-      console.log(this.homedatalist)
       if (this.wallet_changes) {
         console.log("block")
         this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
@@ -234,7 +235,6 @@ export default {
         for (let i = 0; i < this.homedatalist.transcationArray.length; i++) {
           this.datas[i] = this.homedatalist.transcationArray[i]
         }
-        console.log(this.datas, "jiaoyishu")
       } else if (!this.wallet_changes) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
         if (this.homedatalist.block.length == 0) {
@@ -248,7 +248,6 @@ export default {
       }
     },
     sethomedata() {
-      console.log(this.GLOBAL.baseUrl, 2124)
       if (this.hometype == 1) {
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
       } else if (this.hometype == 4) {
@@ -260,7 +259,6 @@ export default {
     //item搜索
     item_search(val, index) {
       this.target_data = val
-      console.log(val)
       if (this.hometype == 1) {
         // console.log(11)
         val = Number(val)
@@ -287,7 +285,11 @@ export default {
         this.$router.push({ name: 'homeitem' })
         return
       }
-      
+      if(this.search_data.indexOf(",")){
+        this.search_data=this.search_data.replace(',','')
+        this.search_data=this.search_data.replace(/\s+/g,"");
+      }
+     
       let _that = this;
       this.datas = []
       if (typeof (this.search_data) !== 'number'&&this.search_data!=='') {
@@ -302,126 +304,89 @@ export default {
         //搜索交易哈希
         localStorage.setItem('search_data', this.search_data)
         this.$router.push({ name: 'homeitem' })
-        _that.hometype = 4
-        console.log(44444444)
+        // _that.hometype = 4
+        // console.log(44444444)
 
-        this.block_top_data = [[this.$t("m.home.key36")],
-        [this.$t("m.home.key37"), this.$t("m.home.key24"), this.$t("m.home.key25")],
-        [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
-        console.log(this.search_data)
-        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchTxInfo', { param: this.search_data }, function(data) {
-          if (JSON.parse(data).code !== 200) {
-            _that.$router.push({ name: 'nothing' })
-            return
-          }
+        // this.block_top_data = [[this.$t("m.home.key36")],
+        // [this.$t("m.home.key37"), this.$t("m.home.key24"), this.$t("m.home.key25")],
+        // [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
+        // console.log(this.search_data)
+        // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchTxInfo', { param: this.search_data }, function(data) {
+        //   if (JSON.parse(data).code !== 200) {
+        //     _that.$router.push({ name: 'nothing' })
+        //     return
+        //   }
 
-          let blockInfo = JSON.parse(data).TxArray[0]
-          _that.$set(_that.user_detail_data, 0, [blockInfo.blockNumber])
-          _that.$set(_that.user_detail_data, 1, [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), _that.comdify((blockInfo.value / Math.pow(10, 18)).toFixed(8))])
-          _that.$set(_that.user_detail_data, 2, [blockInfo.fromAddress, blockInfo.toAddress, ''])
-          // _that.user_detail_data[0] = [blockInfo.blockNumber]
-          // _that.user_detail_data[1] = [ blockInfo.hash, (blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas, _that.comdify(blockInfo.value / Math.pow(10, 18).toFixed(8))]
-          // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress,'']
+        //   let blockInfo = JSON.parse(data).TxArray[0]
+        //   _that.$set(_that.user_detail_data, 0, [blockInfo.blockNumber])
+        //   _that.$set(_that.user_detail_data, 1, [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), _that.comdify((blockInfo.value / Math.pow(10, 18)).toFixed(8))])
+        //   _that.$set(_that.user_detail_data, 2, [blockInfo.fromAddress, blockInfo.toAddress, ''])
+        //   // _that.user_detail_data[0] = [blockInfo.blockNumber]
+        //   // _that.user_detail_data[1] = [ blockInfo.hash, (blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas, _that.comdify(blockInfo.value / Math.pow(10, 18).toFixed(8))]
+        //   // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress,'']
 
 
-        }, function(error) {
-          console.log(error)
-        })
+        // }, function(error) {
+        //   console.log(error)
+        // })
       } else if (this.search_data.indexOf("0x") == 0 && this.search_data.length == 42) {
         //搜索钱包地址
         localStorage.setItem('search_data', this.search_data)
         this.$router.push({ name: 'homeitem' })
-        console.log(3333333)
-        _that.wallet_changes = false;
-        this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
-        this.block_top_data = [[this.$t("m.home.key28")],
-        [this.$t("m.setting.key1"), this.$t("m.home.key26")],]
-        _that.blockListObj.address = _that.search_data
-        _that.hometype = 3;
-        _that.datas = []
-        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchMinerInfo', this.blockListObj, function(data) {
-          if (JSON.parse(data).code !== 200) {
-            _that.$router.push({ name: 'nothing' })
-            return
-          }
-          let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
-          _that.user_detail_data[0] = [_that.search_data]
-          _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
-          _that.homedatalist = JSON.parse(data)
-          console.log(JSON.parse(_that.homedatalist.block[1]))
-          //账户交易
-          // if (JSON.parse(data).transcationArray.length>0) {
-          //   console.log(1231)
-          //   _that.datas = JSON.parse(data).transcationArray
-          // _that.homedata.pagination = [_that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), _that.$t("m.home.key24"), _that.$t("m.home.key25")]
-          //   for (let i = 0; i < _that.homedatalist.block.length; i++) {
-          //     _that.datas.push(JSON.parse(_that.homedatalist.block[i]))
-          //   }
-          // } else if (JSON.parse(data).block.length>0) {
-          //挖块统计
-          _that.datas = JSON.parse(data).block
-          _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
-          _that.$set(_that.totalSize, 0, _that.homedatalist.block.length || 0)
+        // console.log(3333333)
+        // _that.wallet_changes = false;
+        // this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
+        // this.block_top_data = [[this.$t("m.home.key28")],
+        // [this.$t("m.setting.key1"), this.$t("m.home.key26")],]
+        // _that.blockListObj.address = _that.search_data
+        // _that.hometype = 3;
+        // _that.datas = []
+        // this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchMinerInfo', this.blockListObj, function(data) {
+        //   if (JSON.parse(data).code !== 200) {
+        //     _that.$router.push({ name: 'nothing' })
+        //     return
+        //   }
+        //   let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
+        //   _that.user_detail_data[0] = [_that.search_data]
+        //   _that.user_detail_data[1] = [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)]
+        //   _that.homedatalist = JSON.parse(data)
+        //   console.log(JSON.parse(_that.homedatalist.block[1]))
+        //   //账户交易
+        //   // if (JSON.parse(data).transcationArray.length>0) {
+        //   //   console.log(1231)
+        //   //   _that.datas = JSON.parse(data).transcationArray
+        //   // _that.homedata.pagination = [_that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), _that.$t("m.home.key24"), _that.$t("m.home.key25")]
+        //   //   for (let i = 0; i < _that.homedatalist.block.length; i++) {
+        //   //     _that.datas.push(JSON.parse(_that.homedatalist.block[i]))
+        //   //   }
+        //   // } else if (JSON.parse(data).block.length>0) {
+        //   //挖块统计
+        //   _that.datas = JSON.parse(data).block
+        //   _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
+        //   _that.$set(_that.totalSize, 0, _that.homedatalist.block.length || 0)
 
-          if (_that.homedatalist.block.length < 1) {
-            console.log(342121)
-            _that.no_list = true
-          } else {
-            _that.no_list = false
-          }
-          for (let i = 0; i < _that.homedatalist.block.length; i++) {
-            _that.datas[i] = JSON.parse(_that.homedatalist.block[i])
-          }
-          // }
-        }, function(error) {
-          console.log(error)
-        })
+        //   if (_that.homedatalist.block.length < 1) {
+        //     console.log(342121)
+        //     _that.no_list = true
+        //   } else {
+        //     _that.no_list = false
+        //   }
+        //   for (let i = 0; i < _that.homedatalist.block.length; i++) {
+        //     _that.datas[i] = JSON.parse(_that.homedatalist.block[i])
+        //   }
+        //   // }
+        // }, function(error) {
+        //   console.log(error)
+        // })
       } else if (regPos.test(this.search_data) || regNeg.test(this.search_data)) {
         //搜索块详情
         localStorage.setItem('search_data', this.search_data)
         this.$router.push({ name: 'homeitem' })
         _that.hometype = 2;
-        _that.search_data = Number(_that.search_data)
-        _that.target_data = _that.search_data
-        _that.blockListObj.param = this.search_data;
-        this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
-        this.block_top_data = [[this.$t("m.myMill.key26"), this.$t("m.home.key16")],
-        [this.$t("m.myMill.key10"), this.$t("m.home.key18"), this.$t("m.home.key6"), this.$t("m.home.key35")],
-        [this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key21")]]
-        console.log(2222222)
-        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchBlockInfo', this.blockListObj, function(data) {
-          console.log(data)
-          if (JSON.parse(data).code !== 200) {
-            _that.$router.push({ name: 'nothing' })
-            return
-          }
 
-
-          let blockInfo = JSON.parse(data).blockInfo[0]
-          _that.$set(_that.user_detail_data, 0, [_that.comdify(blockInfo.number), blockInfo.hash])
-          _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + 'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward, 8)])
-          _that.$set(_that.user_detail_data, 2, [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner])
-
-          // _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
-          // _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size+'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)]
-          // _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
-          console.log(JSON.parse(data).TxArray.length)
-
-          _that.datas = JSON.parse(data).TxArray
-          _that.$set(_that.totalSize, 0, JSON.parse(data).TxArray.length || 0)
-          if (JSON.parse(data).TxArray.length < 1) {
-            _that.no_list = true
-            console.log(_that.hometype, '342121')
-          } else {
-            _that.no_list = false
-          }
-        }, function(error) {
-          console.log(error)
-        })
       } else if (this.search_data == '') {
         //首页
         _that.hometype = 1;
-        console.log(1111111)
         this.homedata.pagination = [this.$t("m.home.key3"), this.$t("m.myMill.key10"), this.$t("m.home.key15"), this.$t("m.home.key16"), this.$t("m.home.key17"), this.$t("m.home.key14"), this.$t("m.home.key6")]
         this.$ajax('get', this.GLOBAL.baseUrl + 'v2/getChainBlockInfo?page=' + this.blockListObj.page + '&pageSize=' + this.blockListObj.pageSize, null, function(data) {
           _that.homedatalist = JSON.parse(data).chainInfo
@@ -429,7 +394,6 @@ export default {
           if (JSON.parse(data).code !== 200) {
             alert(JSON.parse(data).msg)
           }
-          console.log(_that.homedatalist, "_that.homedatalistsss11111111")
           for (let i = 0; i < _that.homedatalist.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist[i])
             _that.$set(_that.datas, i, _that.datas[i])
@@ -456,39 +420,14 @@ export default {
       localStorage.removeItem('to_down2')
       localStorage.setItem('to_down2', val)
     },
-    //用户矿机信息
-    // getAccountMill() {
-    //   var vueThis = this;
-    //   this.$axios({
-    //     method: "post",
-    //     url: this.baseUrl + "v1/wtcPool/minerAccountInfo",
-    //     data: { "username": getCookie("username"), "token": getCookie("token") },
-    //     withCredentials: false
-    //   }).then(function(res) {
-    //     if (res.data.code === 200) {
-    //       bus.$emit("payfee", res.data.accountInfo.payFee);
-    //     } else {
-    //       if (res.data.code === 402) {
-    //         alert(vueThis.$t("m.myMill.key13"))
-    //       } else if (res.data.code === 404) {
-    //         alert(vueThis.$t("m.myMill.key14"))
-    //       }
-    //     }
-    //   }).catch(function(err) {
-    //   })
-    // },
-
     handleSizeChange(val) {
       console.log(val)
       this.blockListObj.pageSize = val;
-      // this.getWtcPoolBlockInfo();
       this.tosearch()
     },
 
     handleCurrentChange(val) {
       this.blockListObj.page = val;
-      console.log(this.blockListObj, " this.blockListObj")
-      // this.getWtcPoolBlockInfo();
       this.tosearch()
       this.page_bg = true
     },
@@ -619,8 +558,6 @@ li {
 
 
 
-
-
 /*顶部*/
 
 .home_bcg img {
@@ -644,12 +581,14 @@ li {
 
 .tips_l {
   float: left;
-  overflow: hidden
+  overflow: hidden;
+   font-size: 14px;
 }
 
 .tips_r {
   height: 0.2rem;
   float: right;
+  font-size: 14px;
 }
 
 .body-left {

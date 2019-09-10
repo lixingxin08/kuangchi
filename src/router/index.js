@@ -11,6 +11,8 @@ const nothing = resolve => require(['@/components/nothing'], resolve);
 const myltc = resolve => require(['@/components/myltc'], resolve);
 const sublist = resolve => require(['@/components/son_set'], resolve);
 const unsub = resolve => require(['@/components/no_son'], resolve);
+const login = resolve => require(['@/components/login'], resolve);
+const register = resolve => require(['@/components/register'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
 // import register from '@/components/register'
@@ -143,15 +145,15 @@ export default new Router({
       name: 'app',
       component: app
     },
-    // {
-    //   path: '/register',
-    //   name: 'register',
-    //   component: register
-    // },
-    // {
-    //   path: '/login',
-    //   name: 'login',
-    //   component: login
-    // }
+    {
+      path: '/register',
+      name: 'register',
+      component: register
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    }
   ]
 })

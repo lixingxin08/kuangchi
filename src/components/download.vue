@@ -32,7 +32,8 @@
           </div>
 
           <!--工具下载-->
-          <div class="main-box__content" v-if="this.downloadtype[0]==2">
+          <div class="main-box__content" v-show="this.downloadtype[0]==2">
+            <div class="gonggao">
             <div class="flex_b Download_item">
               <div class="flex_b header-text">
                 <img src="../assets/img/down_logo1.png" alt="">
@@ -67,7 +68,7 @@
                 </div>
               </div>
             </div>
-            <div class="flex_b Download_item">
+            <!-- <div class="flex_b Download_item">
               <div class="flex_b header-text">
                 <img src="../assets/img/donwn_logo3.png" alt="">
                 <div class="flex_c down_text">
@@ -83,11 +84,14 @@
                   <a href="http://file.kirinpool.com/download/GpuMiner.zip?attname=" target="">{{$t("m.download.key32")}}</a>
                 </div>
               </div>
-            </div>
+            </div> -->
+          </div>
           </div>
         </div>
         <!--常见问题-->
-        <div class="main-box__content" v-show="this.downloadtype[0]==3">
+        
+        <div class="main-box__content main-box-right1" v-show="this.downloadtype[0]==3">
+          <div class="gonggao">
           <el-collapse class="problem_main">
             <el-collapse-item :title="problem_tile[0]" name="1" class="problem_item">
               <p>{{$t("m.download.key2")}}</p>
@@ -130,8 +134,9 @@
               <p>{{$t("m.download.key26")}}</p>
             </el-collapse-item>
           </el-collapse>
+          </div>
         </div>
-        <div class="main-box__content" v-show="this.downloadtype[0]==4">
+        <div class="main-box__content main-box-right1" v-show="this.downloadtype[0]==4">
           <div class="gonggao">
           </div>
         </div>
@@ -276,7 +281,7 @@ li {
 }
 
 .gonggao {
-  height: 3rem;
+  min-height: 2.9rem;
 }
 
 .problem_main {}
@@ -677,8 +682,9 @@ li {
 }
 
 .main-box-left-1 {
-  width: 16%;
+  width: 100%;
   height: 0.44rem;
+  line-height: 0.44rem;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -755,6 +761,7 @@ li {
 
 .help_boxli2 {
   line-height: 0.17rem;
+   font-size: 14px;
 }
 
 .help_boxli2_t {

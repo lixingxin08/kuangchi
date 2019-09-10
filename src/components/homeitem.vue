@@ -44,7 +44,9 @@
                     </div>
                     <div class="block_center">
                         <div class="block_c_t" :class="[this.hometype==3?'bgc2':'',this.hometype==4?'bgc3':'']">
-                            <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:{{user_detail_data[0][index]}}</span>
+                            <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:<span v-show="hometype!==4">{{user_detail_data[0][index]}}</span>
+                            <span v-show="hometype==4" class="color1" @click="item_search(user_detail_data[0][[0]])">{{user_detail_data[0][index]}}</span> 
+                            </span>
                         </div>
                         <div class="block_c_main" :class="hometype!==3?'':'flex_f'">
                             <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index" :class="hometype!==3?'':'wallet_top_c'">
@@ -58,7 +60,7 @@
                             <div class="block_c_main_item" v-for="(item,index) in block_top_data[2]" :key="index">
                                 <span>{{item}}</span>
                                 <span v-if="hometype!==4&&index!==2">{{user_detail_data[2][index]}}</span>
-                                <span v-if="hometype==4||index==2" @click="item_search(user_detail_data[2][index])">{{user_detail_data[2][index]}}</span>
+                                <span v-if="hometype==4||index==2" @click="item_search(user_detail_data[2][index])"  class="color1">{{user_detail_data[2][index]}}</span>
                             </div>
                         </div>
                     </div>
@@ -104,17 +106,17 @@
                     <!--块高度交易数-->
                     <div v-if="hometype==2">
                         <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-                            <li class="li1 color1" @click="item_search(user_detail_data[0][0])">{{filterFun(item.hash)}}</li>
+                            <li class="li1 color1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
                             <li class="li2 color1" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
                             <li class="li3 color1" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
                             <li class="li4">{{(item.gasPrice * item.gas).toFixed(8)}}</li>
-                            <li class="li5">{{comdify(item.value).toFixed(8)}}</li>
+                            <li class="li5">{{(format(item.value / Math.pow(10, 18),8))}}</li>
                         </ul>
                     </div>
                     <!--搜索钱包地址 交易数-->
                     <div v-if="hometype==3&&wallet_changes==true">
                         <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-                            <li class="li0" @click="item_search(item.blockNumber)">{{comdify(item.blockNumber)}}</li>
+                            <li class="li0" @click="item_search(Number(item.blockNumber))">{{comdify(item.blockNumber)}}</li>
                             <li class="li1 color1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
                             <li class="li2 color1" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
                             <li class="li3 color1" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
@@ -145,7 +147,7 @@
                         {{$t("m.home.key30")}}
                     </div>
 
-                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[20,10,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize[0]">
+                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="1" :page-sizes="[10,20,30]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="totalSize[0]">
                     </el-pagination>
 
                 </div>
@@ -158,10 +160,11 @@
 <script>
 import { setCookie, getCookie, delCookie } from "../assets/cookie";
 import bus from "../assets/eventBus"
+import { type } from 'os';
 export default {
     inject: ["reload"],
     data() {
-        return {
+        return {          
             baseUrl: this.GLOBAL.baseUrl,
             baseUrlTwo: this.GLOBAL.baseUrlTwo,
             baseUrltree: this.GLOBAL.baseUrltree,
@@ -175,7 +178,8 @@ export default {
             placehoder: this.$t("m.home.key8"),
             blockListObj: {
                 page: 1,
-                pageSize: 20
+                pageSize: 10,
+                param:''
             },
             block_top_data: [],
             user_detail_data: [[], [], []],
@@ -265,24 +269,25 @@ export default {
         //item搜索
         item_search(val, index) {
             this.target_data = val
-            console.log(val)
-            if (this.hometype == 1) {
-                // console.log(11)
-                val = Number(val)
-                this.search_data = val + ''
+            this.search_data = val + '';
                 this.tosearch()
-            } else if (this.hometype == 2) {
-                console.log(22)
-                this.search_data = val + '';
-                this.tosearch()
-            } else if (this.hometype == 3) {
-                this.search_data = val + '';
-                this.tosearch()
-            }
-            else if (this.hometype == 4 && val.length > 20) {
-                this.search_data = val + '';
-                this.tosearch()
-            }
+            // if (this.hometype == 1) {
+            //     // console.log(11)
+            //     val = Number(val)
+            //     this.search_data = val + ''
+            //     this.tosearch()
+            // } else if (this.hometype == 2) {
+            //     console.log(22)
+            //     this.search_data = val + '';
+            //     this.tosearch()
+            // } else if (this.hometype == 3) {
+            //     this.search_data = val
+            //     this.tosearch()
+            // }
+            // else if (this.hometype == 4) {
+            //     this.search_data = val + '';
+            //     this.tosearch()
+            // }
 
         },
         /**搜索**/
@@ -300,6 +305,10 @@ export default {
             } else {
                 this.search_data = this.search_data + ''
             }
+        if(this.search_data.indexOf(",")){
+        this.search_data=this.search_data.replace(',','')
+        this.search_data=this.search_data.replace(/\s+/g,"");
+          }
             let regPos = /^\d+(\.\d+)?$/; //非负浮点数
             let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
             let datalist = []
@@ -314,19 +323,13 @@ export default {
                 this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchTxInfo', { param: this.search_data }, function(data) {
                     if (JSON.parse(data).code !== 200) {
                         _that.$router.push({ name: 'nothing' })
-
                         return
                     }
-
                     let blockInfo = JSON.parse(data).TxArray[0]
                     _that.$set(_that.user_detail_data, 0, [blockInfo.blockNumber])
                     _that.$set(_that.user_detail_data, 1, [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), (blockInfo.value / Math.pow(10, 18)).toFixed(8)])
 
                     _that.$set(_that.user_detail_data, 2, [blockInfo.fromAddress, blockInfo.toAddress, ''])
-                    console.log(_that.user_detail_data, "44444444sssss")
-                    // _that.user_detail_data[0] = [blockInfo.blockNumber]
-                    // _that.user_detail_data[1] = [ blockInfo.hash, (blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas, _that.comdify(blockInfo.value / Math.pow(10, 18).toFixed(8))]
-                    // _that.user_detail_data[2] = [blockInfo.fromAddress, blockInfo.toAddress,'']
 
                 }, function(error) {
                     console.log(error)
@@ -356,7 +359,7 @@ export default {
                     console.log(_that.homedatalist, 'totalSizesss')
                     _that.datas = []
                     _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key10"), _that.$t("m.home.key15"), _that.$t("m.home.key16"), _that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key6")]
-                    if (_that.homedatalist.TxCount == 0 && _that.homedatalist.blockCount) {
+                    if (_that.homedatalist.blockCount==0) {
                         _that.no_list = true
                     } else {
                         _that.no_list = false
@@ -367,6 +370,11 @@ export default {
                     if (_that.wallet_changes == true) {
                         console.log('333aaassasda')
                         _that.datas = []
+                  if (_that.homedatalist.TxCount==0) {
+                        _that.no_list = true
+                    } else {
+                        _that.no_list = false
+                    }
                         _that.homedata.pagination = [_that.$t("m.home.key3"), _that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), "In/Out", _that.$t("m.home.key25")]
                         _that.totalSize[0] = _that.homedatalist.TxCount
                         for (let i = 0; i < _that.homedatalist.transcationArray.length; i++) {
@@ -395,14 +403,11 @@ export default {
                     }
                     let blockInfo = JSON.parse(data).blockInfo[0]
                     _that.$set(_that.user_detail_data, 0, [_that.comdify(blockInfo.number), blockInfo.hash])
-                    _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + 'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward, 8)])
+                    _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + 'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)])
                     _that.$set(_that.user_detail_data, 2, [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner])
-                    // _that.user_detail_data[0] = [_that.comdify(blockInfo.number), blockInfo.hash]
-                    // _that.user_detail_data[1] = [_that.timestampToTime(blockInfo.timestamp), blockInfo.size+'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)]
-                    // _that.user_detail_data[2] = [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner]
                     _that.datas = JSON.parse(data).TxArray
-                    console.log(_that.datas)
-                    _that.$set(_that.totalSize, 0, JSON.parse(data).TxArray.length || 0)
+                    console.log(_that.datas,'11122')
+                    _that.$set(_that.totalSize, 0, JSON.parse(data).TxArray.length)
                     if (JSON.parse(data).TxArray.length < 1) {
                         _that.no_list = true
                     } else {
@@ -636,6 +641,7 @@ li {
 
 
 
+
 /*顶部*/
 
 .home_bcg img {
@@ -683,7 +689,7 @@ li {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border: 1px solid #e5e5e5;
+    border: 0.01rem solid #e5e5e5;
     border-radius: 0.09rem;
 }
 
@@ -723,9 +729,9 @@ input:-ms-input-placeholder {
 .body-left-two {
     width: 3.2rem;
     height: 3.5rem;
-    margin-top: 54px;
+    margin-top: 0.54rem;
     padding: 0px 0.2rem 0.5rem 0.2rem;
-    border: 1px solid #e4d494;
+    border: 0.01rem solid #e4d494;
     border-radius: 0.1rem;
     margin-right: 2.5rem;
 }
@@ -735,7 +741,7 @@ input:-ms-input-placeholder {
 }
 
 .parent-box {
-    border-bottom: 1px solid #e4d494;
+    border-bottom: 0.01rem solid #e4d494;
     padding-bottom: 0.23rem;
     padding-top: 0.5rem;
 }
@@ -790,7 +796,7 @@ input:-ms-input-placeholder {
 .Mention-money-box {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: 0.14rem;
     margin-bottom: 0.2rem;
 }
 
@@ -798,7 +804,7 @@ input:-ms-input-placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 0.14rem;
     font-weight: bold;
 }
 
@@ -829,7 +835,7 @@ input:-ms-input-placeholder {
 
 .wallet_change {
     width: 100%;
-    font-size: 16px;
+    font-size:0.16rem;
     font-weight: normal;
     font-stretch: normal;
     letter-spacing: 0px;
@@ -841,6 +847,7 @@ input:-ms-input-placeholder {
     margin-left: 0.03rem;
     margin-right: 0.29rem;
 }
+
 
 
 
@@ -1143,6 +1150,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /*成熟块*/
 
 .bottom-box-text {
@@ -1223,6 +1231,7 @@ input:-ms-input-placeholder {
     flex: 4;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .li2 {
@@ -1265,6 +1274,7 @@ input:-ms-input-placeholder {
     overflow: hidden;
     text-align: right;
 }
+
 
 
 
@@ -1513,6 +1523,7 @@ input:-ms-input-placeholder {
 
 
 
+
 /**底部**/
 
 .block_detail {
@@ -1543,6 +1554,7 @@ input:-ms-input-placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
 }
 
 .bgc2 {
@@ -1604,6 +1616,7 @@ input:-ms-input-placeholder {
 .nomorecolor {
     color: rgba(255, 102, 0, 0.698039215686274);
 }
+
 
 
 

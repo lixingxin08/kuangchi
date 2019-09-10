@@ -159,8 +159,9 @@ a:active {
 }
 
 .foo-parent-box {
+  width: 6rem;
+  margin: 0 auto;
   background: #1e284f;
-  min-width: 1200px;
   display: flex;
   justify-content: space-between;
   padding-top: 44px;

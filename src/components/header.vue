@@ -1,16 +1,16 @@
 <template>
   <div class="header">
     <div class="parent-box">
-      <div class="header-parent-box ">
+      <div class="header-parent-box">
         <div class="center_box">
           <ul class="header-box-ul" @click="getAccountMsg()">
             <li>{{$t("m.header.key1")}}: {{topMsg.minersTotal?format(topMsg.minersTotal,0):"--"}}</li>
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
             <!-- <li>{{$t("m.header.key4")}}: {{topMsg.height?format(topMsg.height,0):"--"}}</li>
-                                              <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li> -->
+            <li>{{$t("m.header.key5")}}: {{topMsg.lastBlockTime?adTime(topMsg.lastBlockTime):"--"}}</li>-->
             <!-- <li v-show="!getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{topMsg.payfee?topMsg.payfee:"--"}} </li>
-                                                                                    <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li> -->
+            <li v-show="getCookie('isLogin')">{{$t("m.header.key6")}} (WTC): {{payfee}} </li>-->
           </ul>
         </div>
       </div>
@@ -20,48 +20,46 @@
             <div class="nav_l">
               <router-link to="/">
                 <div class="logo-box">
-                  <img src="../assets/img/logo.png" alt="">
+                  <img src="../assets/img/logo.png" alt />
                 </div>
               </router-link>
             </div>
             <div class="nav_main" :class="isLogin?'nav_mained':''">
               <div class="nav-div">
-                <ul class="nav-div-ul" v-if="!isLogin">
-                  <li :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'">
+                <ul class="nav-div-ul" v-if="!getCookie('isLogin')">
+                  <li
+                    :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'"
+                  >
                     <router-link to="/">{{$t("m.header.key7")}}</router-link>
                   </li>
                   <li :class="$route.path === '/download'?'active':'no_active'">
                     <router-link to="/download">{{$t("m.header.key11")}}</router-link>
                   </li>
                   <li :class="$route.path === '/wallet'?'active':'no_active'">
-                    <a href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5">
-                      {{$t("m.header.key26")}}
-                    </a>
+                    <a
+                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5"
+                    >{{$t("m.header.key26")}}</a>
                   </li>
                 </ul>
-                <ul class="nav-div-ul" v-else-if="isLogin">
-                  <li :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'">
-                    <router-link to="/">
-                      {{$t("m.header.key7")}}
-                    </router-link>
+                <ul class="nav-div-ul" v-if="getCookie('isLogin')">
+                  <li
+                    :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'"
+                  >
+                    <router-link to="/">{{$t("m.header.key7")}}</router-link>
                   </li>
                   <li :class="$route.path === '/myltc'?'active':'no_active'">
-                    <router-link to="/myltc">
-                      {{$t("m.header.key8")}}
-                    </router-link>
+                    <router-link to="/myltc">{{$t("m.header.key8")}}</router-link>
                   </li>
                   <li :class="$route.path === '/myprofit'?'active':'no_active'">
-                    <router-link to="/myprofit">
-                      {{$t("m.header.key27")}}
-                    </router-link>
+                    <router-link to="/myprofit">{{$t("m.header.key27")}}</router-link>
                   </li>
                   <li :class="$route.path === '/download'?'active':'no_active'">
                     <router-link to="/download">{{$t("m.header.key11")}}</router-link>
                   </li>
                   <li :class="$route.path === '/'?'active':'no_active'">
-                    <a href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5">
-                      {{$t("m.header.key26")}}
-                    </a>
+                    <a
+                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5"
+                    >{{$t("m.header.key26")}}</a>
                   </li>
                 </ul>
               </div>
@@ -75,7 +73,7 @@
                 <li v-if="getCookie('isLogin')">
                   <el-dropdown trigger="click" placement="bottom" click="user_main">
                     <span class="el-dropdown-link lang_left">
-                      <img src="../assets/img/user_img.png" alt="" class="user_img">
+                      <img src="../assets/img/user_img.png" alt class="user_img" />
                       <span>{{user_head}}</span>
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
                     </span>
@@ -84,10 +82,24 @@
                         <div class="user_head">
                           <happy-scroll size="4" hide-horizontal resize>
                             <div class="user_head">
-                              <li class="user_item" v-for="(item,index) in subnameList" :key="index" @click="select_user(index)">
+                              <li
+                                class="user_item"
+                                v-for="(item,index) in subnameList"
+                                :key="index"
+                                @click="select_user(index)"
+                              >
                                 <span>
-                                  <img src="../assets/img/admin_select.png" alt="" v-if="subnameList_item[index]!==user_head">
-                                  <img src="../assets/img/admin_selected.png" alt="" v-if="subnameList_item[index]==user_head">{{subnameList_item[index]}}
+                                  <img
+                                    src="../assets/img/admin_select.png"
+                                    alt
+                                    v-if="subnameList_item[index]!==user_head"
+                                  />
+                                  <img
+                                    src="../assets/img/admin_selected.png"
+                                    alt
+                                    v-if="subnameList_item[index]==user_head"
+                                  />
+                                  {{subnameList_item[index]}}
                                 </span>
                                 <span>{{subnameList_i[index]}}H/s</span>
                               </li>
@@ -96,7 +108,7 @@
                         </div>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_center">
-                        <li class="user_email">{{$t("m.header.key33")}}{{head_username}} </li>
+                        <li class="user_email">{{$t("m.header.key33")}}:{{head_username}}</li>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_bottom">
                         <li class="user_b_main">
@@ -105,37 +117,34 @@
                           </span>
                           <span class="user_b_main_item">
                             <router-link to="/sublist">
-                              <span class="text_color"> {{$t("m.header.key32")}}</span>
+                              <span class="text_color">{{$t("m.header.key32")}}</span>
                             </router-link>
-                          </span class="user_b_main_item">
-                          <span @click="sing_up">{{$t("m.header.key13")}}</span>
+                          </span>
+                          <span @click="sing_up" class="user_b_main_item">{{$t("m.header.key13")}}</span>
                         </li>
                       </el-dropdown-item>
-
                     </el-dropdown-menu>
                   </el-dropdown>
                 </li>
                 <!--<a :href="'https://user.waltymall.com/#/account/register?platformName=minerpool&lang='+$i18n.locale" v-show="!getCookie('token')"><li class="register-li">{{$t("m.header.key12")}}</li></a>-->
                 <!-- <li class="username-li" v-show="getCookie('isLogin')" style="position: relative">
-                                                                                          <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
-                                                                                          <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
-                                                                                            <router-link to="/setting">
-                                                                                              <li>{{$t("m.wallet.key7")}}</li>
-                                                                                            </router-link>
-                                                                                            <li @click="sing_up">{{$t("m.header.key13")}}</li>
-                                                                                          </ul>
-                                                                                        </li>  -->
+                                                                                            <span href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="../assets/img/touxiangxiao.png" alt="">{{username?username:getCookie("username")}}</span>
+                                                                                            <ul class="dropdown-menu custom-dropdown-menu user-msg-ul">
+                                                                                              <router-link to="/setting">
+                                                                                                <li>{{$t("m.wallet.key7")}}</li>
+                                                                                              </router-link>
+                                                                                              <li @click="sing_up">{{$t("m.header.key13")}}</li>
+                                                                                            </ul>
+                </li>-->
                 <li v-if="!getCookie('isLogin')">
                   <a :href="baseHerf + $i18n.locale">
-                    <div class="login-box register_li">
-                      {{$t("m.home.key1")}}
-                    </div>
+                    <div class="login-box register_li">{{$t("m.home.key1")}}</div>
                   </a>
                 </li>
                 <li class="username-li" style="position: relative">
                   <el-dropdown trigger="click" placement="bottom">
                     <span class="el-dropdown-link lang_right">
-                      <img class="switch-lang-img" src="../assets/img/langs.png" alt="">
+                      <img class="switch-lang-img" src="../assets/img/langs.png" alt />
                       <span id="lang-span">{{lang_title}}</span>
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
                     </span>
@@ -162,9 +171,9 @@
 </template>
 <script>
 import Qs from "qs";
-import bus from "../assets/eventBus"
+import bus from "../assets/eventBus";
 import { setCookie, getCookie, delCookie } from "../assets/cookie";
-import { HappyScroll } from 'vue-happy-scroll';
+import { HappyScroll } from "vue-happy-scroll";
 export default {
   inject: ["reload", "reloadTwo"],
   data() {
@@ -178,175 +187,195 @@ export default {
       head_username: "",
       isLogin: false,
       topMsg: {
-        minersTotal: "",
+        minersTotal: ""
       },
       payfee: "",
       subnameparams: {
-        username: this.getCookie('username'),
-        token: this.getCookie('token')
+        username: this.getCookie("username"),
+        token: this.getCookie("token")
       },
-      user_head: '',
-      lang_title: '中文',
+      user_head: "***",
+      lang_title: "中文",
       user_msg: "",
-      setGoogleAuth: '',
-      setPaymentCode: '',
-      setRealNameAuth: '',
-      subnameList: '',
+      setGoogleAuth: "",
+      setPaymentCode: "",
+      setRealNameAuth: "",
+      subnameList: "",
       subnameList_item: [],
       subnameList_i: [],
-      timer: null,
-
-    }
+      timer: null
+    };
   },
   created() {
-    this.head_username = localStorage.getItem('username')
-    localStorage.setItem('subusername', this.head_username)
+    this.head_username = localStorage.getItem("username");
+    localStorage.setItem("subusername", this.head_username);
     var vueThis = this;
     this.getTopMsg();
-    this.getAccountMsg()
+    this.getAccountMsg();
     this.$nextTick(() => {
       if (this.getCookie("token")) {
-        this.getsubusername()
-        this.isLogin = true
+        this.getsubusername();
+        this.isLogin = true;
       }
-      console.log(this.subnameList, 'subusernamesubusername')
-      if (localStorage.getItem('change')) {
-        this.user_head = localStorage.getItem('change')
-        localStorage.setItem('subusername', this.user_head)
+      if (localStorage.getItem("change")) {
+        this.user_head = localStorage.getItem("change");
+        localStorage.setItem("subusername", this.user_head);
       } else {
-        this.user_head = localStorage.getItem('username')
       }
-    }, )
-    localStorage.setItem('token', this.getCookie('token'))
+    });
+    localStorage.setItem("token", this.getCookie("token"));
     bus.$on("payfee", function(res) {
       vueThis.payfee = res;
-    })
-    let _that = this
-    // this.timer = setInterval(function() {
-    //  _that.getAccountMsg()
-    //   _that.getsubusername()
-    // }, 10000)
+    });
   },
   mounted() {
+    let _that = this;
+    this.timer = setInterval(function() {
+      _that.getsubusername();
+    }, 300000);
   },
-  beforeDestroy(){
-    this.timer=null
+  beforeDestroy() {
+    this.timer = null;
   },
   methods: {
     //切换用户
     select_user(index) {
-      localStorage.removeItem('subusername')
-      this.user_head = this.subnameList[index].subUsername
-      localStorage.setItem('subusername', this.user_head)
-      localStorage.setItem('change', this.user_head)
+      localStorage.removeItem("subusername");
+      this.user_head = this.subnameList[index].subUsername;
+      localStorage.setItem("subusername", this.user_head);
+      localStorage.setItem("change", this.user_head);
       this.reloadTwo();
     },
     //获取账号信息
     getAccountMsg() {
-      let _that = this
+      let _that = this;
       var vueThis = this;
       var obj = {};
       this.$axios({
         method: "get",
-        url: this.baseUrlTwo + "getAccountInfo?username=" + this.getCookie("username"),
+        url:
+          this.baseUrlTwo +
+          "getAccountInfo?username=" +
+          this.getCookie("username"),
         withCredentials: true
-      }).then(function(res) {
-        vueThis.user_msg = res
-        //手机号或邮箱
-        _that.head_username = res.data.msg.data.email == '' ? res.data.msg.data.phone : res.data.msg.data.email
-        _that.username = res.data.msg.data.username
-        _that.user_msgs = res.data.msg.data
-        _that.setGoogleAuth = res.data.msg.data.setGoogleAuth
-        _that.setPaymentCode = res.data.msg.data.setPaymentCode
-        _that.setRealNameAuth = res.data.msg.data.setRealNameAuth
-        localStorage.setItem('username', _that.username);
-        _that.user_head = _that.username
-        localStorage.setItem('setGoogleAuth', _that.setGoogleAuth);
-        localStorage.setItem('setPaymentCode', _that.setPaymentCode);
-        localStorage.setItem('setRealNameAuth', _that.setRealNameAuth);
-        localStorage.setItem('token', _that.getCookie("token"));
-        _that.isLogin = true
-        _that.gethaveson()
-        setCookie("isLogin", "isTrue");
-        if (res.data.code === 1) {
-          setCookie("isLogin", "isTrue");
-          // vueThis.reload();
-          // vueThis.reloadTwo();
-        } else if (res.data.code === 1068) {
-
-        }
-      }).catch(function(err) {
       })
+        .then(function(res) {
+          vueThis.user_msg = res;
+          //手机号或邮箱
+          _that.head_username =
+            res.data.msg.data.email == ""
+              ? res.data.msg.data.phone
+              : res.data.msg.data.email;
+          _that.username = res.data.msg.data.username;
+          _that.user_msgs = res.data.msg.data;
+          _that.setGoogleAuth = res.data.msg.data.setGoogleAuth;
+          _that.setPaymentCode = res.data.msg.data.setPaymentCode;
+          _that.setRealNameAuth = res.data.msg.data.setRealNameAuth;
+          localStorage.setItem("username", _that.username);
+          localStorage.setItem("setGoogleAuth", _that.setGoogleAuth);
+          localStorage.setItem("setPaymentCode", _that.setPaymentCode);
+          localStorage.setItem("setRealNameAuth", _that.setRealNameAuth);
+          localStorage.setItem("token", _that.getCookie("token"));
+          _that.isLogin = true;
+          _that.gethaveson();
+          setCookie("isLogin", "isTrue");
+          if (res.data.code === 1) {
+            setCookie("isLogin", "isTrue");
+            // vueThis.reload();
+            // vueThis.reloadTwo();
+          } else if (res.data.code === 1068) {
+          }
+        })
+        .catch(function(err) {});
     },
     //是否有子账户
     gethaveson() {
-      let _that = this
-      console.log(this.subnameparams)
-      this.$ajax('post', this.GLOBAL.baseUrl + 'v2/userIsHaveSubUser', this.subnameparams, function(res) {
-        console.log(res, "是否有子账户")
-        if (JSON.parse(res).code !== 1) {
-          _that.$router.push({ name: 'unsub' })
-          return
-        } else {
-
+      let _that = this;
+      console.log(this.subnameparams);
+      this.$ajax(
+        "post",
+        this.GLOBAL.baseUrl + "v2/userIsHaveSubUser",
+        this.subnameparams,
+        function(res) {
+          console.log(res, "是否有子账户");
+          if (JSON.parse(res).code !== 1) {
+            // _that.$router.push({ name: 'unsub' })
+            return;
+          } else {
+          }
+        },
+        function(error) {
+          console.log(error);
         }
-      }, function(error) {
-        console.log(error);
-      })
+      );
     },
     //获取子账号列表
     getsubusername() {
-      let _that = this
+      let _that = this;
       // _that.subnameList = res.minerPow;
-      this.$ajax('post', this.GLOBAL.baseUrl + 'v2/accountSubWorkerList', _that.subnameparams, function(res) {
-        _that.subnameList = JSON.parse(res).minerPow;
-        for (var i = 0; i < _that.subnameList.length; i++) {
-          _that.subnameList_item[i] = _that.subnameList[i].subUsername
-          _that.subnameList_i[i] = _that.changpow(_that.subnameList[i].dayHrInfo) || 0
+      if (this.subnameparams.token == "") {
+        this.timer = null;
+        return;
+      }
+      this.$ajax(
+        "post",
+        this.GLOBAL.baseUrl + "v2/accountSubWorkerList",
+        _that.subnameparams,
+        function(res) {
+          _that.subnameList = JSON.parse(res).minerPow;
+          _that.user_head=_that.subnameList[0].subUsername;
+          for (var i = 0; i < _that.subnameList.length; i++) {
+            _that.subnameList_item[i] = _that.subnameList[i].subUsername;
+            _that.subnameList_i[i] =
+              _that.changpow(_that.subnameList[i].dayHrInfo) || 0;
+          }
+          localStorage.setItem("subnameList", _that.subnameList_i.length);
+          // localStorage.setItem('username', _that.subnameList[0].subUsername);
+        },
+        function(error) {
+          console.log(error);
         }
-        localStorage.setItem('subnameList', _that.subnameList_i.length)
-        // localStorage.setItem('username', _that.subnameList[0].subUsername);
-
-      }, function(error) {
-        console.log(error);
-      })
+      );
     },
     // 切换语言
     switchLang(index) {
-      this.getTopMsg()
-      console.log(index)
+      this.getTopMsg();
       if (index === "zh") {
-        localStorage.setItem('lang', "zh");
+        localStorage.setItem("lang", "zh");
         this.lang = "zh";
         this.$i18n.locale = this.lang;
-        this.lang_title = "中文"
+        this.lang_title = "中文";
         // document.title = "WTC主子链后台管理系统"
       } else if (index === "en") {
-        localStorage.setItem('lang', "en");
+        localStorage.setItem("lang", "en");
         this.lang = "en";
         this.$i18n.locale = this.lang;
-        this.lang_title = "English"
+        this.lang_title = "English";
         // document.title = "Backend Management System"
       } else if (index === "ko") {
-        localStorage.setItem('lang', "ko");
+        localStorage.setItem("lang", "ko");
         this.lang = "ko";
         this.$i18n.locale = this.lang;
-        this.lang_title = "한글"
+        this.lang_title = "한글";
         // document.title = "Backend Management System"
       }
       this.reloadTwo();
     },
     //    计算时间
     adTime(a) {
-      a = (new Date().getTime() / 1000) - a;
+      a = new Date().getTime() / 1000 - a;
       if (a < 60) {
         this.miao = Math.floor(a) + " " + this.$t("m.header.key14");
         return this.miao;
-      } else if ((a / 60) < 60) {
-        this.fz = Math.floor(a % 86400 % 3600 / 60) + " " + this.$t("m.header.key15");
-        return this.fz
-      } else if ((a / 3600) < 24) {
-        this.xs = Math.floor(a % 86400 / 3600) + " " + this.$t("m.header.key15");
+      } else if (a / 60 < 60) {
+        this.fz =
+          Math.floor(((a % 86400) % 3600) / 60) +
+          " " +
+          this.$t("m.header.key15");
+        return this.fz;
+      } else if (a / 3600 < 24) {
+        this.xs =
+          Math.floor((a % 86400) / 3600) + " " + this.$t("m.header.key15");
         return this.xs;
       } else {
         this.tian = Math.floor(a / 86400) + " " + this.$t("m.header.key16");
@@ -360,48 +389,80 @@ export default {
         mounted: "get",
         url: this.baseUrl + "v1/wtcPool/wtcPoolInfo",
         withCredentials: false
-      }).then(function(res) {
-        if (res.data.code === 200) {
-          vueThis.topMsg = res.data.data.PoolInfo[0];
-          // bus.$emit("newBlock", res.data.data.PoolInfo[0].height);
-          sessionStorage.setItem("newBlock", vueThis.adTime(res.data.data.PoolInfo[0].lastBlockTime));
-        } else {
-        }
-      }).catch(function(err) {
       })
+        .then(function(res) {
+          if (res.data.code === 200) {
+            vueThis.topMsg = res.data.data.PoolInfo[0];
+            // bus.$emit("newBlock", res.data.data.PoolInfo[0].height);
+            sessionStorage.setItem(
+              "newBlock",
+              vueThis.adTime(res.data.data.PoolInfo[0].lastBlockTime)
+            );
+          } else {
+          }
+        })
+        .catch(function(err) {});
     },
     // 退出
     sing_up() {
       var vueThis = this;
-      localStorage.removeItem('change')
-      localStorage.removeItem('username')
-      localStorage.removeItem('subusername')
-      localStorage.removeItem('token')
-      localStorage.removeItem('subnameList')
+      localStorage.removeItem("change");
+      localStorage.removeItem("username");
+      localStorage.removeItem("subusername");
+      localStorage.removeItem("token");
+      localStorage.removeItem("subnameList");
       setCookie("isLogin", "", -1);
+      setCookie("token", "", -1);
       this.$axios({
         method: "post",
-        url: this.baseUrlTwo + "tuichu",
-      }).then(function(res) {
-        vueThis.sessionStorage.removeItem("newBlock");
-        vueThis.sessionStorage.removeItem("userMsg");
-        vueThis.reload();
-        vueThis.reloadTwo();
-        vueThis.$router.push("/");
-        vueThis.isLogin = false
-      }).catch(function(err) {
-        vueThis.sessionStorage.removeItem("newBlock");
-        vueThis.sessionStorage.removeItem("userMsg");
-        vueThis.$router.push("/");
-        vueThis.reload();
-        vueThis.reloadTwo();
-      });
-
+        url: this.baseUrlTwo + "tuichu"
+      })
+        .then(function(res) {
+          vueThis.sessionStorage.removeItem("newBlock");
+          vueThis.sessionStorage.removeItem("userMsg");
+          vueThis.reload();
+          vueThis.reloadTwo();
+          vueThis.$router.push("/");
+          vueThis.isLogin = false;
+        })
+        .catch(function(err) {
+          vueThis.sessionStorage.removeItem("newBlock");
+          vueThis.sessionStorage.removeItem("userMsg");
+          vueThis.$router.push("/");
+          vueThis.reload();
+          vueThis.reloadTwo();
+        });
       // window.location.href = "http://account.kirinpool.com:81/#/account/login?platformName=wtcpool&lang=" + this.$i18n.locale;
-
-    },
+    }
   },
-}
+  watch: {
+    $route(to, from) {
+      console.log(to.name,'name1111')
+      if (to.name == 'myltc' && from.name=='unsub') {
+        this.head_username = localStorage.getItem("username");
+        localStorage.setItem("subusername", this.head_username);
+        var vueThis = this;
+        this.getTopMsg();
+        this.getAccountMsg();
+        this.$nextTick(() => {
+          if (this.getCookie("token")) {
+            this.getsubusername();
+            this.isLogin = true;
+          }
+          if (localStorage.getItem("change")) {
+            this.user_head = localStorage.getItem("change");
+            localStorage.setItem("subusername", this.user_head);
+          } else {
+          }
+        });
+        localStorage.setItem("token", this.getCookie("token"));
+        bus.$on("payfee", function(res) {
+          vueThis.payfee = res;
+        });
+      }
+    }
+  }
+};
 </script>
 <style scoped>
 ul {
@@ -440,7 +501,7 @@ ul {
 }
 
 .lang-box {
-  width: 1.11rem;
+  min-width: 1.2rem;
   height: 0.35rem;
   display: flex;
   justify-content: space-between;
@@ -448,7 +509,7 @@ ul {
 }
 
 .lang-box_main {
-  width: 1.2rem;
+  min-width: 1.2rem;
   height: 0.35rem;
   display: flex;
   justify-content: space-between;
@@ -457,7 +518,6 @@ ul {
 }
 
 .lang-box_mained {
-  width: 0.9rem;
   justify-content: space-around;
   align-items: center;
 }
@@ -472,12 +532,11 @@ ul {
   line-height: 0.14rem;
 }
 
-
 .header-box-ul {
   width: 4.69rem;
   display: flex;
   justify-content: space-between;
-  font-family: 'MicrosoftYaHei';
+  font-family: "MicrosoftYaHei";
   font-size: 6px;
   font-weight: normal;
   font-stretch: normal;
@@ -520,12 +579,12 @@ ul {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  text-overflow: ellipsis;
 }
 
 .lang_right {
-  width: 0.4rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   font-size: 0.06rem;
 }
@@ -545,6 +604,7 @@ ul {
   width: 0.08rem;
   height: 0.08rem;
   margin-bottom: 0.01rem;
+  margin-right: 4px;
 }
 
 .user_el_list:hover {
@@ -552,7 +612,8 @@ ul {
 }
 
 .user_list {
-  width: 1.5rem!important;
+  width: 1.5rem !important;
+  min-width: 250px !important;
   background-color: #000224;
   border-radius: 1px;
   overflow: hidden;
@@ -565,7 +626,7 @@ ul {
   text-overflow: ellipsis;
   color: #eeeeee;
   padding-left: 0.22rem;
-  box-sizing: border-box
+  box-sizing: border-box;
 }
 
 .user_center:hover {
@@ -634,7 +695,7 @@ ul {
 }
 
 .user_item img {
-  margin-right: 5px
+  margin-right: 5px;
 }
 
 .el-dropdown-menu__item:hover {
@@ -658,13 +719,9 @@ ul {
   margin: auto 0.1rem;
 }
 
-
-
-
-
 .active {
   border-bottom: 3px solid #fff;
-  opacity: 1!important;
+  opacity: 1 !important;
   color: #fff;
 }
 
@@ -678,8 +735,8 @@ ul {
 }
 
 .username-li {
-  width: 0.29rem;
   opacity: 1;
+  margin-left: 1px;
 }
 
 .user-msg-ul li {
@@ -700,55 +757,8 @@ ul {
 }
 
 .arrow__down {
-  font-size: 12px
+  font-size: 12px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*媒体查询*/
 </style>

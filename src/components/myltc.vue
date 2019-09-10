@@ -173,12 +173,15 @@ export default {
         }
     },
     created() {
-
+            let _that=this
+    this.timer = setInterval(function() {
+      _that.wokerList()
+    }, 300000)
     },
     mounted() {
-
-        if (localStorage.getItem('subnameList') == 0) { this.$router.push({ name: 'unsub' }) }
-        else {
+    if (localStorage.getItem("subnameList") == null||localStorage.getItem("subnameList") < 1) {
+                this.$router.push({ name: "unsub" });
+    }   else {
             this.wokerList()
             this.getmyltcdata()
             this.wokerAllKlinedata()
@@ -623,6 +626,12 @@ export default {
     },
     beforeDestroy(){
         this.timer=null
+        this.eject_data=[]
+         this.wokerAlldata=[]
+          this.wokerListdata=[]
+    },
+    watch:{
+
     }
 }
 </script>
@@ -714,6 +723,7 @@ export default {
     box-sizing: border-box;
     line-height: 0.3rem;
     text-align: left;
+    font-size: 14px;
 }
 
 .ltc_main_item_last {
