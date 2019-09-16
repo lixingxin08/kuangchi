@@ -172,7 +172,6 @@ a:active {
 .service-box,
 .relation-box {
   text-align: left;
-  min-height: 265px;
 }
 
 .service-box-p a:hover {

@@ -13,6 +13,7 @@ const sublist = resolve => require(['@/components/son_set'], resolve);
 const unsub = resolve => require(['@/components/no_son'], resolve);
 const login = resolve => require(['@/components/login'], resolve);
 const register = resolve => require(['@/components/register'], resolve);
+const personal = resolve => require(['@/components/personal'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
 // import register from '@/components/register'
@@ -101,6 +102,14 @@ export default new Router({
       path: '/sublist',
       name: 'sublist',
       component: sublist,
+      meta: {
+        requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
+      }
+    },
+    {
+      path: '/personal',
+      name: 'personal',
+      component: personal,
       meta: {
         requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
       }

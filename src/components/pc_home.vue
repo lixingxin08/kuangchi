@@ -459,7 +459,9 @@ li {
 .color1 {
   color: #2e73e8;
 }
-
+.color1:hover{
+    color: rgba(70,138,255,1);
+}
 
 
 
@@ -606,7 +608,7 @@ li {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #2e73e8;
   border-radius: 0.09rem;
 }
 
@@ -617,6 +619,7 @@ li {
   padding-right: 0.09rem;
   text-align: right;
   font-size: 0.08rem;
+  color: #2e73e8;
 }
 
 .search_inp {

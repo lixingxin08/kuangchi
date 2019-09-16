@@ -325,7 +325,9 @@ export default {
             return;
           }
           if (_that.sonset_list.length <= 1) {
+            localStorage.setItem("change","***")
             localStorage.removeItem("subnameList");
+            
           }
           localStorage.removeItem("subusername");
           console.log(_that.sonset_list.length);

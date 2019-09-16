@@ -531,7 +531,9 @@ ul {
   border-radius: 2px;
   line-height: 0.14rem;
 }
-
+.register_li:hover{
+  background-color: #2e73e8;
+}
 .header-box-ul {
   width: 4.69rem;
   display: flex;
@@ -664,7 +666,6 @@ ul {
 
 .user_head {
   width: 100%;
-  height: 0.72rem;
 }
 
 .user_item {
@@ -728,7 +729,9 @@ ul {
 .no_active {
   opacity: 0.7;
 }
-
+.no_active:hover{
+ opacity: 1;
+}
 .nav-div ul,
 .lang-box ul {
   margin: 0;

@@ -21,7 +21,7 @@
         
                 <div class="flex_b login_item">
                    <div class="logo"><img src="../assets/img/touxiangxiao.png" alt=""></div>
-          <input type="email" placeholder="请输入邮箱验证码" />
+          <input type="text" placeholder="请输入邮箱验证码" />
                 <div class="code" @click="getcode()">
               <div class="getcode">
                    <span>{{code_tips}}</span>
@@ -74,6 +74,7 @@
         </div>
         
       </div>
+      
       <div class="submit" @click="rigister()">注册</div>
     </div>
   </div>
@@ -90,6 +91,9 @@ export default {
       timer:'',
       registertime:60,
       code_tips:'发送验证码',
+      phonecode_tips:'发送验证码',
+      getcodetype:true,
+      getcodetimer:null,
       registerdata: {
         username: "",
         email:'',
@@ -103,7 +107,7 @@ export default {
       },
       emailcode_params:{
         username:'',
-        email
+        email:'',
       },
       phonecode_params:{
         username:'',
@@ -113,6 +117,7 @@ export default {
   },
   methods: {
     changge(val,id) {
+      let _that=this
       this.logintype = val;
       this.registerdata.username = "";
       this.registerdata.email = "";
@@ -123,16 +128,36 @@ export default {
       this.registerdata.getPhoneCode = "";
        this.registerdata.countryCode = "";
       this.register_tips=""
+      this.code_tips="发送验证码"   
+      clearInterval(_that.getcodetimer)
+       this.getcodetimer=null
+      this.registertime=60
+      this.getcodetype=true
+      console.log( this.registertime);     
     },
     //获取验证码
     getcode(){
       let _that=this
+       if(this.getcodetype){
+         this.getcodetype=false;
+            _that.getcodetimer=setInterval(function(){
+              _that.registertime--
+                 _that.code_tips=  _that.registertime 
+                 console.log(_that.registertime);                      
+              if( _that.registertime<=0){
+                _that.getcodetype=true;
+                _that.registertime=60
+                 _that.code_tips="重发验证码";
+                  _that.getcodetimer=null
+                   clearInterval(_that.getcodetimer)
+              }
+          },1000)
+             //获取Email验证码
         if(this.logintype){
-             if(this.verifyUsername(this.registerdata.username)&&this.verEmail(this.registerdata.email)){
-               //获取Email验证码
+             if(this.verifyUsername(this.registerdata.username)&&this.verEmail(this.registerdata.email)){          
                this.emailcode_params.username=this.registerdata.username
                this.emailcode_params.email=this.registerdata.email
-              this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/login',this.emailcode_params, function(data) {
+              this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/getEmailCode',this.emailcode_params, function(data) {
               if(JSON.parse(data).code==1001){
                 alert("请输入完整的注册信息")
               }
@@ -153,39 +178,44 @@ export default {
                 }, function(error) {
                     console.log(error)
                 })
-                console.log('22222')
+                console.log(data,'22222')
              }else{
                // //获取Email验证码信息不齐
-               if(this.verifyUsername(this.registerdata.username)==false){
+               if(_that.verifyUsername(_that.registerdata.username)==false){
                    console.log('111111')
-                   this.$set( this.register_tipsid,0,1)
-                     this.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
-                     this.registerdata.username=''         
-               }else if(this.verEmail(this.registerdata.email)==false){
-                      this.$set( this.register_tipsid,0,2)
-                     this.register_tips="请输入正确邮箱地址"
-                       console.log( this.register_tips,this.register_tipsid,'45555555554')
-                     this.registerdata.email=''
+                   _that.$set( _that.register_tipsid,0,1)
+                     _that.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
+                     _that.registerdata.username=''         
+               }else if(_that.verEmail(_that.registerdata.email)==false){
+                      _that.$set( this.register_tipsid,0,2)
+                     _that.register_tips="请输入正确邮箱地址"
+                       console.log( _that.register_tips,_that.register_tipsid,'45555555554')
+                     _that.registerdata.email=''
                }
              }
         }
+        //获取phone验证码
         else{
             if(this.verifyUsername(this.registerdata.username)&&this.IsPhone(this.registerdata.phone)){
-               //获取phone验证码
+       
                 this.phonecode_params.username=this.registerdata.username
                this.phonecode_params.phone=this.registerdata.phone
-               this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/login',this.phonecode_params, function(data) {
+               this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/getPhoneCode',this.phonecode_params, function(data) {
+                 console.log(data,'phone验证码');
+                 
               if(JSON.parse(data).code==1005){
                 alert("请输入完整的注册信息")
               }
                if(JSON.parse(data).code==1006){
                 alert("用户名已存在")
+                _that.registerdata.username=''
               }
                if(JSON.parse(data).code==1007){
                 alert("手机短信发送失败")
               }
               if(JSON.parse(data).code==1008){
                 alert("手机号已存在")
+                _that.registerdata.phone=''
               }
                if(JSON.parse(data).code==1){
                  alert('手机短信发送成功')
@@ -195,7 +225,7 @@ export default {
                 })
              }else{
                 // //获取phone验证码不齐
-                  if(this.verifyUsername(this.registerdata.username)==false){
+               if(this.verifyUsername(this.registerdata.username)==false){
                     console.log(333333);               
                     this.$set( this.register_tipsid,0,4)
                      this.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
@@ -208,13 +238,15 @@ export default {
                }
              }
         }
-       
+      }else{
+      }
     },
     //注册
     rigister(){
       let _that=this
       if(this.register_tipstype[0]==false&&this.registerdata.password!==""){
-        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/login',this.registerdata, function(data) {
+
+        this.$ajax('post', this.GLOBAL.baseUrl + 'v2/post /account/register',this.registerdata, function(data) {
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
               }
@@ -245,25 +277,24 @@ export default {
                 })
       }else{
         console.log(3333)
-          if(this.logintype==true&&this.registerdata.password==""){
-        this.registerdata.email = "";
-      this.registerdata.phone = "";
-             
+          if(_that.logintype==true&&_that.registerdata.password==""){
+        _that.registerdata.email = "";
+      _that.registerdata.phone = "";          
               alert(this.register_tips)
               console.log(111222)
       
           }else{
-            console.log(this.logintype,this.registerdata.password,'aaaaa')
-            alert(this.register_tips)
+            console.log(_that.logintype,_that.registerdata.password,'aaaaa')
+            alert(_that.register_tips)
           }
       }
 
     },
-
     //验证
     verify(val,id){
       this.register_tipsid[0]=id
       console.log(val)
+      console.log(id);  
         if(this.logintype){
           if(val){
              this.register_tipstype[0]=false
@@ -299,7 +330,12 @@ export default {
           }
         }
     }
-  }
+  },
+  beforeDestroy() {
+     clearInterval(this.getcodetimer)
+     this.getcodetimer=null
+      clearInterval(this.timer)
+  },
 };
 </script>
 <style scoped>
