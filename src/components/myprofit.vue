@@ -339,7 +339,7 @@ export default {
             JSON.stringify(_that.profit_data.subUserEarningsListInfo.array)
           );
           for (var i = 0; i < list.length; i++) {
-             list[i].date = _that.timestampToTime3(list[i].date);
+            //  list[i].date = _that.timestampToTime3(list[i].date);
             list[i].rewardType = list[i].rewardType == 2 ? "挖块" : "pplns";
             list[i].status = list[i].status > 0 ? "已支付" : "未支付";
             list[i].dayHr = _that.changpow(list[i].dayHr, 2) + "H/s";
@@ -349,7 +349,7 @@ export default {
         else if (!_that.recordtype) {
           // 上面的index、nickName、name是tableData里对象的属性
           console.log(_that.profit_data.subUserPayListInfo.array, "33444444");
-          filterVal = ["paytime", "paytime", "payMoney", "toAddress", "hash"];
+          filterVal = ["payTime", "settleTime", "payMoney", "toAddress", "hash"];
           this.$set(_that.list, 0, _that.profit_data.subUserPayListInfo.array);
           console.log(_that.list, "lisst12222222222");
           list = JSON.parse(
@@ -357,7 +357,7 @@ export default {
           );
           console.log(list);
           for (var i = 0; i < list.length; i++) {
-            list[i].paytime = _that.timestampToTime3(list[i].paytime);
+            // list[i].paytime = _that.timestampToTime3(list[i].paytime);
             // list[i].payMoney = _that.format(list[i].payMoney,8) + list[i].payType == 2 ? '（ERC20）' : ''
           }
           // _that.getValueByKey(_that.profit_data.subUserPayListInfo.array[0], filterVal, list)

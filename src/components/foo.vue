@@ -128,9 +128,9 @@ a:active {
   justify-content: start;
 }
 
-.foo {
+/* .foo {
   margin-top: 0.25rem;
-}
+} */
 
 #QrCode-box2 {
   display: none;

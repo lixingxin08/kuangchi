@@ -3,7 +3,7 @@
     <div class="parent-box">
       <div class="header-parent-box">
         <div class="center_box">
-          <ul class="header-box-ul" @click="getAccountMsg()">
+          <ul class="header-box-ul">
             <li>{{$t("m.header.key1")}}: {{topMsg.minersTotal?format(topMsg.minersTotal,0):"--"}}</li>
             <li>{{$t("m.header.key2")}}: {{topMsg.hashRate?format((topMsg.hashRate/(1000*1000*1000)),2):"--"}} GH/s</li>
             <li>{{$t("m.header.key3")}}: {{topMsg.difficulty?format((topMsg.difficulty/(1000*1000*1000)),2):"--"}} GH</li>
@@ -24,9 +24,9 @@
                 </div>
               </router-link>
             </div>
-            <div class="nav_main" :class="isLogin?'nav_mained':''">
+            <div class="nav_main" :class="username?'nav_mained':''">
               <div class="nav-div">
-                <ul class="nav-div-ul" v-if="!getCookie('isLogin')">
+                <ul class="nav-div-ul" v-if="!isLogin">
                   <li
                     :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'"
                   >
@@ -41,7 +41,7 @@
                     >{{$t("m.header.key26")}}</a>
                   </li>
                 </ul>
-                <ul class="nav-div-ul" v-if="getCookie('isLogin')">
+                <ul class="nav-div-ul" v-if="isLogin">
                   <li
                     :class="$route.path === '/home'||$route.path === '/homeitem'?'active':'no_active'"
                   >
@@ -66,11 +66,11 @@
             </div>
 
             <div class="lang-box">
-              <ul class="lang-box_main" :class="getCookie('isLogin')?'lang-box_mained':''">
-                <a :href="baseHerf2+ $i18n.locale" v-show="!getCookie('isLogin')">
+              <ul class="lang-box_main" :class="isLogin?'lang-box_mained':''">
+                <a :href="baseHerf2+ $i18n.locale" v-show="!isLogin">
                   <li class="register_li">{{$t("m.header.key12")}}</li>
                 </a>
-                <li v-if="getCookie('isLogin')">
+                <li v-if="isLogin">
                   <el-dropdown trigger="click" placement="bottom" click="user_main">
                     <span class="el-dropdown-link lang_left">
                       <img src="../assets/img/user_img.png" alt class="user_img" />
@@ -80,7 +80,6 @@
                     <el-dropdown-menu slot="dropdown" class="user_list">
                       <el-dropdown-item class="user_head">
                         <div class="user_head">
-                          <happy-scroll size="4" hide-horizontal resize>
                             <div class="user_head">
                               <li
                                 class="user_item"
@@ -104,7 +103,6 @@
                                 <span>{{subnameList_i[index]}}H/s</span>
                               </li>
                             </div>
-                          </happy-scroll>
                         </div>
                       </el-dropdown-item>
                       <el-dropdown-item class="user_center">
@@ -120,7 +118,7 @@
                               <span class="text_color">{{$t("m.header.key32")}}</span>
                             </router-link>
                           </span>
-                          <span @click="sing_up" class="user_b_main_item">{{$t("m.header.key13")}}</span>
+                          <span @click="loginout()" class="user_b_main_item">{{$t("m.header.key13")}}</span>
                         </li>
                       </el-dropdown-item>
                     </el-dropdown-menu>
@@ -136,10 +134,10 @@
                                                                                               <li @click="sing_up">{{$t("m.header.key13")}}</li>
                                                                                             </ul>
                 </li>-->
-                <li v-if="!getCookie('isLogin')">
-                  <a :href="baseHerf + $i18n.locale">
+                <li v-if="!isLogin">
+                  <router-link to="login">
                     <div class="login-box register_li">{{$t("m.home.key1")}}</div>
-                  </a>
+                 </router-link>
                 </li>
                 <li class="username-li" style="position: relative">
                   <el-dropdown trigger="click" placement="bottom">
@@ -191,8 +189,8 @@ export default {
       },
       payfee: "",
       subnameparams: {
-        username: this.getCookie("username"),
-        token: this.getCookie("token")
+        username:this.getCookie("username"),
+        token:this.getCookie("token")
       },
       user_head: "***",
       lang_title: "中文",
@@ -207,16 +205,21 @@ export default {
     };
   },
   created() {
-    this.head_username = localStorage.getItem("username");
+    this.getAccountInfo2()
+    if (localStorage.getItem("lang")=='en') {
+      this.lang_title='English'
+    }if (localStorage.getItem("lang")=='zh') {
+      this.lang_title='中文'
+    }if (localStorage.getItem("lang")=='ko') {
+      this.lang_title='한글'
+    }
+     if(localStorage.getItem("isLogin")){
+    this.isLogin = localStorage.getItem("isLogin");
+     }   
     localStorage.setItem("subusername", this.head_username);
     var vueThis = this;
     this.getTopMsg();
-    this.getAccountMsg();
     this.$nextTick(() => {
-      if (this.getCookie("token")) {
-        this.getsubusername();
-        this.isLogin = true;
-      }
       if (localStorage.getItem("change")) {
         this.user_head = localStorage.getItem("change");
         localStorage.setItem("subusername", this.user_head);
@@ -236,6 +239,8 @@ export default {
   },
   beforeDestroy() {
     this.timer = null;
+    this.isLogin=false;
+    localStorage.removeItem('isLogin')
   },
   methods: {
     //切换用户
@@ -251,42 +256,78 @@ export default {
       let _that = this;
       var vueThis = this;
       var obj = {};
-      this.$axios({
-        method: "get",
-        url:
-          this.baseUrlTwo +
-          "getAccountInfo?username=" +
-          this.getCookie("username"),
-        withCredentials: true
-      })
-        .then(function(res) {
-          vueThis.user_msg = res;
-          //手机号或邮箱
-          _that.head_username =
-            res.data.msg.data.email == ""
-              ? res.data.msg.data.phone
-              : res.data.msg.data.email;
-          _that.username = res.data.msg.data.username;
-          _that.user_msgs = res.data.msg.data;
-          _that.setGoogleAuth = res.data.msg.data.setGoogleAuth;
-          _that.setPaymentCode = res.data.msg.data.setPaymentCode;
-          _that.setRealNameAuth = res.data.msg.data.setRealNameAuth;
+      // this.$axios({
+      //   method: "get",
+      //   url:
+      //     this.baseUrlTwo +
+      //     "getAccountInfo?username=" +
+      //     this.getCookie("username"),
+      //   withCredentials: true
+      // })
+      //   .then(function(res) {
+      //     vueThis.user_msg = res;
+      //     //手机号或邮箱
+      //     _that.head_username =
+      //       res.data.msg.data.email == ""
+      //         ? res.data.msg.data.phone
+      //         : res.data.msg.data.email;
+      //     _that.username = res.data.msg.data.username;
+      //     _that.user_msgs = res.data.msg.data;
+      //     _that.setGoogleAuth = res.data.msg.data.setGoogleAuth;
+      //     _that.setPaymentCode = res.data.msg.data.setPaymentCode;
+      //     _that.setRealNameAuth = res.data.msg.data.setRealNameAuth;
+      //     localStorage.setItem("username", _that.username);
+      //     localStorage.setItem("setGoogleAuth", _that.setGoogleAuth);
+      //     localStorage.setItem("setPaymentCode", _that.setPaymentCode);
+      //     localStorage.setItem("setRealNameAuth", _that.setRealNameAuth);
+      //     localStorage.setItem("token", _that.getCookie("token"));
+      //     _that.isLogin = true;
+      //     _that.gethaveson();
+      //     setCookie("isLogin", "isTrue");
+      //     if (res.data.code === 1) {
+      //       setCookie("isLogin", "isTrue");
+      //       // vueThis.reload();
+      //       // vueThis.reloadTwo();
+      //     } else if (res.data.code === 1068) {
+      //     }
+      //   })
+      //   .catch(function(err) {});
+    },
+    //获取用户信息
+    getAccountInfo2(){
+      let _that=this
+      console.log(this.subnameparams);  
+      this.$ajax('post', this.GLOBAL.baseUrl + 'account/getAccountInfo',this.subnameparams, function(data) {
+        console.log(JSON.parse(data) ,'getAccountInfo211111');
+              if(JSON.parse(data).code==1038){
+                alert("平台信息有误")
+              }if(JSON.parse(data).code==1068){
+                 _that.isLogin=false
+                 _that.deleteCookie('token')
+                 _that.deleteCookie('username')
+              }
+               if(JSON.parse(data).code==1){
+                    _that.head_username =
+           JSON.parse(data).msg.data.email == ""
+              ? JSON.parse(data).msg.data.phone
+              : JSON.parse(data).msg.data.email;
+          _that.username = JSON.parse(data).msg.data.username;
+          _that.user_msgs = JSON.parse(data).msg.data;
+          _that.setGoogleAuth = JSON.parse(data).msg.data.setGoogleAuth;
+          _that.setPaymentCode = JSON.parse(data).msg.data.setPaymentCode;
+          _that.setRealNameAuth = JSON.parse(data).msg.data.setRealNameAuth;
+           localStorage.setItem("personal_msg",JSON.stringify(JSON.parse(data).msg.data));
           localStorage.setItem("username", _that.username);
           localStorage.setItem("setGoogleAuth", _that.setGoogleAuth);
           localStorage.setItem("setPaymentCode", _that.setPaymentCode);
           localStorage.setItem("setRealNameAuth", _that.setRealNameAuth);
           localStorage.setItem("token", _that.getCookie("token"));
           _that.isLogin = true;
-          _that.gethaveson();
-          setCookie("isLogin", "isTrue");
-          if (res.data.code === 1) {
-            setCookie("isLogin", "isTrue");
-            // vueThis.reload();
-            // vueThis.reloadTwo();
-          } else if (res.data.code === 1068) {
-          }
-        })
-        .catch(function(err) {});
+            _that.gethaveson();
+              }
+                }, function(error) {
+                    console.log(error)
+                })   
     },
     //是否有子账户
     gethaveson() {
@@ -327,7 +368,7 @@ export default {
           for (var i = 0; i < _that.subnameList.length; i++) {
             _that.subnameList_item[i] = _that.subnameList[i].subUsername;
             _that.subnameList_i[i] =
-              _that.changpow(_that.subnameList[i].dayHrInfo) || 0;
+              _that.changpow(_that.subnameList[i].dayHrInfo) || '--';
           }
           localStorage.setItem("subnameList", _that.subnameList_i.length);
           // localStorage.setItem('username', _that.subnameList[0].subUsername);
@@ -404,51 +445,46 @@ export default {
         .catch(function(err) {});
     },
     // 退出
-    sing_up() {
-      var vueThis = this;
-      localStorage.removeItem("change");
-      localStorage.removeItem("username");
-      localStorage.removeItem("subusername");
-      localStorage.removeItem("token");
-      localStorage.removeItem("subnameList");
-      setCookie("isLogin", "", -1);
-      setCookie("token", "", -1);
-      this.$axios({
-        method: "post",
-        url: this.baseUrlTwo + "tuichu"
-      })
-        .then(function(res) {
-          vueThis.sessionStorage.removeItem("newBlock");
-          vueThis.sessionStorage.removeItem("userMsg");
-          vueThis.reload();
-          vueThis.reloadTwo();
-          vueThis.$router.push("/");
-          vueThis.isLogin = false;
-        })
-        .catch(function(err) {
-          vueThis.sessionStorage.removeItem("newBlock");
-          vueThis.sessionStorage.removeItem("userMsg");
-          vueThis.$router.push("/");
-          vueThis.reload();
-          vueThis.reloadTwo();
-        });
-      // window.location.href = "http://account.kirinpool.com:81/#/account/login?platformName=wtcpool&lang=" + this.$i18n.locale;
+    loginout(){
+      let _that=this
+      this.subnameparams.token=this.getCookie('token')
+      this.subnameparams.username=this.getCookie('username')
+            console.log(this.subnameparams);
+        this.$ajax('post', this.GLOBAL.baseUrl + 'account/tuichu',this.subnameparams, function(data) {
+          console.log(data,'datadatadatadata'); 
+              if(JSON.parse(data).code==1038){
+                alert("平台信息有误")
+              }
+               if(JSON.parse(data).code==1039){
+                alert("手机号未注册")
+              }
+               if(JSON.parse(data).code==1){
+               _that.setCookie('token',null)
+                _that.setCookie('username',null)
+                _that.head_username=''
+                _that.user_head='***'
+                localStorage.removeItem('token')
+                 localStorage.removeItem('isLogin')
+                 _that.isLogin=false
+                  localStorage.removeItem('username')
+                localStorage.removeItem("change");
+                localStorage.removeItem("subusername");
+                 _that.deleteCookie('token')
+                 _that.deleteCookie('username')  
+              }
+                }, function(error) {
+                    console.log(error)
+                })     
     }
   },
   watch: {
-    $route(to, from) {
-      console.log(to.name,'name1111')
+    $route(to, from) {  
+      console.log(to.name,'name1111',from.name)
       if (to.name == 'myltc' && from.name=='unsub') {
-        this.head_username = localStorage.getItem("username");
         localStorage.setItem("subusername", this.head_username);
         var vueThis = this;
         this.getTopMsg();
-        this.getAccountMsg();
         this.$nextTick(() => {
-          if (this.getCookie("token")) {
-            this.getsubusername();
-            this.isLogin = true;
-          }
           if (localStorage.getItem("change")) {
             this.user_head = localStorage.getItem("change");
             localStorage.setItem("subusername", this.user_head);
@@ -459,7 +495,13 @@ export default {
         bus.$on("payfee", function(res) {
           vueThis.payfee = res;
         });
-      }
+      }if(from.name=='login'){ 
+            this.head_username = localStorage.getItem("username");
+             this.subnameparams.token=this.getCookie('token')
+      this.subnameparams.username=this.getCookie('username') 
+           this.isLogin = localStorage.getItem("isLogin");
+        this.getsubusername()
+      this.getAccountInfo2()}
     }
   }
 };
@@ -614,7 +656,7 @@ ul {
 }
 
 .user_list {
-  width: 1.5rem !important;
+  /* width: 1.5rem !important; */
   min-width: 250px !important;
   background-color: #000224;
   border-radius: 1px;
@@ -627,7 +669,7 @@ ul {
   border-top: 1px solid #434343;
   text-overflow: ellipsis;
   color: #eeeeee;
-  padding-left: 0.22rem;
+  padding-left: 0.1rem;
   box-sizing: border-box;
 }
 
@@ -640,7 +682,7 @@ ul {
   height: 0.18rem;
   line-height: 0.18rem;
   color: #2e73e8;
-  padding: 0 0.22rem;
+  padding: 0 0.1rem;
 }
 
 .user_bottom:hover {
@@ -658,7 +700,9 @@ ul {
   justify-content: space-between;
   align-items: center;
 }
-
+.user_b_main_item{
+  margin-right: 0.1rem;
+}
 .user_b_main_item:hover {
   color: #2e73e8;
   opacity: 0.9;
@@ -676,9 +720,12 @@ ul {
   color: #fff;
   border-bottom: 1px solid #434343;
   box-sizing: border-box;
-  margin-left: 0.15rem;
+  margin-left: 0.1rem;
+  margin-right: 0.1rem;
 }
-
+.user_item:last-child{
+  border-bottom: none;
+}
 .user_item:hover {
   background-color: #050e3a;
   color: #2e73e8;

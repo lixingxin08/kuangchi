@@ -97,7 +97,7 @@
                                 <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
                                 <img src="../assets/img/NA.png" alt="" v-if="item.minerFiner!==1">
                             </li>
-                            <li class="li3" @click="item_search(item.number)">{{item.hash}}</li>
+                            <li class="li3" @click="item_search(item.number)">{{filterFun(item.hash)}}</li>
                             <li class="li4">{{changpow(item.difficulty)}}</li>
                             <li class="li5">{{comdify(item.transactionNumber)}}</li>
                             <li class="li6">{{format(item.reward,8)}}</li>

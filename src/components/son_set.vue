@@ -30,7 +30,7 @@
             type="text"
             :placeholder="sonset_inp"
             class="add_adress"
-            v-model="add_sons.address"
+            v-model="address_paramgs.address"
             @keyup.enter="address_edit(indexs)"
           />
         </li>
@@ -212,7 +212,8 @@ export default {
         username: localStorage.getItem("username"),
         token: localStorage.getItem("token"),
         code: "",
-        paypassword: ""
+        paypassword: "",
+        address:'',
       },
       delete_tips: "",
       testdata: {
@@ -351,23 +352,25 @@ export default {
     //编辑
     edit_sons(indexs) {
       let _that = this;
-      _that.add_sons.address = "";
+      _that.address_paramgs.address = "";
       _that.edit_son = indexs;
       this.item_index = indexs;
     },
     //编辑地址
     address_edit() {
       let _that = this;
+      console.log();
+      
       if (
-        _that.add_sons.address.indexOf("0x") !== 0 &&
-        _that.add_sons.address.length !== 42
+        _that.address_paramgs.address.indexOf("0x") !== 0 ||
+        _that.address_paramgs.address.length !== 42
       ) {
         alert("请输入正确钱包地址");
-        _that.add_sons.address = "";
+        _that.address_paramgs.address = "";
         return;
       }
-      if (!this.verifyUsername2(this.add_sons.address)) {
-        this.add_sons.address = "";
+      if (!this.verifyUsername2(this.address_paramgs.address)) {
+        this.address_paramgs.address = "";
         return alert("请输入正确的钱包地址");
       }
       _that.pop_type = 3;
@@ -377,33 +380,37 @@ export default {
       let _that = this;
       this.pop_type = 0;
       if (
-        _that.add_sons.address.indexOf("0x") !== 0 &&
-        _that.add_sons.address.length !== 42
+        _that.address_paramgs.address.indexOf("0x") !== 0 ||
+        _that.address_paramgs.address.length !== 42
       ) {
         alert("请输入正确钱包地址");
-        _that.add_sons.address = "";
+        _that.address_paramgs.address = "";
         return;
       }
       this.$set(_that.tiptype, 0, false);
-      this.add_sons.token = getCookie("token");
-      this.add_sons.subusername = _that.sonset_list[this.item_index].name;
-      this.add_sons.username = localStorage.getItem("username");
+      this.address_paramgs.token = getCookie("token");
+      this.address_paramgs.subusername = _that.sonset_list[this.item_index].name;
+      this.address_paramgs.username = localStorage.getItem("username");
       console.log(_that.add_sons);
       this.$ajax(
         "post",
         this.GLOBAL.baseUrl + "v2/addressForAccountSub",
-        this.add_sons,
+        this.address_paramgs,
         function(data) {
           console.log(data);
           _that.address_paramgs.paypassword = "";
           _that.address_paramgs.code = "";
+          console.log(JSON.parse(data).code);
+          
           if (JSON.parse(data).code !== 200) {
-            _that.add_sons.address = "";
+               console.log(JSON.parse(data).code,5555);
+            _that.address_paramgs.address = "";
             _that.$set(
               _that.tips_data,
               0,
               "编辑失败，请输入正确的资金密码和谷歌验证码"
             );
+            alert( "编辑失败，请输入正确的资金密码和谷歌验证码")
             return;
           }
           _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
@@ -529,8 +536,7 @@ export default {
 }
 
 .sonset {
-  min-height: 2.2rem;
-  margin-bottom: 0.6rem;
+  min-height: 3.14rem;
 }
 
 .flex_c {

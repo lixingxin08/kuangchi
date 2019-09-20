@@ -82,7 +82,12 @@ export default {
     window.removeEventListener("scroll", this.showIcon);
   },
   beforeDestroy() {
-    localStorage.removeItem('subnameList')
+    // localStorage.removeItem('subnameList')
+    // localStorage.removeItem('token')
+    // localStorage.removeItem('isLogin')
+    // localStorage.removeItem('username')
+    // localStorage.removeItem("change");
+    // localStorage.removeItem("subusername");    
   }
 };
 </script>
@@ -112,6 +117,15 @@ a li {
   color: #2c3e50;
   min-width: 1300px!important;
   /*margin-top: 60px;*/
+}
+.flex_fc_c{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column
+}
+.el-dropdown-menu{
+  max-height: 1900px
 }
 .pc{
   min-width: 1300px!important;
@@ -144,7 +158,6 @@ button {
   outline: none;
   line-height: normal;
 }
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /*-webkit-appearance: none;*/

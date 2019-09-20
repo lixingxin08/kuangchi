@@ -34,7 +34,10 @@
                     </div>
                     <!--底部-->
                     <div class="ltc_c_title flex_b">
+                        <div>
+                        <div class="block_box"></div>
                         <span> {{$t("m.myMill.key33")}}</span>
+                        </div>
                         <div class="ltc_c_title_r flex_b">
                             <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">小时</span>
                             <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">日期</span>
@@ -347,9 +350,10 @@ export default {
         },
         eject_open(index) {
             this.eject_switch = true;
-            this.eject_data = this.ltc_item[index]
+          
             console.log(this.wokerListdat)
             this.List_k_params.wokername = this.wokerListdata[index].wokerName
+              this.eject_data = this.List_k_params.wokername
             console.log(index)
             console.log(this.List_k_params.wokername)
             this.wokerListKlinedata()
@@ -769,7 +773,13 @@ export default {
     color: #333333;
     margin-bottom: 0.1rem;
 }
-
+.block_box {
+    width: 0.05rem;
+    height: 0.05rem;
+    background-color: #2e73e8;
+    display: inline-block;
+    margin-right: 0.05rem;
+}
 .ltc_c_title_r {
     width: 0.65rem;
 }

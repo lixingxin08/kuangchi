@@ -13,6 +13,7 @@ const sublist = resolve => require(['@/components/son_set'], resolve);
 const unsub = resolve => require(['@/components/no_son'], resolve);
 const login = resolve => require(['@/components/login'], resolve);
 const register = resolve => require(['@/components/register'], resolve);
+const restePassword = resolve => require(['@/components/restePassword'], resolve);
 const personal = resolve => require(['@/components/personal'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
@@ -79,7 +80,7 @@ export default new Router({
       name: 'myprofit',
       component: myprofit,
       meta: {
-        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        // requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       }
     },
     {
@@ -87,7 +88,7 @@ export default new Router({
       name: 'unsub',
       component: unsub,
       meta: {
-        requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        // requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       }
     },
     {
@@ -95,7 +96,7 @@ export default new Router({
       name: 'myltc',
       component: myltc,
       meta: {
-        requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
+        // requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
       }
     },
     {
@@ -163,6 +164,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
-    }
+    },
+    {
+      path: '/restePassword',
+      name: 'restePassword',
+      component: restePassword
+    },
   ]
 })

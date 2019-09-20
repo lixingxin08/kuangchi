@@ -17,6 +17,8 @@ import md5 from "js-md5"
 import './components/common/rem.js'
 import echarts from 'echarts'
 import ajax from './components/common/mixin.js'
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
@@ -135,7 +137,14 @@ Vue.prototype.vmf = function (str) {
       return false;
     }
   };
-
+  Vue.prototype.isNumberOr_Letter2 = function (s) {
+    var regu = /^(?=.*\d)(?=.*[a-zA-Z]).{6,20}$/;
+    if (regu.test(s)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 //校验用户名
 Vue.prototype.verifyUsername = function (str) {
   var re = /^[a-z][a-z0-9]{7,15}$/;

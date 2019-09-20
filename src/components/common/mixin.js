@@ -2,7 +2,6 @@ const Ajax=function(type, url, data, success, failed){
     // 创建ajax对象
     var xhr = null;
         xhr = new XMLHttpRequest();
-
     // 用于清除缓存
     var random = Math.random();
  

@@ -6,10 +6,10 @@
     <div class="home_tips" v-if="hometype==1">
       <div class="center-box">
         <router-link :to="{name:'download',query:{t:6}}">
-          <div class="tips_l" @click="to_down2(4)"> <img src="../assets/img/u68.png" alt="">
+          <div class="tips_l ishover" @click="to_down2(4)"> <img src="../assets/img/u68.png" alt="">
             <span class="tips_main">{{$t("m.home.key34")}}</span>
           </div>
-          <div class="tips_r" @click="to_down2(4)">
+          <div class="tips_r ishover" @click="to_down2(4)">
             {{$t("m.home.key33")}}>
           </div>
         </router-link>
@@ -49,7 +49,7 @@
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[1]" :key="index" :class="hometype!==3?'':'wallet_top_c'">
                 <span>{{item}}</span>
                 <span v-if="hometype!==4">{{filterFun(user_detail_data[1][index])}}</span>
-                <span v-if="hometype==4&&index==0" @click="item_search(user_detail_data[1][0])">{{user_detail_data[1][index]}}</span>
+                <span class="ishover" v-if="hometype==4&&index==0" @click="item_search(user_detail_data[1][0])">{{user_detail_data[1][index]}}</span>
                 <span v-if="hometype==4&&index!==0">{{user_detail_data[1][index]}}</span>
               </div>
             </div>
@@ -57,7 +57,7 @@
               <div class="block_c_main_item" v-for="(item,index) in block_top_data[2]" :key="index">
                 <span>{{item}}</span>
                 <span v-if="hometype!==4">{{filterFun(user_detail_data[2][index])}}</span>
-                <span v-if="hometype==4" @click="item_search(user_detail_data[2][index])">{{user_detail_data[2][index]}}</span>
+                <span class="ishover" v-if="hometype==4" @click="item_search(user_detail_data[2][index])">{{user_detail_data[2][index]}}</span>
               </div>
             </div>
           </div>
@@ -88,13 +88,13 @@
           <!--首页数据-->
           <div v-if="hometype==1">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-              <li class="li0" @click="item_search(item.number)">{{comdify(item.number)}}</li>
+              <li class="li0 ishover" @click="item_search(item.number)">{{comdify(item.number)}}</li>
               <li class="li1">{{timestampToTime(item.timestamp)}}</li>
               <li class="li2">
                 <img src="../assets/img/KIR.png" alt="" v-if="item.minerFiner==1">
                 <img src="../assets/img/NA.png" alt="" v-if="item.minerFiner!==1">
               </li>
-              <li class="li3" @click="item_search(item.number)">{{item.hash}}</li>
+              <li class="li3 ishover" @click="item_search(item.number)">{{filterFun(item.hash)}}</li>
               <li class="li4">{{changpow(item.difficulty)}}</li>
               <li class="li5">{{comdify(item.transactionNumber)}}</li>
               <li class="li6">{{format(item.reward,8)}}</li>
@@ -103,9 +103,9 @@
           <!--块高度交易数-->
           <div v-if="hometype==2">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-              <li class="li1" @click="item_search(user_detail_data[0][0])">{{filterFun(item.hash)}}</li>
-              <li class="li2" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
-              <li class="li3" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
+              <li class="li1 ishover" @click="item_search(user_detail_data[0][0])">{{filterFun(item.hash)}}</li>
+              <li class="li2 ishover" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
+              <li class="li3 ishover" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
               <li class="li4">{{((item.gasPrice / Math.pow(10, 18)) * item.gas).toFixed(8)}}</li>
               <li class="li5">{{comdify(item.value).toFixed(8)}}</li>
             </ul>
@@ -114,9 +114,9 @@
           <div v-if="hometype==3&&wallet_changes==true">
             <ul class="center-ul" v-for="(item,index) in datas" :key="index">
               <!-- <li class="li0" >{{comdify(item.blockNumber)}}</li>   -->
-              <li class="li1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
-              <li class="li2" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
-              <li class="li3" @click="item_search(item.toAddress)">{{item.toAddress}}</li>
+              <li class="li1 ishover" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
+              <li class="li2 ishover" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
+              <li class="li3 ishover" @click="item_search(item.toAddress)">{{item.toAddress}}</li>
               <li class="li4">{{((item.gasPrice / Math.pow(10, 18)) * item.gas).toFixed(8)}}</li>
               <li class="li5">{{comdify(item.value / Math.pow(10, 18).toFixed(8))}}</li>
               <li class="li6" v-if="!wallet_changes">{{comdify(item.value / Math.pow(10, 18).toFixed(8))}}</li>
@@ -437,9 +437,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-* {
-  /*color: #000;*/
-}
 
 h1,
 h2 {
@@ -451,7 +448,9 @@ ul {
   padding: 0;
   margin: 0;
 }
-
+.ishover:hover{
+  color: rgba(0,80,214,1)
+}
 li {
   /*display: inline-block;*/
 }
