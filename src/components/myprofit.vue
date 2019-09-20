@@ -313,6 +313,7 @@ export default {
         },
         function(error) {
           alert("网络出现一点点问题，请稍后再试");
+          _that.$router.push({name:'home'})
         }
       );
     },

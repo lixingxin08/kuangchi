@@ -36,38 +36,38 @@ Vue.use(HappyScroll)
 axios.defaults.withCredentials = true;//让ajax携带cookie
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 //进入路由前校验是否需要登录
-router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) {
-    if (getCookie("isLogin")) {
-      next()
-    } else {
-      // next(
-      //   // alert(window.vm.$t("m.main.key4")),
-      //   // window.location.href = global.baseHerf + vm.$i18n.locale
-      // );
-      // next({
-      //   path:"/"
-      // })
-      window.location.href = global.baseHerf + vm.$i18n.locale
-    }
-  } else {
-    next()
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requireAuth) {
+//     if (getCookie("isLogin")) {
+//       next()
+//     } else {
+//       // next(
+//       //   // alert(window.vm.$t("m.main.key4")),
+//       //   // window.location.href = global.baseHerf + vm.$i18n.locale
+//       // );
+//       // next({
+//       //   path:"/"
+//       // })
+//       window.location.href = global.baseHerf + vm.$i18n.locale
+//     }
+//   } else {
+//     next()
+//   }
+// });
 
-axios.interceptors.request.use(
-  config => {
-    let token = getCookie("userToken");
-    if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = "Bearer " + `${token}`;
-    }
+// axios.interceptors.request.use(
+//   config => {
+//     let token = getCookie("userToken");
+//     if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+//       config.headers.Authorization = "Bearer " + `${token}`;
+//     }
 
-    return config;
-  },
-  err => {
-    return Promise.reject(err);
-  }
-);
+//     return config;
+//   },
+//   err => {
+//     return Promise.reject(err);
+//   }
+// );
 
 axios.interceptors.response.use(
   response => {
