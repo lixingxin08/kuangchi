@@ -71,6 +71,10 @@ axios.defaults.withCredentials = true;//让ajax携带cookie
 
 axios.interceptors.response.use(
   response => {
+    if (response.data.code === 1068) {
+      alert('登录已失效，请重新登录')
+      this.$router.push({name:'login'})
+    } 
     if (response.data.msg === "账户未登录") {
       sessionStorage.removeItem("newBlock");
       sessionStorage.removeItem("userMsg");

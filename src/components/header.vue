@@ -250,6 +250,7 @@ export default {
       this.user_head = this.subnameList[index].subUsername;
       localStorage.setItem("subusername", this.user_head);
       localStorage.setItem("change", this.user_head);
+      this.$router.push({name:'myprofit'})
       this.reloadTwo();
     },
     //获取账号信息
@@ -471,7 +472,8 @@ export default {
                 localStorage.removeItem("change");
                 localStorage.removeItem("subusername");
                  _that.deleteCookie('token')
-                 _that.deleteCookie('username')  
+                 _that.deleteCookie('username') 
+                 _that.$router.push({name:'home'}) 
               }
                 }, function(error) {
                     console.log(error)

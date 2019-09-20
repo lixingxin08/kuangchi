@@ -3,79 +3,122 @@
         <div class="personal_title">个人中心</div>
       <div class="flex_b personal_main">
        <div class="flex_f_c personal_l">
-           <div class="personal_litem"> <img src="../assets/img/personal_img1.png" alt=""> {{personal_msg.username}}</div>
-           <div class="personal_litem" @click="change(true)">  <img src="../assets/img/personal_img2.png" alt="">  <img src="../assets/img/personal_img3.png" alt="">账号绑定</div>
-           <div class="personal_litem" @click="change(false)">  <img src="../assets/img/personal_img4.png" alt="">  <img src="../assets/img/personal_img5.png" alt=""> 安全设置</div>
+           <div class="head_bg personal_litem"> <img src="../assets/img/personal_img1.png" alt=""> {{personal_msg.username}}</div>
+           <div class="flex_f personal_litem" @click="change(true)" :class="bindtype?'color1':''">  <div  v-if="bindtype"><img src="../assets/img/personal_img2.png" alt=""></div>  <div  v-if="!bindtype"><img src="../assets/img/personal_img3.png" alt=""></div> 账号绑定</div>
+           <div class="flex_f personal_litem" @click="change(false)" :class="bindtype?'':'color1'">  <div  v-if="!bindtype"><img src="../assets/img/personal_img2.png" alt=""></div>  <div  v-if="bindtype"><img src="../assets/img/personal_img3.png" alt=""></div>  安全设置</div>
        </div>
        <div class="personal_r">
-            <div class="bind" v-if="bindtype">
-                 <!--手机注册用户设置安全手机-->
-                <div class="bind_item phoneuser" v-if="personal_msg.phone!==''">
-                    <div class="emailuser_t">
-                        <div class="emailuser_tl"></div>
-                        <div class="flex_bf_c emailuser_tr">
-                             <div>安全手机</div>
-                             <div>安全手机可以用于登录帐号，重置密码或其他安全验证</div>
-                             <div @click="showshare(2)">更换</div>
+            <div class="personal_r_item bind" v-if="bindtype">
+                 <!--手机注册用户更换安全手机-->
+                <div class="head_bg personal_litem pd_left">账号绑定</div>
+                <div class="personal_r_main">
+                <div class="flex_b bind_item " v-if="personal_msg.phone!==''">
+                  <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                          <img src="../assets/img/bind_img1.png" alt="">
                         </div>
-                    </div>              
-                </div>
-                <!--邮箱注册用户设置安全手机-->
-                <div class="bind_item emailuser" v-if="personal_msg.phone==''">
-                    <div class="emailuser_t">
-                        <div class="emailuser_tl"></div>
                         <div class="flex_bf_c emailuser_tr">
-                             <div>安全手机</div>
-                             <div>安全手机可以用于登录帐号，重置密码或其他安全验证</div>
-                             <div @click="showshare(3)">设置</div>
+                             <div class="font4">安全手机</div>
+                             <div class="font5">安全手机可以用于登录帐号，重置密码或其他安全验证</div>
+                        </div> 
+                        </div>
+                    <div @click="showshare(2)" class="bind_btn">更换</div>            
+                </div>
+                <!--手机注册用户设置安全手机-->
+                <div class="flex_b bind_item emailuser" v-if="personal_msg.phone==''">
+                    <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                           <img src="../assets/img/bind_img1.png" alt="">
+                        </div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4">安全手机</div>
+                             <div class="font5">安全手机可以用于登录帐号，重置密码或其他安全验证</div>        
                         </div>
                     </div>
+                      <div @click="showshare(3)" class="bind_btn">设置</div>
                 </div>
-                <div class="bind_item"  v-if="personal_msg.email ==''">
-                   <div class="emailuser_t">
-                        <div class="emailuser_tl"></div>
+                <!--绑定邮箱-->
+                <div class="flex_b bind_item"  v-if="personal_msg.email ==''">
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                            <img src="../assets/img/bind_img2.png" alt="">
+                        </div>
                         <div class="flex_bf_c emailuser_tr">
-                             <div>当前还未绑定邮箱地址</div>
-                             <div>绑定邮箱可以用于账户安全验证</div>
-                             <div @click="showshare(4)">绑定</div>
+                             <div class="font4">当前还未绑定邮箱地址</div>
+                             <div class="font5">绑定邮箱可以用于账户安全验证</div>                
+                        </div>
+                    </div> 
+                      <div @click="showshare(4)" class="bind_btn">绑定</div> 
+                </div>
+                <div class="flex_b bind_item"  v-if="personal_msg.email !==''">
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl"><img src="../assets/img/bind_img2.png" alt=""></div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4">绑定邮箱 {{personal_msg.email}}</div>
+                             <div class="font5">绑定邮箱可以用于账户安全验证</div>
                         </div>
                     </div>  
-                </div>
-                <div class="bind_item"  v-if="personal_msg.email !==''">
-                   <div class="emailuser_t">
-                        <div class="emailuser_tl"></div>
-                        <div class="flex_bf_c emailuser_tr">
-                             <div>绑定邮箱 {{personal_msg.email}}</div>
-                             <div>绑定邮箱可以用于账户安全验证</div>
-                        </div>
-                    </div>  
-                </div>               
+                </div>  
+                </div>             
             </div>
             <!--安全设置-->
-            <div class="security" v-if="!bindtype">
-                <div class="security_t">安全设置</div>
-                <!--已设置谷歌和资金密码-->
-                <div class="security_item">
-                    <div class="flex_bf_c">
-                        <div>登录密码</div>
-                        <div>建议您定期更换密码，设置安全性高的密码可以使帐号更安全</div>
-                        <div  @click="showshare(5)">修改</div>
-                    </div>
+            <div class="personal_r_item security" v-if="!bindtype">
+                 <div class="head_bg personal_litem pd_left">安全设置</div>
+                <!--修改登录密码-->
+                <div class="personal_r_main">
+                <div class="flex_b bind_item" >
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                            <img src="../assets/img/bind_img3.png" alt="">
+                        </div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4">登录密码</div>
+                             <div class="font5">建议您定期更换密码，设置安全性高的密码可以使帐号更安全</div>                
+                        </div>
+                    </div> 
+                      <div @click="showshare(5)" class="bind_btn">修改</div> 
                 </div>
-                <div class="security_item">
-                    <div class="flex_bf_c">
-                        <div>资金密码</div>
-                        <div>为了您的账户安全，请及时设置资金密码</div>
-                        <div  @click="showshare(6)">修改</div>
-                    </div>
+                 <!--修改资金密码-->
+                <div class="flex_b bind_item"  v-if="personal_msg.setPaymentCode">
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                            <img src="../assets/img/bind_img4.png" alt="">
+                        </div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4">资金密码</div>
+                             <div class="font5">为了您的账户安全，请及时设置资金密码</div>                
+                        </div>
+                    </div> 
+                      <div @click="showshare(6)" class="bind_btn">修改</div> 
                 </div>
-                <div class="security_item">
-                    <div class="flex_bf_c">
-                        <div>谷歌验证</div>
-                        <div>为了您的账户安全，请及时绑定谷歌认证</div>
-                        <div  @click="showshare(7)">修改</div>
-                    </div>
+              <!--设置资金密码-->
+                <div class="flex_b bind_item"  v-if="!personal_msg.setPaymentCode">
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                            <img src="../assets/img/bind_img4.png" alt="">
+                        </div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4 colory">资金密码-未设置</div>
+                             <div class="font5">为了您的账户安全，请及时设置资金密码</div>                
+                        </div>
+                    </div> 
+                      <div @click="showshare(8)" class="bind_btn">设置</div> 
                 </div>
+                <!--设置谷歌验证-->
+                <div class="flex_b bind_item">
+                   <div class="flex_fc emailuser_t">
+                        <div class="emailuser_tl">
+                            <img src="../assets/img/bind_img5.png" alt="">
+                        </div>
+                        <div class="flex_bf_c emailuser_tr">
+                             <div class="font4">谷歌验证</div>
+                             <div class="font5">为了您的账户安全，请及时绑定谷歌认证</div>                
+                        </div>
+                    </div> 
+                      <div @click="showshare(7)" class="bind_btn"  v-if="!personal_msg.setGoogleAuth">绑定</div>
+                       <div @click="showshare(7)" class="bind_btn"  v-if="personal_msg.setGoogleAuth">设置</div>  
+                </div>
+                 </div>
             </div>
        </div>
        <div class="share" v-if="sharetype" @click="hideshare()"></div>
@@ -121,22 +164,43 @@
              <div class="securityphone_item" @click="bindEmail()">下一步1</div>
         </div>
         <!--修改登录密码-->
-         <div class="flex_fc_c securityphone"  v-if="sharetype&&shareid==5"> 
-            <div class="securityphone_item securityphone_title">修改登录密码</div>
+         <div class="securityphone change_lgpsw"  v-if="sharetype&&shareid==5"> 
+            <div class="securityphone_item securityphone_title">修改登录密码
+               <div class="closeIt"  @click="hideshare()">  <img src="../assets/img/close.png" alt=""> </div>
+            </div>
+            <div class="change_lgmain">
             <div class="securityphone_item" ><input type="password" v-model="changePassword_params.oldPassword" placeholder="请输入原登录密码"></div>
             <div class="securityphone_item"><input type="password" v-model="changePassword_params.newPassword" placeholder="设置6至20位新登录密码"></div>
               <div class="securityphone_item"><input type="password" v-model="changePassword_params.repeatPassword" placeholder="请再次输入新登录密码"></div>
-             <div class="securityphone_item" @click="changePassword()">确定</div>
+            </div>
+             <div class="securityphone_item flex_a"><div @click="hideshare()" class="personal_btn">取消</div> <div  @click="changePassword()" class="personal_btn2">确定</div></div>
         </div>
-        <!--设置资金密码-->
-        <div class="flex_fc_c securityphone"  v-if="sharetype&&shareid==6"> 
-            <div class="securityphone_item securityphone_title">修改资金密码</div>
+        <!--修改资金密码-->
+        <div class="securityphone fund_psw"  v-if="sharetype&&shareid==6"> 
+            <div class="securityphone_item securityphone_title">修改资金密码
+               <div class="closeIt"  @click="hideshare()">  <img src="../assets/img/close.png" alt=""> </div>
+            </div>
+             <div class="change_lgmain">
             <div class="securityphone_item" ><input type="text" v-model="changePaymentKey_params.oldPaymentKey" placeholder="请输入原资金密码"></div>
             <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.newPaymentKey" placeholder="设置6至16位新登录密码"></div>
               <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.resetnewPassword" placeholder="请再次输入资金密码"></div>
                <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.googleCode"  placeholder="请输入谷歌验证码"></div>
+                </div>
              <div class="securityphone_item" @click="changePaymentKey()">确定</div>
         </div> 
+        <!--设置资金密码-->
+        <div class="flex_fc_c securityphone fund_psw"  v-if="sharetype&&shareid==8"> 
+            <div class="securityphone_item securityphone_title">设置资金密码
+                 <div class="closeIt"  @click="hideshare()">  <img src="../assets/img/close.png" alt=""> </div>
+            </div>
+             <div class="change_lgmain">
+            <div class="securityphone_item" ><input type="text" v-model="changePaymentKey_params.oldPaymentKey" placeholder="请输入原资金密码"></div>
+            <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.newPaymentKey" placeholder="设置6至16位新登录密码"></div>
+              <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.resetnewPassword" placeholder="请再次输入资金密码"></div>
+               <div class="securityphone_item"><input type="text" v-model="changePaymentKey_params.googleCode"  placeholder="请输入谷歌验证码"></div>
+               </div>       
+              <div class="securityphone_item flex_a"><div @click="hideshare()" class="personal_btn">取消</div> <div  @click="setPaymentKey()" class="personal_btn2">确定</div></div>
+        </div>         
         <!--设置谷歌验证--> 
           <div class="flex_fc_c securityphone"  v-if="sharetype&&shareid==7"> 
             <div class="securityphone_item securityphone_title">设置谷歌验证</div>
@@ -254,6 +318,7 @@ export default {
             },
             setphone_text:'设置',
             setGoogleType:true,
+            title:'账号绑定'
         }
     },
     methods:{
@@ -273,6 +338,9 @@ export default {
                 this.activeid=1
                 if(id===7){
               this.getGoogleKey()  
+                }if(id===8&&this.personal_msg.setGoogleAuth==false){
+                 this.sharetype=false
+                 alert('请先设置谷歌验证码')
                 }
         },
         next(){
@@ -420,6 +488,7 @@ export default {
               }
                if(JSON.parse(data).code==1){
               alert('更改成功')
+               _that.sharetype=false
               }
                 }, function(error) {
                     console.log(error)
@@ -550,6 +619,7 @@ export default {
 }
 #personal{
   background-color: #fafafa;
+  padding-bottom: 0.4rem;
 }
 .personal_title{
   font-family: MicrosoftYaHei;
@@ -570,6 +640,7 @@ export default {
     box-sizing: border-box;
   background-color: #ffffff;
 	border-radius: 4px; 
+  padding-left: 0.1rem;
 }
 .personal_r{
     width: 4.6rem;
@@ -577,16 +648,39 @@ export default {
     border: 2px solid #ededed;
     box-sizing: border-box;
     background-color: #ffffff;
-	border-radius: 4px;
+	  border-radius: 4px;
 }
 .personal_litem{
+  width: 100%;
   height: 0.25rem;
   line-height: 0.25rem;
+  text-align: left;
+}
+.personal_litem img{
+  margin-right: 0.06rem;
+}
+.personal_r_main{
+  padding: 0 0.15rem;
 }
 .flex_b{
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.flex_a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex_f{
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.flex_fc{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .flex_f_c{
     display: flex;
@@ -610,16 +704,127 @@ export default {
   background: rgba(0, 0, 0, 0.6);
 }
 .securityphone{
-    width: 2rem;
-    height: 3rem;
+  width: 2rem;
+  height: 3rem;
   position: fixed;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform:translateX(-50%);
   background-color: #fff;
-  z-index: 101;    
+  z-index: 101;  
+  border-radius: 4px;  
+}
+.securityphone_title{
+  height: 0.25rem;
+  line-height: 0.25rem;
+  background-color: #f8f8f8;
+  position: relative;
+}
+.closeIt{
+  position: absolute;
+  font-size: 15px;
+  top: 0;
+  right: 0.11rem;
+}
+.securityphone_item{
+  width: 100%;
+  padding: 0 0.3rem;
+}
+.securityphone_item input{
+  width: 100%;
+  height: 0.25rem;
+  margin: 0 auto;
+  margin-top: 0.1rem;
+  box-sizing: border-box;
+  padding-left: 0.05rem;
 }
 .bind_item{
-    height: 1rem;
+  width: 100%;
+    height: 0.9rem;
+    border-bottom: 1px solid #ebebeb
+}
+.head_bg{
+  background-color: #f8fafc;
+}
+.color1{
+  color: #2e73e8; 
+}
+.pd_left{
+  padding-left: 0.15rem
+}
+.emailuser_tl{
+  margin-right: 0.1rem;
+}
+.font4{
+ font-family: MicrosoftYaHei;
+	font-size: 18px;
+	font-weight: normal;
+	font-stretch: normal;
+	line-height: 17px;
+	letter-spacing: 0px;
+	color: #333333; 
+  margin-bottom: 0.07rem;
+}
+.font5{
+  font-family: MicrosoftYaHei;
+	font-size: 14px;
+	font-weight: normal;
+	font-stretch: normal;
+	line-height: 17px;
+	letter-spacing: 0px;
+	color: #666666;  
+}
+.bind_btn{
+  width: 0.4rem;
+  height: 0.15rem;
+  line-height: 0.15rem;
+  border: 1px solid  #2e73e8;
+  border-radius: 4px;
+  color: #2e73e8;
+  font-family: MicrosoftYaHei;
+	font-size: 13px;
+	font-weight: normal;
+	font-stretch: normal;
+	letter-spacing: 0px;
+}
+.change_lgpsw{
+  width: 2.4rem;
+  height: 2.08rem;
+  background-color: #ffffff;
+	border-radius: 4px;
+}
+.change_lgmain{
+  width: 100%;
+  padding-top: 0.2rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #eee;
+  box-sizing: border-box;
+  margin-bottom: 0.1rem;
+}
+.personal_btn{
+  width: 0.45rem;
+  height: 0.18rem;
+  line-height: 0.18rem;
+  border-radius: 4px;
+  color: #333333;
+	border: solid 1px #cccccc;
+  margin-right: 0.05rem;
+}
+.personal_btn2{
+  width: 0.45rem;
+  height: 0.18rem;
+  line-height: 0.18rem;
+  border-radius: 4px;
+  background-color: #2f76ec;
+  color: #fff;
+	border: solid 1px #cccccc;
+}
+.fund_psw{
+  width: 2.4rem;
+  height: 2.43rem;
+  background-color: #ffffff;
+	border-radius: 4px;
+}
+.colory{
+  color: #ff9a23;
 }
 </style>
