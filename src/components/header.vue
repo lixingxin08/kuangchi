@@ -206,6 +206,7 @@ export default {
   },
   created() {
     this.getAccountInfo2()
+    this.getsubusername()
     if (localStorage.getItem("lang")=='en') {
       this.lang_title='English'
     }if (localStorage.getItem("lang")=='zh') {
