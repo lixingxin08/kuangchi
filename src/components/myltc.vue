@@ -176,10 +176,14 @@ export default {
         }
     },
     created() {
-            let _that=this
+    let _that=this
     this.timer = setInterval(function() {
       _that.wokerList()
     }, 300000)
+    },
+    beforeDestroy() {
+        clearInterval(this.timer)
+         this.timer=null
     },
     mounted() {
     if (localStorage.getItem("subnameList") == null||localStorage.getItem("subnameList") < 1) {
@@ -365,18 +369,6 @@ export default {
         //子账户下总矿机算力
         getmyltcdata() {
             let _that = this
-            // let data = {
-            //     "code": 1,
-            //     "msg": "success",
-            //     "minerPow": [
-            //         {
-            //             "latestHrInfo": 200000004,
-            //             "minHrInfo": 20000000,
-            //             "dayHrInfo": 20000000
-            //         }
-            //     ]
-            // }
-            // _that.wokerAlldata = data.minerPow
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
                 console.log(data, "子账户下总矿机算力")
                 _that.wokerAlldata = JSON.parse(data).minerPow
@@ -411,7 +403,7 @@ export default {
                 }
             }, function(error) {
                 console.log(error);
-                alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试1")
             })
         },
         //总矿机曲线
@@ -447,7 +439,7 @@ export default {
                     console.log(_that.AllKlinedata, "ssssss555555总矿机曲线")
                     _that.$nextTick(() => { _that.drawLine() })
                 }, function(error) {
-                    alert("网络出现一点点问题，请稍后再试")
+                    alert("网络出现一点点问题，请稍后再试2")
                 })
 
         },
@@ -487,7 +479,7 @@ export default {
                 console.log(_that.ListKlinedata, "sssss22111s1")
                 _that.$nextTick(() => { _that.eject_chart() })
             }, function(error) {
-                alert("网络出现一点点问题，请稍后再试")
+                alert("网络出现一点点问题，请稍后再试3")
             })
         },
         //弹出框图表

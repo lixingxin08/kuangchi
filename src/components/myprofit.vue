@@ -259,7 +259,6 @@ export default {
     } else {
       this.change_record(true);
       this.getprofitdata();
-      this.timeprofitdata(3);
     }
   },
   methods: {
@@ -582,9 +581,6 @@ export default {
   color: rgba(46, 115, 232, 1);
 }
 
-.all {
-  width: 0.4rem;
-}
 
 .myprofit_head {
   margin-top: 0px;

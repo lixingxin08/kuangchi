@@ -3,7 +3,7 @@ import Router from 'vue-router'
 // import home from '@/components/home'
 let home = ''
 
-const mobile_home = resolve => require(['@/components/mobile_home'], resolve);
+const mobile_home = resolve => require(['@/components/pc_home'], resolve);
 const pc_home = resolve => require(['@/components/pc_home'], resolve)
 const homeitem = resolve => require(['@/components/homeitem'], resolve)
 const myprofit = resolve => require(['@/components/myprofit'], resolve);

@@ -68,10 +68,10 @@ export default {
         }
     },
     created() {
-
+        let _that=this
         this.$nextTick(() => {
             this.timer = setTimeout(function() {
-                alert("暂无子账户，请先创建子账户")
+                alert(_that.$t("m.noson.key1"))
             }, 0);
         })
     },

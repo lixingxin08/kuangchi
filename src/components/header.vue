@@ -250,8 +250,11 @@ export default {
       this.user_head = this.subnameList[index].subUsername;
       localStorage.setItem("subusername", this.user_head);
       localStorage.setItem("change", this.user_head);
-      this.$router.push({name:'myprofit'})
-      this.reloadTwo();
+      console.log(this.$route.path);    
+      if(this.$route.path!=='/myltc'){
+           this.$router.push({name:'myprofit'})
+      }   
+      // this.reloadTwo();
     },
     //获取账号信息
     getAccountMsg() {
@@ -304,9 +307,13 @@ export default {
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
               }if(JSON.parse(data).code==1068){
+                console.log(111111);
+                
                  _that.isLogin=false
                  _that.deleteCookie('token')
                  _that.deleteCookie('username')
+                  alert('登录已失效，请重新登录')
+              _that.$router.push({name:'login'})
               }
                if(JSON.parse(data).code==1){
                     _that.head_username =
@@ -355,6 +362,7 @@ export default {
     //获取子账号列表
     getsubusername() {
       let _that = this;
+      console.log('获取子账号列表');   
       // _that.subnameList = res.minerPow;
       if (this.subnameparams.token == "") {
         this.timer = null;
@@ -367,6 +375,7 @@ export default {
         function(res) {
           _that.subnameList = JSON.parse(res).minerPow;
           _that.user_head=_that.subnameList[0].subUsername;
+           localStorage.setItem("subusername",_that.subnameList[0].subUsername);
           for (var i = 0; i < _that.subnameList.length; i++) {
             _that.subnameList_item[i] = _that.subnameList[i].subUsername;
             _that.subnameList_i[i] =
@@ -404,7 +413,7 @@ export default {
       }
       this.reloadTwo();
     },
-    //    计算时间
+    //计算时间
     adTime(a) {
       a = new Date().getTime() / 1000 - a;
       if (a < 60) {
@@ -430,10 +439,10 @@ export default {
       var vueThis = this;
       this.$axios({
         mounted: "get",
-        url: this.baseUrl + "v1/wtcPool/wtcPoolInfo",
+        url: this.baseUrl + "v2/kirinPoolInfo",
         withCredentials: false
       })
-        .then(function(res) {
+        .then(function(res) {    
           if (res.data.code === 200) {
             vueThis.topMsg = res.data.data.PoolInfo[0];
             // bus.$emit("newBlock", res.data.data.PoolInfo[0].height);
@@ -461,6 +470,7 @@ export default {
                 alert("手机号未注册")
               }
                if(JSON.parse(data).code==1){
+                           console.log(data,'datadatadatadat2222222222222222a'); 
                _that.setCookie('token',null)
                 _that.setCookie('username',null)
                 _that.head_username=''
@@ -470,10 +480,8 @@ export default {
                  _that.isLogin=false
                   localStorage.removeItem('username')
                 localStorage.removeItem("change");
-                localStorage.removeItem("subusername");
-                 _that.deleteCookie('token')
-                 _that.deleteCookie('username') 
-                 _that.$router.push({name:'home'}) 
+                localStorage.removeItem("subusername");         
+                 _that.$router.push({ name: "home" }); 
               }
                 }, function(error) {
                     console.log(error)
@@ -552,7 +560,6 @@ ul {
   justify-content: space-between;
   align-items: center;
 }
-
 .lang-box_main {
   min-width: 1.2rem;
   height: 0.35rem;

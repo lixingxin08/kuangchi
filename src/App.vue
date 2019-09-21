@@ -105,7 +105,12 @@ p {
 a {
   text-decoration: none !important;
 }
-
+.el-step__head.is-finish{
+  color: #fff;
+}
+.el-step__head.is-finish .el-step__icon.is-text{
+  background-color: #2f76ec;
+}
 a li {
   color: #fff;
 }

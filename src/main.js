@@ -30,6 +30,7 @@ import HappyScroll from 'vue-happy-scroll'
 import 'vue-happy-scroll/docs/happy-scroll.css'
 import Blob from './vendor/Blob'
 import Export2Excel from './vendor/Export2Excel.js'
+import { number } from "echarts/lib/export"
 
 Vue.use(HappyScroll)
 // axios.defaults.headers.common['Authorization'] = "Bearer " + getCookie("userToken");
@@ -55,26 +56,31 @@ axios.defaults.withCredentials = true;//让ajax携带cookie
 //   }
 // });
 
-// axios.interceptors.request.use(
-//   config => {
-//     let token = getCookie("userToken");
-//     if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-//       config.headers.Authorization = "Bearer " + `${token}`;
-//     }
+axios.interceptors.request.use(
+  config => {
 
-//     return config;
-//   },
-//   err => {
-//     return Promise.reject(err);
-//   }
-// );
+    let token = getCookie("userToken");
+    if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      config.headers.Authorization = "Bearer " + `${token}`;
+    }
+
+    return config;
+  },
+  err => {
+    return Promise.reject(err);
+  }
+);
 
 axios.interceptors.response.use(
   response => {
+    console.log(response.data,'response.data.code');
     if (response.data.code === 1068) {
       alert('登录已失效，请重新登录')
       this.$router.push({name:'login'})
-    } 
+    }if (response.data.code === 1102) {
+      alert('登录已失效，请重新登录')
+      this.$router.push({name:'login'})
+    }  
     if (response.data.msg === "账户未登录") {
       sessionStorage.removeItem("newBlock");
       sessionStorage.removeItem("userMsg");
@@ -116,7 +122,8 @@ axios.interceptors.response.use(
 
 //校验手机号
 Vue.prototype.IsPhone = function (phone) {
-  var myreg = /^[1][1-9]\d{9}$/;
+  // var myreg = /^[1][1-9]\d{9}$/;
+  var myreg = /^[0-9]*$/;
   if (myreg.test(phone) !== true) {
     return false;
   } else {

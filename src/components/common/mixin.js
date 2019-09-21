@@ -29,7 +29,7 @@ const Ajax=function(type, url, data, success, failed){
     }
  
     // 处理返回数据
-    xhr.onreadystatechange = function(){
+    xhr.onreadystatechange = function(){     
         if(xhr.readyState == 4){
         /*
         ** Http状态码

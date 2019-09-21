@@ -179,7 +179,6 @@ export default {
         this.$t("m.sonset.key6"),
         ""
       ],
-      sonset_data: ["子账户", "矿机数", "创建时间", "钱包地址"],
       sonset_inp: this.$t("m.sonset.key16"),
       sonset_inp_0: this.$t("m.sonset.key17"),
       sonset_inp_1: this.$t("m.sonset.key11"),
