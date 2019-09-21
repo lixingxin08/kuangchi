@@ -46,8 +46,7 @@
            <div class="flex_b login_item">
           <input type="text" v-model="registerdata.phone" placeholder="请输入手机号码" @blur="verify(IsPhone(registerdata.phone),5)"/>
            <div v-if="register_tipstype[0]&&register_tipsid[0]==5" class="register_tips">{{register_tips}}</div>
-        </div>
-         
+        </div>   
                 <div class="flex_b login_item">
           <input type="text" autocomplete="on" v-model="registerdata.code" placeholder="请输入手机验证码" />
                 <div class="code" @click="getcode()">

@@ -213,7 +213,7 @@
                <div class="closeIt"  @click="hideshare()">  <img src="../assets/img/close.png" alt=""> </div>
             </div>
              <div class="change_lgmain">
-            <div class="securityphone_item securityphone_itemborder" ><input type="text" v-model="changePaymentKey_params.oldPaymentKey" placeholder="请输入原资金密码"></div>
+            <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.oldPaymentKey" placeholder="请输入原资金密码"></div>
             <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.newPaymentKey" placeholder="设置6至16位新登录密码"></div>
               <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.resetnewPassword" placeholder="请再次输入资金密码"></div>
                <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.googleCode"  placeholder="请输入谷歌验证码"></div>
@@ -226,7 +226,6 @@
                  <div class="closeIt"  @click="hideshare()">  <img src="../assets/img/close.png" alt=""> </div>
             </div>
              <div class="change_lgmain">
-            <div class="securityphone_item securityphone_itemborder" ><input type="text" v-model="changePaymentKey_params.oldPaymentKey" placeholder="请输入原资金密码"></div>
             <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.newPaymentKey" placeholder="设置6至16位新登录密码"></div>
               <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.resetnewPassword" placeholder="请再次输入资金密码"></div>
                <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.googleCode"  placeholder="请输入谷歌验证码"></div>
@@ -297,6 +296,8 @@ export default {
               email:''  
             },
             bindEmail_params:{//绑定邮箱
+              username: this.getCookie("username"),
+              token:this.getCookie("token"),           
               email:'',
               code:'',
               username:'',
@@ -538,7 +539,8 @@ export default {
         bindEmail(){
              let _that=this 
              this.bindEmail_params.username=this.personal_msg.username
-               console.log(this.bindEmail_params,999999)     
+               console.log(this.bindEmail_params,999999)
+             this.bindEmail_params.email= this.bindEmailCode_params.email     
             this.$ajax('post', this.GLOBAL.baseUrl + 'account/bindEmail',this.bindEmail_params, function(data) {
                  console.log(data,'获取用户信息');            
               if(JSON.parse(data).code==1084){

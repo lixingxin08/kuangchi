@@ -15,6 +15,7 @@ const login = resolve => require(['@/components/login'], resolve);
 const register = resolve => require(['@/components/register'], resolve);
 const restePassword = resolve => require(['@/components/restePassword'], resolve);
 const personal = resolve => require(['@/components/personal'], resolve);
+const sevices = resolve => require(['@/components/termsOfSevices'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
 // import register from '@/components/register'
@@ -67,14 +68,6 @@ export default new Router({
       name: 'homeitem',
       component: homeitem
     },
-    // {
-    //   path: '/miner',
-    //   name: 'miner',
-    //   component: miner,
-    //   meta: {
-    //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-    //   }
-    // },
     {
       path: '/myprofit',
       name: 'myprofit',
@@ -115,20 +108,17 @@ export default new Router({
         requireAuth: false,  // 添加该字段，表示进入这个路由是需要登录的
       }
     },
-    // {
-    //   path: '/wallet',
-    //   name: 'wallet',
-    //   component: wallet,
-    //   meta: {
-    //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-    //   }
-    // },
     {
       path: '/download',
       name: 'download',
       component: download,
       meta: {
       }
+    },
+    {
+      path: '/sevices',
+      name: 'sevices',
+      component: sevices,
     },
     {
       path: '/nothing',

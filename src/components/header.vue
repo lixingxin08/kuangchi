@@ -254,7 +254,7 @@ export default {
       if(this.$route.path!=='/myltc'){
            this.$router.push({name:'myprofit'})
       }   
-      // this.reloadTwo();
+      this.reloadTwo();
     },
     //获取账号信息
     getAccountMsg() {
@@ -307,11 +307,10 @@ export default {
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
               }if(JSON.parse(data).code==1068){
-                console.log(111111);
-                
+                console.log(111111555);
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
                  _that.isLogin=false
-                 _that.deleteCookie('token')
-                 _that.deleteCookie('username')
                   alert('登录已失效，请重新登录')
               _that.$router.push({name:'login'})
               }
@@ -490,7 +489,6 @@ export default {
   },
   watch: {
     $route(to, from) {  
-      console.log(to.name,'name1111',from.name)
       if (to.name == 'myltc' && from.name=='unsub') {
         localStorage.setItem("subusername", this.head_username);
         var vueThis = this;

@@ -57,25 +57,25 @@
         </div>
         
            <div class="flex_b login_item login_itemphone">
-                  <div class="prefix">
+                  <div class="prefix flex_b">
+                    <input type="text" v-model="phonecode_params.countryCode" class="prefix_inp">
                     <el-dropdown trigger="click" placement="bottom">
-                    <span class="el-dropdown-link lang_right">
-                      <span id="lang-span">86</span>
+                    <span class="el-dropdown-link lang_right">        
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown" class="tels">
-                      <el-dropdown-item  v-for="(item,index) in perfix" :key="index">
-                        <li class="lang_item">{{item.tel}}</li>
+                      <el-dropdown-item>
+                        <ul  v-for="(item,index) in perfix" :key="index">
+                        <li class="lang_item" @click="selectcountryCode(index)">{{item.tel}}</li>
+                        </ul>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                   </div>
                <input type="text" v-model="registerdata.phone" placeholder="请输入手机号码" @blur="verify(IsPhone(registerdata.phone),5)"/>
            <div v-if="register_tipstype[0]&&register_tipsid[0]==5" class="register_tips">{{register_tips}}</div>
-        </div>
-         
-                <div class="flex_b login_item">
-
+        </div>        
+           <div class="flex_b login_item">
           <input type="text" v-model="registerdata.code" placeholder="请输入手机验证码" />
                 <div class="code" @click="getcode()">
               <div class="getcode">
@@ -100,7 +100,7 @@
         </div>
         
       </div>
-        <div class="agree" @click="agree()"> <span class="el-icon-circle-close" v-if="!agreetype"></span> <span class="el-icon-circle-check color1" v-if="agreetype"></span> 同意 <span class="color1">《用户服务条款》</span> </div>
+        <div class="agree"> <span @click="agree()"><span class="el-icon-circle-close" v-if="!agreetype"></span> <span class="el-icon-circle-check color1" v-if="agreetype"></span> 同意</span>  <span class="color1"> <router-link to="sevices">《用户服务条款》</router-link> </span> </div>
       <div class="submit" @click="rigister()">注册</div>
     </div>
     </div>
@@ -199,9 +199,18 @@ export default {
          }else{ this.$refs.wordType3.type='text'}
       }
     },
+    selectcountryCode(id){
+       console.log(id);   
+        this.phonecode_params.countryCode=this.perfix[id].tel
+        console.log(this.phonecode_params,'this.phonecode_params');
+        
+    },
     //获取验证码
     getcode(){
       let _that=this 
+      if(this.registerdata.username==''){
+        return alert('请输入用户名')
+      }
       if(this.register_tipstype[0]){
          if(this.logintype){
            return alert('请输入正确用户名和邮箱地址')
@@ -314,6 +323,7 @@ export default {
     //注册
     rigister(){
       let _that=this
+      this.registerdata.countryCode=this.phonecode_params.countryCode
       if(!this.agreetype){
         return alert('请先同意用户服务条款')
       }
@@ -407,6 +417,11 @@ export default {
       clearInterval(this.timer)
       this.timer=null
   },
+  created(){
+    if (this.$route.query.agree=='agree') {
+            this.agreetype=true
+    }
+  }
 };
 </script>
 <style scoped>
@@ -422,14 +437,14 @@ export default {
 .login_box{
   position: relative;
   width: 2.4rem;
-  height: 3rem;
   background-color:#00093a;
   margin: 0 auto;
   text-align: left;
   padding: 0 0.2rem;
   border-radius: 4px;
 	border: solid 1px #0029b8; 
-	color: #ffffff; 
+	color: #ffffff;
+  padding-bottom:0.19rem;  
 }
 .login_title {
 	font-family: MicrosoftYaHei;
@@ -537,6 +552,7 @@ export default {
 .agree{
   margin-top: 0.1rem;
   margin-bottom: 0.15rem;
+  cursor: pointer;
 }
 .login_itemphone{
   position: relative;
@@ -545,10 +561,15 @@ export default {
   position: absolute;
   right:0.2rem;
   top: 50%;
-  transform: translateY(-50%)
+  transform: translateY(-50%);
+  width: 0.5rem;
+  height: 0.2rem;
 }
 .tels{
   max-height: 2rem;
    overflow-y: scroll;
+}
+.prefix_inp{
+ width: 50%;
 }
 </style>
