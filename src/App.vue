@@ -101,15 +101,33 @@ export default {
 p {
   margin: 0;
 }
-
+.colorred:{
+  color: red;
+}
 a {
   text-decoration: none !important;
 }
 .el-step__head.is-finish{
   color: #fff;
 }
-.el-step__head.is-finish .el-step__icon.is-text{
+.is-finish .el-step__icon{
   background-color: #2f76ec;
+}
+.is-process .el-step__icon{
+   background-color: #2f76ec;
+   color: #fff;
+    border: 2px solid #2f76ec;
+}
+.el-step__title.is-process{
+  color:#2f76ec;
+}
+.el-icon--right{
+  margin-left:1px;
+}
+ .is-wait .el-step__icon{
+   background-color: #dcdcdc;
+    color: #fff;
+    border: 2px solid #dcdcdc;
 }
 a li {
   color: #fff;
@@ -214,4 +232,41 @@ input::-webkit-inner-spin-button {
 /*color:#666;*/
 
 /*}*/
+.el-carousel__button{
+  width: 8px!important;
+  height: 8px!important;
+  background: #2e73e8!important;
+  border-radius: 50%!important;
+}
+.el-carousel__item{
+  margin-bottom:0rem!important
+}
+.el-carousel__container{
+  height: 407px;
+}
+.el-carousel__arrow{
+  top: 40%
+}
+.el-dialog__body{
+  padding: 0px;
+}
+.el-dialog__header{
+  background:#f8fafc
+}
+.el-dialog__header{
+  padding: 0px;
+}
+.el-carousel__indicators{
+  bottom: 20px
+}
+.el-carousel__arrow{
+  color: #b4b4b4;
+  font-size: 30px;
+  background-color:#fff;
+}
+.el-carousel__arrow:hover{
+  background-color:#fff;
+  color: #2e73e8;
+ border-radius: 0px;
+}
 </style>

@@ -1,45 +1,43 @@
 <template>
   <div id="register">
-    <div class="login">
+    <div class="login" v-if="servicestype">
       <div class="login_box">
-      <h5 class="login_title">注册</h5>
+      <h5 class="login_title">{{$t("m.header.key12")}}</h5>
       <div class="flex_f login_head">
-        <span @click="changge(true)" class="login_head_l" :class="logintype?'login_head_bg':''">邮箱</span>
-        <span @click="changge(false)" class="login_head_l" :class="logintype?'':'login_head_bg'">手机</span>
+        <span @click="changge(true)" class="login_head_l" :class="logintype?'':'login_head_bg'">{{$t("m.login.key3")}}</span>
+        <span @click="changge(false)" class="login_head_l" :class="logintype?'login_head_bg':''">{{$t("m.login.key2")}}</span>
       </div>
       <!--邮箱注册-->
       <div class="login_email" v-show="logintype">
         <div class="flex_b login_item">
 
-          <input type="text" v-model="registerdata.username" placeholder="请输入用户名" @blur="verify(verifyUsername(registerdata.username),1)" />
+          <input type="text" v-model="registerdata.username" :placeholder="$t('m.account.key51')" @keydown="verify(verifyUsername(registerdata.username),1)" @blur="verify(verifyUsername(registerdata.username),1)" />
              <div v-if="register_tipstype[0]&&register_tipsid[0]==1" class="register_tips">{{register_tips}}</div>
         </div> 
                         <div class="flex_b login_item">
-  
-          <input type="email" v-model="registerdata.email" placeholder="请输入邮箱地址" @blur="verify(verEmail(registerdata.email),2)" />
+          <input type="email" v-model="registerdata.email" :placeholder="$t('m.setting.key20')" @keyup="verify(verEmail(registerdata.email),2)" @blur="verify(verifyUsername(registerdata.username),1)" />
           <div v-if="register_tipstype[0]&&register_tipsid[0]==2" class="register_tips">{{register_tips}}</div>
         </div>
         
                 <div class="flex_b login_item">
 
-          <input type="text"  v-model="registerdata.code"  placeholder="请输入邮箱验证码" />
+          <input type="text"  v-model="registerdata.code"  :placeholder="$t('m.account.key36')" />
                 <div class="code" @click="getcode()">
               <div class="getcode">
-                   <span>{{code_tips}}</span>
+                   {{code_tips}}
               </div>
                 </div>
         </div>
         
                 <div class="flex_b login_item">
-          <input type="password"  autocomplete='new-password' :ref="wordType[0]" v-model="registerdata.password" placeholder="请输入密码" />
+          <input type="password"  autocomplete='new-password' :ref="wordType[0]" v-model="registerdata.password" :placeholder="$t('m.resetPassword.key15')" />
               <div class="getcode"  @click="showpasswordtype(0)">
                 <div v-if="showpassword[0]"> <img src="../assets/img/hidepassword.png" alt=""></div>
                 <div v-if="!showpassword[0]"> <img src="../assets/img/showpassword.png" alt=""></div>
               </div>
         </div>
                 <div class="flex_b login_item">
-
-          <input type="password"  autocomplete='new-password' :ref="wordType[1]" v-model="registerdata.resetpassword" placeholder="请再次输入密码"  @blur="verify(registerdata.resetpassword==registerdata.password?true:false,3)"/>
+          <input type="password"  autocomplete='new-password' :ref="wordType[1]" v-model="registerdata.resetpassword" :placeholder="$t('m.resetPassword.key9')"  @keydown="verify(registerdata.resetpassword===registerdata.password?false:true,3)"   @blur="verify(registerdata.resetpassword===registerdata.password?false:true,3)" />
             <div v-if="register_tipstype[0]&&register_tipsid[0]==3" class="register_tips">{{register_tips}}</div>
               <div class="getcode"  @click="showpasswordtype(1)">
                 <div v-if="showpassword[1]"> <img src="../assets/img/hidepassword.png" alt=""></div>
@@ -52,31 +50,33 @@
             <div class="login_email" v-show="!logintype">
         <div class="flex_b login_item">
 
-          <input type="text" v-model="registerdata.username" placeholder="请输入用户名" @blur="verify(verifyUsername(registerdata.username),4)" />
+          <input type="text" v-model="registerdata.username" :placeholder="$t('m.account.key51')" @keyup="verify(verifyUsername(registerdata.username),4)" />
           <div v-if="register_tipstype[0]&&register_tipsid[0]==4" class="register_tips">{{register_tips}}</div>
         </div>
         
-           <div class="flex_b login_item login_itemphone">
-                  <div class="prefix flex_b">
+           <div class="flex_b login_item login_itemphone">            
+              <div class="prefix flex_b">
                     <input type="text" v-model="phonecode_params.countryCode" class="prefix_inp">
                     <el-dropdown trigger="click" placement="bottom">
                     <span class="el-dropdown-link lang_right">        
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
                     </span>
-                    <el-dropdown-menu slot="dropdown" class="tels">
-                      <el-dropdown-item>
-                        <ul  v-for="(item,index) in perfix" :key="index">
-                        <li class="lang_item" @click="selectcountryCode(index)">{{item.tel}}</li>
+                   <el-dropdown-menu slot="dropdown" class="tels">
+                      <el-dropdown-item class="prefix_countryCode">
+                        <ul  v-for="(item,index) in perfix" :key="index" class="flex_f prefix_countryCode_ul" @click="selectcountryCode(index)">
+                             <li class="prefix_countryCode_item">{{item.tel}}</li>
+                        <li class="prefix_countryCode_item2">{{item.name}}</li>
+                       
                         </ul>
                       </el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
-                  </div>
-               <input type="text" v-model="registerdata.phone" placeholder="请输入手机号码" @blur="verify(IsPhone(registerdata.phone),5)"/>
+                  </div> 
+               <input type="text" v-model="registerdata.phone" :placeholder="$t('m.setting.key30')" @keyup="verify(IsPhone(registerdata.phone),5)"/>
            <div v-if="register_tipstype[0]&&register_tipsid[0]==5" class="register_tips">{{register_tips}}</div>
         </div>        
            <div class="flex_b login_item">
-          <input type="text" v-model="registerdata.code" placeholder="请输入手机验证码" />
+          <input type="text" v-model="registerdata.code" :placeholder="$t('m.setting.key26')" />
                 <div class="code" @click="getcode()">
               <div class="getcode">
                    <span>{{code_tips}}</span>
@@ -84,14 +84,14 @@
                 </div>
         </div>
                 <div class="flex_b login_item">
-                   <input type="password"  autocomplete='new-password' :ref="wordType[2]" v-model="registerdata.password" placeholder="请输入密码" />
+                   <input type="password"  autocomplete='new-password' :ref="wordType[2]" v-model="registerdata.password" :placeholder="$t('m.resetPassword.key15')" />
               <div class="getcode"  @click="showpasswordtype(2)">
                 <div v-if="showpassword[2]"> <img src="../assets/img/hidepassword.png" alt=""></div>
                 <div v-if="!showpassword[2]"> <img src="../assets/img/showpassword.png" alt=""></div>
               </div>
         </div>
                 <div class="flex_b login_item">
-          <input type="password"  autocomplete='new-password' :ref="wordType[3]" v-model="registerdata.resetpassword" placeholder="请再次输入密码" @blur="verify(registerdata.resetpassword==registerdata.password?true:false,6)"/>
+          <input type="password"  autocomplete='new-password' :ref="wordType[3]" v-model="registerdata.resetpassword" :placeholder="$t('m.resetPassword.key9')" @keyup="verify(registerdata.resetpassword==registerdata.password?false:true,6)"/>
            <div v-if="register_tipstype[0]&&register_tipsid[0]==6" class="register_tips">{{register_tips}}</div>
               <div class="getcode"  @click="showpasswordtype(3)">
                 <div v-if="showpassword[3]"> <img src="../assets/img/hidepassword.png" alt=""></div>
@@ -100,25 +100,93 @@
         </div>
         
       </div>
-        <div class="agree"> <span @click="agree()"><span class="el-icon-circle-close" v-if="!agreetype"></span> <span class="el-icon-circle-check color1" v-if="agreetype"></span> 同意</span>  <span class="color1"> <router-link to="sevices">《用户服务条款》</router-link> </span> </div>
-      <div class="submit" @click="rigister()">注册</div>
+        <div class="agree"> <span @click="agree()">
+        <div v-if="!agreetype" class="inline">
+           <img src="../assets/img/disagree.png" alt="">
+        </div>
+          <div  v-if="agreetype" class="inline">
+           <img src="../assets/img/agree.png" alt="">
+         </div> {{$t('m.account.key52')}}
+         </span>
+           <span class="color1" @click="toservices()">《{{$t('m.account.key53')}}》 </span> </div>
+      <div class="submit" @click="rigister()">{{$t("m.header.key12")}}</div>
     </div>
+
     </div>
+        <div class="sevices"  v-if="!servicestype">
+          <div class="center_box">
+            <div class="sevices_title"> <p> {{$t("m.register.key29")}}</p>   </div>
+                <p> {{$t("m.register.key30")}}</p>   
+                <p> {{$t("m.register.key31")}}</p>
+                <p> {{$t("m.register.key32")}}</p>
+                <p> {{$t("m.register.key33")}}</p>
+                <p> {{$t("m.register.key34")}}</p>
+                <p> {{$t("m.register.key35")}}</p>
+                <p> {{$t("m.register.key36")}}</p>
+                <p> {{$t("m.register.key37")}}</p>
+                <p> {{$t("m.register.key38")}}</p>
+                <p> {{$t("m.register.key39")}}</p>
+                <p> {{$t("m.register.key40")}}</p>
+                <p> {{$t("m.register.key41")}}</p>
+                <p> {{$t("m.register.key42")}}</p>
+                <p> {{$t("m.register.key43")}}</p>
+                <p> {{$t("m.register.key44")}}</p>
+                <p> {{$t("m.register.key45")}}</p>
+                <p> {{$t("m.register.key46")}}</p>
+                <p> {{$t("m.register.key47")}}</p>
+                <p> {{$t("m.register.key48")}}</p>
+                <p> {{$t("m.register.key49")}}</p>
+                <p> {{$t("m.register.key50")}}</p>
+                <p> {{$t("m.register.key51")}}</p>
+                <p> {{$t("m.register.key52")}}</p>
+                <p> {{$t("m.register.key53")}}</p>
+                <p> {{$t("m.register.key54")}}</p>
+                <p> {{$t("m.register.key55")}}</p>
+                <p> {{$t("m.register.key56")}}</p>
+                <p> {{$t("m.register.key57")}}</p>
+                <p> {{$t("m.register.key58")}}</p>
+                <p> {{$t("m.register.key60")}}</p>
+                <p> {{$t("m.register.key61")}}</p>
+                <p> {{$t("m.register.key62")}}</p>
+                <p> {{$t("m.register.key63")}}</p>
+                <p> {{$t("m.register.key64")}}</p>
+                <p> {{$t("m.register.key65")}}</p>
+                <p> {{$t("m.register.key66")}}</p>
+                <p> {{$t("m.register.key67")}}</p>
+                <p> {{$t("m.register.key68")}}</p>
+                <p> {{$t("m.register.key69")}}</p>
+                <p> {{$t("m.register.key70")}}</p>
+                <p> {{$t("m.register.key71")}}</p>
+                <p> {{$t("m.register.key72")}}</p>
+                <p> {{$t("m.register.key73")}}</p>
+                <p> {{$t("m.register.key74")}}</p>
+                <p> {{$t("m.register.key75")}}</p>
+                <p> {{$t("m.register.key76")}}</p>
+                <p> {{$t("m.register.key77")}}</p>
+                <p> {{$t("m.register.key78")}}</p>
+                <p> {{$t("m.register.key79")}}</p>
+                <p> {{$t("m.register.key80")}}</p>
+                <p> {{$t("m.register.key81")}}</p>
+                <p> {{$t("m.register.key82")}}</p>
+                <p> {{$t("m.register.key83")}}</p>
+        <div class="flex_a sevices_foo">  <div class="sevices_foo_item" @click="isagress(true)"> 同意  </div>   <div class="sevices_foo_item" @click="isagress(false)"> 不同意 </div> </div>
+        </div>
+        </div>    
   </div>
 </template>
 <script>
+import termsofSevices from './termsOfSevices.vue'
 import { log } from 'util';
 export default {
   data() {
     return {
-      register_tips:'',
+      register_tips:this.$t("m.register.key8"),
       register_tipsid:[1],
-      register_tipstype:[false],
+      register_tipstype:[true,false,false,false],
       logintype: true,
       timer:'',
       registertime:60,
-      code_tips:'发送验证码',
-      phonecode_tips:'发送验证码',
+      code_tips:this.$t("m.account.key30"),
       getcodetype:true,
       getcodetimer:null,
       registerdata: {
@@ -127,7 +195,7 @@ export default {
         phone:'',
         password: "",
         resetpassword:"",
-        mode:'wtcpool',
+        mode:'email',
         getEmailCode:'',
         getPhoneCode:'',
         countryCode:'86',
@@ -138,7 +206,8 @@ export default {
         username:'',
         email:'',
       },
-      agreetype:false,
+      agreetype:true,
+      servicestype:true,
       phonecode_params:{
         username:'',
         phone:'',
@@ -156,6 +225,10 @@ export default {
     agree(){
       this.agreetype=!this.agreetype
     },
+    isagress(val){
+      this.agreetype=val
+      this.servicestype=true
+    },
     changge(val,id) {
       let _that=this
       this.logintype = val;
@@ -167,13 +240,24 @@ export default {
       this.registerdata.getEmailCode = "";
       this.registerdata.getPhoneCode = "";
        this.registerdata.countryCode = "";
+       this.agreetype=false
+        this.registerdata.code=''
+        this.phonecode_params.countryCode='86'
+       if (val) {
+         this.registerdata.mode='email'
+       }else{
+         this.registerdata.mode='phone'
+       }
       this.register_tips=""
-      this.code_tips="发送验证码"   
+      this.code_tips=this.$t("m.account.key30"),   
       clearInterval(_that.getcodetimer)
        this.getcodetimer=null
       this.registertime=60
       this.getcodetype=true
-      console.log( this.registertime);     
+      // console.log( this.registertime);     
+    },
+    toservices(){
+       this.servicestype=false
     },
     showpasswordtype(id){
       if(this.showpassword[id]){
@@ -200,211 +284,238 @@ export default {
       }
     },
     selectcountryCode(id){
-       console.log(id);   
+   
         this.phonecode_params.countryCode=this.perfix[id].tel
-        console.log(this.phonecode_params,'this.phonecode_params');
+        // console.log(this.phonecode_params,'this.phonecode_params');
         
     },
     //获取验证码
     getcode(){
       let _that=this 
       if(this.registerdata.username==''){
-        return alert('请输入用户名')
+         return  this.$message.error(this.$t("m.setting.key51"));
       }
-      if(this.register_tipstype[0]){
+      if(this.register_tipstype[0]){   
          if(this.logintype){
-           return alert('请输入正确用户名和邮箱地址')
+     
+           this.$message.error(this.$t("m.account.key74"));
+        return   _that.code_tips=_that.$t("m.account.key30");
          }else{
-            return alert('请输入正确用户名和手机号码')
+           this.$message.error(this.$t("m.account.key75"));
+       return   _that.code_tips=_that.$t("m.account.key30");
          }
-      } 
-       if(this.getcodetype){
-         this.getcodetype=false;
-            _that.getcodetimer=setInterval(function(){
-              _that.registertime--
-                 _that.code_tips=  _that.registertime 
-                 console.log(_that.registertime);                      
-              if( _that.registertime<=0){
-                _that.getcodetype=true;
-                _that.registertime=60
-                 _that.code_tips="重发验证码";
-                  _that.getcodetimer=null
-                   clearInterval(_that.getcodetimer)
-              }
-          },1000)
+      }      
              //获取Email验证码
         if(this.logintype){
+  
+       if (this.registerdata.email=='') {
+         return  this.$message.error(this.$t("m.setting.key51"));
+      }   
+       if(this.getcodetype){
+                this.getcodetype=false;
+                    _that.getcodetimer=setInterval(function(){
+                      _that.registertime--
+                        _that.code_tips=  _that.registertime 
+                        // console.log(_that.registertime);                      
+                      if( _that.registertime<=0){
+                        _that.getcodetype=true;
+                        _that.registertime=60
+                        _that.code_tips=_that.$t("m.account.key76");
+                          clearInterval(_that.getcodetimer)
+                           _that.getcodetimer=null
+                      }
+                  },1000)          
              if(this.verifyUsername(this.registerdata.username)&&this.verEmail(this.registerdata.email)){          
                this.emailcode_params.username=this.registerdata.username
                this.emailcode_params.email=this.registerdata.email
               this.$ajax('post', this.GLOBAL.baseUrl + 'account/getEmailCode',this.emailcode_params, function(data) {
               if(JSON.parse(data).code==1001){
-                alert("请输入完整的注册信息")
+               _that.$message.error(_that.$t("m.account.key77"));
               }
                if(JSON.parse(data).code==1002){
-                alert("用户名已存在")
+               _that.$message.error(_that.$t("m.account.key78"));
                 _that.registerdata.username=''
               }
                if(JSON.parse(data).code==1003){
-                alert("email发送失败")
+               _that.$message.error(_that.$t("m.setting.key73"));
               }
               if(JSON.parse(data).code==1004){
                   _that.registerdata.email=''
-                alert("email已存在")
+                 _that.$message.error(_that.$t("m.setting.key88"));
               }
                if(JSON.parse(data).code==1){
-                 alert('email发送成功')
+                _that.$message.success(_that.$t("m.account.key60"));
+              }if(JSON.parse(data).code!==1){
+                  _that.getcodetype=true;
+                  _that.code_tips=_that.$t("m.account.key30"), 
+                  clearInterval(_that.getcodetimer)
+                  _that.getcodetimer=null
+                  _that.registertime=60
               }
                 }, function(error) {
-                    console.log(error)
+                    // console.log(error)
                 })
              }else{
-               // //获取Email验证码信息不齐
-               if(_that.verifyUsername(_that.registerdata.username)==false){
-                   console.log('111111')
-                   _that.$set( _that.register_tipsid,0,1)
-                     _that.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
-                     _that.registerdata.username=''         
-               }else if(_that.verEmail(_that.registerdata.email)==false){
-                      _that.$set( this.register_tipsid,0,2)
-                     _that.register_tips="请输入正确邮箱地址"
-                       console.log( _that.register_tips,_that.register_tipsid,'45555555554')
-                     _that.registerdata.email=''
-               }
              }
-        }
+        }      }
         //获取phone验证码
         else{
+          if (this.registerdata.phone=='') {
+        return  this.$message.error(this.$t("m.account.key79"));
+      }
+
             if(this.verifyUsername(this.registerdata.username)&&this.IsPhone(this.registerdata.phone)){
-       
+      
+                this.getcodetype=false;
+                    _that.getcodetimer=setInterval(function(){
+                      _that.registertime--
+                        _that.code_tips=  _that.registertime                      
+                      if( _that.registertime<=0){
+                        _that.getcodetype=true;
+                        _that.registertime=60
+                        _that.code_tips=_that.$t("m.account.key76");           
+                          clearInterval(_that.getcodetimer)
+                           _that.getcodetimer=null
+                      }
+                  },1000) 
                 this.phonecode_params.username=this.registerdata.username
                this.phonecode_params.phone=this.registerdata.phone
                this.$ajax('post', this.GLOBAL.baseUrl + 'account/getPhoneCode',this.phonecode_params, function(data) {
-                 console.log(data,'phone验证码');
+                //  console.log(data,'phone验证码');
                  
               if(JSON.parse(data).code==1005){
-                alert("请输入完整的注册信息")
+               _that.$message.error(_that.$t("m.account.key77"));
               }
                if(JSON.parse(data).code==1006){
-                alert("用户名已存在")
+               _that.$message.error(_that.$t("m.account.key78"));
                 _that.registerdata.username=''
               }
                if(JSON.parse(data).code==1007){
-                alert("手机短信发送失败")
+                 _that.$message.error(_that.$t("m.setting.key68"));
               }
               if(JSON.parse(data).code==1008){
-                alert("手机号已存在")
+                _that.$message.error(_that.$t("m.setting.key74"));
                 _that.registerdata.phone=''
               }
                if(JSON.parse(data).code==1){
-                 alert('手机短信发送成功')
+               _that.$message.success(_that.$t("m.account.key56"));
+              }if(JSON.parse(data).code!==1){
+                  _that.getcodetype=true;
+                  _that.code_tips=_that.$t("m.account.key30"),    
+                  clearInterval(_that.getcodetimer)
+                  _that.getcodetimer=null
+                  _that.registertime=60
               }
                 }, function(error) {
-                    console.log(error)
+                    // console.log(error)
                 })
              }else{
                 // //获取phone验证码不齐
-               if(this.verifyUsername(this.registerdata.username)==false){
-                    console.log(333333);               
+               if(this.verifyUsername(this.registerdata.username)==false){              
                     this.$set( this.register_tipsid,0,4)
-                     this.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
+                      this.register_tips=this.$t("m.register.key8")
                      this.registerdata.username=''
 
                }else{                  
                      this.$set( this.register_tipsid,0,5)
-                     this.register_tips="请输入正确手机号码"
+                     this.register_tips=this.$t("m.account.key79")
                      this.registerdata.phone=''
                }
              }
         }
-      }else{
-      }
     },
     //注册
     rigister(){
       let _that=this
-      this.registerdata.countryCode=this.phonecode_params.countryCode
-      if(!this.agreetype){
-        return alert('请先同意用户服务条款')
+      if (!this.isNumberOr_Letter(this.registerdata.password)) {
+        return  this.$message.error(this.$t("m.key13"))      
       }
-      if(this.register_tipstype[0]==false&&this.registerdata.password!==""){
-
+      if (this.registerdata.username==''||this.registerdata.password==''||this.registerdata.code==''||this.registerdata.resetpassword=='') {
+           this.$message.error(this.$t("m.account.key77"));
+          return
+      }if (this.logintype&&this.registerdata.email=='') {
+        this.$message.error(this.$t("m.account.key77"));
+          return
+      }if (!this.logintype&&this.registerdata.phone=='') {
+        this.$message.error(this.$t("m.account.key77"));
+          return
+      }
+       if(this.registerdata.password!==this.registerdata.resetpassword){
+          this.$message.error(this.$t("m.account.key68"));
+          return
+       }if(!this.agreetype){
+         return    this.$message.error(this.$t("m.account.key81"));
+       }
+      this.registerdata.countryCode=this.phonecode_params.countryCode  
         this.$ajax('post', this.GLOBAL.baseUrl + 'account/register',this.registerdata, function(data) {
               if(JSON.parse(data).code==1031){
-                alert("账户名或密码格式不对")
+                  _that.$message.error(_that.$t("m.account.key82"));
               }
                if(JSON.parse(data).code==1032){
-                alert("请输入完整的注册信息")
+                 _that.$message.error(_that.$t("m.account.key77"));
               }
                if(JSON.parse(data).code==1033){
-                alert("验证码错误")
+                  _that.$message.error(_that.$t("m.setting.key35"));
               }
               if(JSON.parse(data).code==1034){
-                alert("注册失败")
+                  _that.$message.error(_that.$t("m.account.key83"));
               }
               if(JSON.parse(data).code==1333){
-                alert("请先获取验证码")
+               _that.$message.error(_that.$t("m.account.key84"));
               }
                if(JSON.parse(data).code==1){
-               _that.setCookie('token',JSON.parse(data).data.token,1800)
-                _that.setCookie('username',JSON.parse(data).data.username,1800)
-               localStorage.setItem('token',JSON.parse(data).data.token)
-                localStorage.setItem('username',JSON.parse(data).data.username)
-                 _that.$router.go(-1)
+                 _that.$message.success(_that.$t("m.register.key20"));
+                 _that.$router.push({name:'login'})
               }
                 }, function(error) {
-                    console.log(error)
+                  if(!_that.agreetype){
+                        return _that.$message.error(_that.$t("m.account.key81"));
+                    }
                 })
-      }else{
-        console.log(3333)
-          if(_that.logintype==true&&_that.registerdata.password==""){
-        _that.registerdata.email = "";
-      _that.registerdata.phone = "";          
-              alert(this.register_tips)
-              console.log(111222)
-      
-          }else{
-            console.log(_that.logintype,_that.registerdata.password,'aaaaa')
-            alert(_that.register_tips)
-          }
-      }
-
     },
     //验证
     verify(val,id){
-      this.register_tipsid[0]=id
-      console.log(val)
-      console.log(id);  
-        if(this.logintype){
+      this.register_tipsid[0]=id 
+      // console.log(val,id);   
+        if(this.logintype){     
           if(val){
-             this.register_tipstype[0]=false
+            //  console.log(33333);
+            if(id==3){
+               this.register_tips=this.$t("m.account.key68")
+               this.resetpassword=""              
+            }
+             this.register_tipstype[0]=false;
           }else{
             this.register_tipstype[0]=true;
             if(id==1){
-               this.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
+              this.register_tips=this.$t("m.register.key8")
             }
             if(id==2){
-               this.register_tips="请输入正确邮箱地址"
+                this.register_tips=this.$t("m.account.key80")
             }
             if(id==3){
-               this.register_tips="俩次密码不一致";
+               this.register_tips=this.$t("m.account.key68")
                this.resetpassword=""              
             }
             
           }
-        }else{
+        }else{  
           if(val){
               this.register_tipstype[0]=false
           }else{
              this.register_tipstype[0]=true
+          if(id==3){
+               this.register_tips=this.$t("m.account.key68")
+               this.resetpassword=""              
+            }   
            if(id==4){
-               this.register_tips="用户名由数字或小写字母组成且不能以数字开头，长度8-16位"
+              this.register_tips=this.$t("m.register.key8")
             }
             if(id==5){
-               this.register_tips="请输入正确手机号码"
+               this.register_tips=this.$t("m.account.key57")
             }
             if(id==6){
-               this.register_tips="俩次密码不一致";
+               this.register_tips=this.$t("m.account.key68")
                this.resetpassword=""              
             }
           }
@@ -425,6 +536,39 @@ export default {
 };
 </script>
 <style scoped>
+.center_box{
+    width: 6rem;
+    margin: 0 auto;
+}
+ .sevices{
+      background-color: #fff;
+        text-align: left;
+        padding-bottom: 0.2rem
+    }
+ .sevices_title{
+     margin-top: 0.15rem;
+     margin-bottom: 0.1rem;
+     text-align: center;
+     font-size: 20px;
+     font-weight: 700
+ } 
+ .sevices_foo{
+     margin-top: 0.1rem;
+ } 
+ .sevices_foo_item{
+     width: 0.45rem;
+     height: 0.18rem;
+     text-align: center;
+     line-height: 0.18rem;
+      border-radius: 4px;
+         color: #2f76ec;
+     background-color: #fff;
+    border: solid 1px #cccccc; 
+ } 
+ .sevices_foo_item:hover{
+       background-color: #2f76ec;
+    color: #fff;
+ }
 #register {
   height: 100%;
   min-height: 4.3rem;
@@ -446,6 +590,13 @@ export default {
 	color: #ffffff;
   padding-bottom:0.19rem;  
 }
+.inline{
+  display: inline-block;
+}
+.inline img{
+    width: 14px;
+  height: 14px;
+}
 .login_title {
 	font-family: MicrosoftYaHei;
 	font-size: 20px;
@@ -457,6 +608,9 @@ export default {
   margin-top: 0.12rem;
   margin-bottom: 0.13rem;
   opacity: 0.8; 
+}
+.login_email{
+  min-width: 245px;
 }
 .color1 {
   color: #2e73e8;
@@ -475,16 +629,15 @@ export default {
 .login_head_l {
   margin-right: 0.1rem;
   height: 0.18rem;
-  	font-size: 16px;
+  font-size: 16px;
   line-height: 0.18rem;
+   border-bottom: 2px solid #2e73e8;
   box-sizing: border-box;
 }
 .login_head_bg {
   color: #2e73e8;
-    height: 0.18rem;
-  line-height: 0.18rem;
   	font-size: 16px;
-  border-bottom: 2px solid #2e73e8;
+  border-bottom: 0px solid #2e73e8;
   box-sizing: border-box;
 }
 .flex_a {
@@ -520,6 +673,7 @@ export default {
   height: 0.3rem;
   bottom: -0.3rem;
   font-size: 12px;
+  color: red;
 }
 .login_item {
   width: 100%;
@@ -530,7 +684,7 @@ export default {
  box-sizing: border-box;
  position: relative;
 }
-.login_item input {
+.login_item>input {
   width: 100%;
   background-color:#00093a;  
   height: 0.2rem;
@@ -541,35 +695,72 @@ export default {
   border-radius: 4px;
 }
 .getcode{
-  width: 0.6rem;
   height: 0.2rem;
  line-height: 0.2rem;
- text-align: center;
+ text-align: left;
   color: #2e73e8;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 0.05rem;
+  text-align: right;
+}
+.code{
+  width:120px;
+  text-align: right;
 }
 .agree{
   margin-top: 0.1rem;
   margin-bottom: 0.15rem;
   cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .login_itemphone{
   position: relative;
+  padding-left: 65px;
 }
 .prefix{
   position: absolute;
-  right:0.2rem;
+   left: 0rem;
   top: 50%;
   transform: translateY(-50%);
-  width: 0.5rem;
   height: 0.2rem;
 }
 .tels{
-  max-height: 2rem;
+  min-width: 1rem;
+  max-height: 1.85rem;
    overflow-y: scroll;
+   left: 39.7%!important;
 }
 .prefix_inp{
- width: 50%;
+  width: 50px;
+  text-align: left;
+  background-color:#00093a;  
+  height: 0.2rem;
+  line-height: 0.2rem;
+  padding-left:0.07rem; 
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+.prefix_countryCode:hover{
+  background: #fff!important;
+}
+.prefix_countryCode_ul{
+ padding: 0 0.1rem;
+ background: #fff!important;
+ color: #000!important;
+}
+.prefix_countryCode_ul:hover{
+ background-color: #2e73e8!important;
+   color: #fff!important;
+}
+.prefix_countryCode_item{
+  width: 50px;
+  text-align: left;
+}
+.prefix_countryCode_item2{
+  text-align: left;
 }
 </style>

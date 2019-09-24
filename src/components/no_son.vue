@@ -71,7 +71,7 @@ export default {
         let _that=this
         this.$nextTick(() => {
             this.timer = setTimeout(function() {
-                alert(_that.$t("m.noson.key1"))
+                // alert(_that.$t("m.noson.key1"))
             }, 0);
         })
     },
@@ -86,15 +86,15 @@ export default {
             let _that = this
             if (!this.verifyUsername(this.add_sons.subusername)) {
                 this.add_sons.subusername = ''
-                return alert(this.$t("m.sonset.key9"))
+                return _that.$message.error(this.$t("m.sonset.key9"))
             }
             this.addson = false
             this.add_sons.username = localStorage.getItem('username')
-            console.log(JSON.stringify(this.add_sons))
+            // console.log(JSON.stringify(this.add_sons))
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/createAccountSub', this.add_sons, function(data) {
                 if (JSON.parse(data).code !== 200) {
-                    alert(JSON.parse(data).msg)
-                    console.log(JSON.parse(data))
+                    _that.$message.error(JSON.parse(data).msg)
+                    // console.log(JSON.parse(data))
                     _that.add_sons.subusername = ''
                     return
                 }
@@ -102,7 +102,7 @@ export default {
                 localStorage.setItem('subnameList','1')
                 _that.$router.push({name:'myltc'})
             }, function(error) {
-                console.log(error);
+                // console.log(error);
             })
             this.pop_type = 0
         },

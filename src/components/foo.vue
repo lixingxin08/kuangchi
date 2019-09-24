@@ -34,15 +34,16 @@
             <!--<p class="relation-box-p">Phone:  +86 0755 55247</p>-->
             <div class="share-box">
               <a href="https://twitter.com/Waltonchain" target="_blank"><img src="../assets/img/twitter.png" alt=""></a>
-              <img src="../assets/img/wx.png" alt="" @mouseover="func(2)" @mouseout="func2(2)">
+              <img src="../assets/img/wx.png" alt="" @mouseover="func(false)" @mouseout="func(true)">
               <a href="https://weibo.com/waltonchain?is_hot=1" target="_blank"><img src="../assets/img/wb.png" alt=""></a>
               <a v-if="$i18n.locale === 'zh'" href="https://t.me/waltonchaincommunity_cn" target="_blank"><img src="../assets/img/feiji.png" alt=""></a>
               <a v-if="$i18n.locale === 'en'" href="https://t.me/waltonchain_en" target="_blank"><img src="../assets/img/feiji.png" alt=""></a>
               <a v-if="$i18n.locale === 'ko'" href="https://t.me/koreawalton" target="_blank"><img src="../assets/img/feiji.png" alt=""></a>
-            </div>
-            <div class="QrCode-div" id="QrCode-div2">
+              <div class="QrCode-div" v-if="!showtype">
               <div id="QrCode-box2"> <img src="../assets/img/wxQr.png" alt=""></div>
             </div>
+            </div>
+
             <p style="font-size: 12px;color: #fff;opacity: 0.6;padding-top: 10px;"> © 2019 www.kirinpool.com. All Rights Reserved.</p>
           </div>
         </div>
@@ -55,7 +56,7 @@ export default {
 
   data() {
     return {
-
+        showtype:true
     }
   },
 
@@ -66,22 +67,8 @@ export default {
 
   },
   methods: {
-    func(index) {
-      if (index === 1) {
-        var dom = document.getElementById("QrCode-box");
-      } else {
-        var dom = document.getElementById("QrCode-box2");
-      }
-
-      $(dom).css("display", "block");
-    },
-    func2(index) {
-      if (index === 1) {
-        var dom = document.getElementById("QrCode-box");
-      } else {
-        var dom = document.getElementById("QrCode-box2");
-      }
-      $(dom).css("display", "none");
+    func(val) {
+      this.showtype=val
     },
     to_down2(val) {
        localStorage.removeItem('to_down2')
@@ -123,17 +110,13 @@ a:active {
 
 /* 鼠标点中激活链接 蓝色 */
 
-#QrCode-div2 {
-  display: flex;
-  justify-content: start;
-}
 
 /* .foo {
   margin-top: 0.25rem;
 } */
 
 #QrCode-box2 {
-  display: none;
+  display: block;
   text-align: center;
   /*background-color: white;*/
   /*width: 30%;*/
@@ -165,6 +148,7 @@ a:active {
   display: flex;
   justify-content: space-between;
   padding-top: 44px;
+  padding-bottom: 0.2rem
   /*padding-bottom: 40px;*/
 }
 
@@ -200,8 +184,9 @@ a:active {
 }
 
 .QrCode-div {
-  display: flex;
-  justify-content: center;
+  position: absolute;
+  bottom:-80px;
+  left: 0;
 }
 
 .QrCode-box {
@@ -238,7 +223,9 @@ a:active {
   margin-right: 10px;
   cursor: pointer;
 }
-
+.share-box{
+position: relative;
+}
 .foo_r {
   width: 2.5rem;
   display: flex;

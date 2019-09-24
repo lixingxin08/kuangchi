@@ -40,6 +40,14 @@ const Ajax=function(type, url, data, success, failed){
         ** 5xx ：服务器端错误
         */
             if(xhr.status == 200){
+                // if (JSON.parse(xhr.responseText).code=='1068') { 
+                //     console.log(3333);
+                //    localStorage.setItem('tohome','true')                           
+                // }
+                // if (JSON.parse(xhr.responseText).code=='1102') { 
+                //     console.log(3333);
+                //    localStorage.setItem('tohome','true')                           
+                // }
              return   success(xhr.responseText);
             } else {
                 if(failed){

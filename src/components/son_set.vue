@@ -58,7 +58,7 @@
           <div>
             <img src="../assets/img/nothing.png" alt />
           </div>
-          <div class="nothing_cb">快去创建一个子账户</div>
+          <div class="nothing_cb">{{$t("m.account.key54")}}</div>
         </div>
       </div>
     </div>
@@ -152,7 +152,7 @@
     <div class="loading" v-if="loading">
       <el-table
      v-loading="loading"
-    element-loading-text="拼命加载中"
+    :element-loading-text="$t('m.account.key55')"
     element-loading-spinner="el-icon-loading"
     style="width: 100%">
   </el-table>
@@ -298,10 +298,12 @@ export default {
       this.delete_tips = "";
       this.$set(_that.tiptype, 0, false);
       if (this.delete_params.paypassword == "") {
-        this.delete_tips = "请输入资金密码";
+        // this.delete_tips = "请输入资金密码";
+        this.delete_tips = this.$t("m.setting.key69")
         return;
       } else if (this.delete_params.code == "") {
-        this.delete_tips = "请输入谷歌验证码";
+        // this.delete_tips = "请输入谷歌验证码";
+        this.delete_tips = this.$t("m.setting.key57")
         return;
       }
       this.pop_type = 0;
@@ -321,7 +323,8 @@ export default {
             //   0,
             //   "删除失败，请输入正确的资金密码与谷歌验证码"
             // );
-            alert(JSON.parse(data).msg)
+            // this.$message.error(JSON.parse(data).msg)
+            _that.$message.error(_that.$t("m.account.key98"));
             return;
           }
           if (_that.sonset_list.length <= 1) {
@@ -331,15 +334,18 @@ export default {
           }
           localStorage.removeItem("subusername");
           console.log(_that.sonset_list.length);
-          _that.$set(_that.tiptype, 0, true);
-          _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
-          _that.$set(_that.tiptype, 0, true);
+          // _that.$set(_that.tiptype, 0, true);
+          // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+          // _that.$set(_that.tiptype, 0, true);
+          _that.$message.success(_that.$t("m.account.key95"));
+          _that.get_sonlist();
           _that.sonset_list.splice(_that.item_index, 1);
-          _that.$router.go(0);
+          // _that.$router.go(0);
         },
         function(error) {
           console.log(error);
-          alert("删除失败");
+          // alert("删除失败");
+          _that.$message.error(_that.$t("m.account.key87"));
         }
       );
     },
@@ -364,13 +370,15 @@ export default {
         _that.address_paramgs.address.indexOf("0x") !== 0 ||
         _that.address_paramgs.address.length !== 42
       ) {
-        alert("请输入正确钱包地址");
+        // alert("请输入正确钱包地址");
+        _that.$message.error(_that.$t("m.account.key88"));
         _that.address_paramgs.address = "";
         return;
       }
       if (!this.verifyUsername2(this.address_paramgs.address)) {
         this.address_paramgs.address = "";
-        return alert("请输入正确的钱包地址");
+        // return alert("请输入正确的钱包地址");
+        return  _that.$message.error(_that.$t("m.account.key88"));
       }
       _that.pop_type = 3;
     },
@@ -382,7 +390,8 @@ export default {
         _that.address_paramgs.address.indexOf("0x") !== 0 ||
         _that.address_paramgs.address.length !== 42
       ) {
-        alert("请输入正确钱包地址");
+        // alert("请输入正确钱包地址");
+         _that.$message.error(_that.$t("m.account.key88"));
         _that.address_paramgs.address = "";
         return;
       }
@@ -404,22 +413,25 @@ export default {
           if (JSON.parse(data).code !== 200) {
                console.log(JSON.parse(data).code,5555);
             _that.address_paramgs.address = "";
-            _that.$set(
-              _that.tips_data,
-              0,
-              "编辑失败，请输入正确的资金密码和谷歌验证码"
-            );
-            alert( "编辑失败，请输入正确的资金密码和谷歌验证码")
+            // _that.$set(
+            //   _that.tips_data,
+            //   0,
+            //  this.$t("m.account.key89")
+            // );
+            // alert( "编辑失败，请输入正确的资金密码和谷歌验证码")
+             _that.$message.error(_that.$t("m.account.key100"));
             return;
           }
-          _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+          // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+          _that.$message.success(_that.$t("m.account.key99"));
           _that.$set(_that.tiptype, 0, true);
           _that.edit_son = -1;
           _that.get_sonlist();
         },
         function(error) {
           console.log(error);
-          alert("编辑失败，请稍后再试");
+          // alert("编辑失败，请稍后再试");
+           _that.$message.error(_that.$t("m.account.key90"));
         }
       );
     },
@@ -429,7 +441,7 @@ export default {
       this.$set(_that.tiptype, 0, false);
       if (!this.verifyUsername(this.add_sons.subusername)) {
         this.add_sons.subusername = "";
-        return alert(this.$t("m.sonset.key9"));
+        return _that.$message.error(_that.$t("m.sonset.key9"));
       }
       this.addson = false;
       this.removeson = false;
@@ -442,20 +454,24 @@ export default {
         this.add_sons,
         function(data) {
           if (JSON.parse(data).code !== 200) {
-            _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+           // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+           _that.$message.error(_that.$t("m.account.key97"));
             console.log(JSON.parse(data));
             _that.add_sons.subusername = "";
             _that.$set(_that.tiptype, 0, true);
             return;
           }
-          _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+          // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+           _that.$message.success(_that.$t("m.account.key96"));
           _that.$set(_that.tiptype, 0, true);
+          _that.get_sonlist();
           _that.add_sons.subusername = "";
-          _that.$router.go(0);
+          // _that.$router.go(0);
         },
         function(error) {
           console.log(error);
-          alert("网络出现一点点问题，请稍后再试");
+          // alert("网络出现一点点问题，请稍后再试");
+          _that.$message.error(_that.$t("m.key"));
         }
       );
       this.pop_type = 0;

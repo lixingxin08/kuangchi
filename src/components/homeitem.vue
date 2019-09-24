@@ -25,9 +25,9 @@
                         <span> {{$t("m.home.key2")}}</span>
                     </div>
                     <div>
-                        <div class="go_search">
-                            <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()">
-                            <span class="el-icon-search search" @click="tosearch()"></span>
+                        <div class="go_search" :style="InputStyle">
+                            <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()" @focus="InputStyleFun()" @blur="InputStyleBlur()">
+                            <span class="el-icon-search search" @click="tosearch()" :style="InputIconStyle"></span>
                         </div>
                     </div>
                 </div>
@@ -106,11 +106,11 @@
                     <!--块高度交易数-->
                     <div v-if="hometype==2">
                         <ul class="center-ul" v-for="(item,index) in datas" :key="index">
-                            <li class="li1 color1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
-                            <li class="li2 color1" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
-                            <li class="li3 color1" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
-                            <li class="li4">{{(item.gasPrice * item.gas).toFixed(8)}}</li>
-                            <li class="li5">{{(format(item.value / Math.pow(10, 18),8))}}</li>
+                            <li class="li0 color1" @click="item_search(item.hash)">{{filterFun(item.hash)}}</li>
+                            <li class="li1 color1" @click="item_search(item.fromAddress)">{{filterFun(item.fromAddress)}}</li>
+                            <li class="li2 color1" @click="item_search(item.toAddress)">{{filterFun(item.toAddress)}}</li>
+                            <li class="li3">{{(item.gasPrice * item.gas).toFixed(8)}}</li>
+                            <li class="li4">{{(format(item.value / Math.pow(10, 18),8))}}</li>
                         </ul>
                     </div>
                     <!--搜索钱包地址 交易数-->
@@ -206,6 +206,12 @@ export default {
                 gasPrice: 0
             },
             wallet_changes: '',
+            InputStyle:{
+                border: '1px solid #e5e5e5;'
+            },
+            InputIconStyle:{
+                color: "#737682;"
+            }
         }
     },
     created() {
@@ -221,6 +227,24 @@ export default {
         this.tosearch()
     },
     methods: {
+        InputStyleFun(){
+            console.log(1);
+            this.InputStyle={ 
+                border: '1px solid rgb(87, 20, 209)'
+            };
+            this.InputIconStyle={ 
+                color: 'rgb(87, 20, 209)'
+            };
+            },
+            InputStyleBlur(){
+            console.log(111)
+            this.InputStyle={ 
+                border: '1px solid #e5e5e5'
+            };
+            this.InputIconStyle={ 
+            color: "#737682"
+            };
+        },
         wallet_change(val) {
             let _that = this
             this.wallet_changes = val,
@@ -428,7 +452,7 @@ export default {
                     _that.homedatalist = JSON.parse(data).chainInfo
                     _that.$set(_that.totalSize, 0, JSON.parse(data).chainCount || 0)
                     if (JSON.parse(data).code !== 200) {
-                        alert(JSON.parse(data).msg)
+                        _that.$message.error(JSON.parse(data).msg);
                     }
                     for (let i = 0; i < _that.homedatalist.length; i++) {
                         _that.datas[i] = JSON.parse(_that.homedatalist[i])
@@ -439,7 +463,7 @@ export default {
                 })
             }
             else {
-                alert("请输入正确块高度，钱包地址，交易哈希")
+                _that.$message.error(_that.$t("m.account.key3"));
                 _that.search_data = ''
                 _that.$router.push({ name: 'nothing' })
                 return
@@ -517,7 +541,6 @@ li {
 .color1:hover{
     color: rgba(70,138,255,1);
 }
-
 
 
 
@@ -839,7 +862,7 @@ input:-ms-input-placeholder {
 
 .wallet_change {
     width: 100%;
-    font-size:0.16rem;
+    font-size:0.08rem;
     font-weight: normal;
     font-stretch: normal;
     letter-spacing: 0px;
@@ -1182,7 +1205,7 @@ input:-ms-input-placeholder {
 }
 
 .list-box {
-    box-shadow: 0px 0px 0.08rem 0.02rem rgba(0, 0, 0, 0.06);
+    /* box-shadow: 0px 0px 0.08rem 0.02rem rgba(0, 0, 0, 0.06); */
 }
 
 .header-ul {
@@ -1192,7 +1215,7 @@ input:-ms-input-placeholder {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 0.15rem;
+    padding: 0 0.3rem;
 }
 
 .header-ul li {
@@ -1209,7 +1232,7 @@ input:-ms-input-placeholder {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 0.15rem;
+    padding: 0 0.3rem;
     border-bottom: 1px solid #f2f2f2;
 }
 
@@ -1224,7 +1247,7 @@ input:-ms-input-placeholder {
 }
 
 .li0 {
-    flex: 3;
+    flex: 4;
     text-overflow: ellipsis;
     overflow: hidden;
     color: #2e73e8;
@@ -1266,10 +1289,9 @@ input:-ms-input-placeholder {
 }
 
 .li6 {
-    flex: 2;
+    flex: 4;
     text-overflow: ellipsis;
     overflow: hidden;
-    text-align: right;
 }
 
 .li_other {
@@ -1545,15 +1567,15 @@ input:-ms-input-placeholder {
 }
 
 .block_center {
-    border: 1px solid #f9f5f9;
+    border: 1px solid #f8fafc;
     box-sizing: border-box;
 }
 
 .block_c_t {
     height: 0.25rem;
     padding: 0 0.25rem;
-    background-color: #f9f5f9;
-    border: 1px solid #f9f5f9;
+    background-color: #f8fafc;
+    border: 1px solid #f8fafc;
     box-sizing: border-box;
     display: flex;
     justify-content: space-between;
@@ -1562,11 +1584,11 @@ input:-ms-input-placeholder {
 }
 
 .bgc2 {
-    background-color: #e9f2ff;
+    background-color: #f8fafc;
 }
 
 .bgc3 {
-    background-color: #ffe7d7;
+    background-color: #f8fafc;
 }
 
 .block_c_main {
@@ -1576,6 +1598,7 @@ input:-ms-input-placeholder {
     justify-content: space-between;
     align-items: center;
     text-overflow: ellipsis;
+    margin-bottom: 0.4rem;
 }
 
 .block_c_main_item {
@@ -1613,12 +1636,12 @@ input:-ms-input-placeholder {
 }
 
 .nomore {
-    font-size: 0.14rem;
+    font-size: 0.12rem;
     text-align: center;
 }
 
 .nomorecolor {
-    color: rgba(255, 102, 0, 0.698039215686274);
+    color: #999;
 }
 
 

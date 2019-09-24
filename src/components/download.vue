@@ -1,5 +1,8 @@
 <template>
   <div class="home">
+    <div class="home_bcg">
+      <img src="../assets/img/help.jpg" alt="">
+    </div>
     <div class="center-box">
       <div class="main-box__bg-1">
         <div class="main-box-left-1">
@@ -18,7 +21,7 @@
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key38")}}</li>
           </ul>
         </div>
-
+        <!-- 工具下载 -->
         <div class="main-box-right1" v-show="this.downloadtype[0]!==3">
           <!--帮助中心-->
           <div class="help_main" v-if="this.downloadtype[0]==1">
@@ -30,24 +33,27 @@
               </li>
             </ul>
           </div>
-
           <!--工具下载-->
           <div class="main-box__content" v-show="this.downloadtype[0]==2">
             <div class="gonggao">
-            <div class="flex_b Download_item">
-              <div class="flex_b header-text">
-                <img src="../assets/img/down_logo1.png" alt="">
-                <div class="flex_c down_text">
-                  <span>KIRINMINER:</span>
-                  <span>{{$t("m.download.key29")}}</span>
+              <div class="flex_b Download_item">
+                <div class="flex_b header-text">
+                  <img src="../assets/img/updata.png" width="50">
+                  <div class="flex_c down_text">
+                    <span>Updata:</span>
+                    <span>{{$t("m.account.key91")}}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/zh/KIRINMINER.pdf?attname=">{{$t("m.download.key30")}}</a>
-              </div>
-              <div class="Download-main">
-                <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname=" target="">{{$t("m.download.key32")}}</a>
+                <div class="guide-box">
+                  <a href="https://file.kirinpool.com/download/OneClickUpgrading_InstructionManual-v1.zip?attname=">{{$t("m.account.key92")}}</a>
+                </div>
+                <div class="Download-main">
+                  <div class="tool-box">
+                    <a href="https://file.kirinpool.com/download/One-clickUpgrading.exe?attname=" target="">{{$t("m.account.key93")}}</a>
+                  </div>
+                  <div class="tool-box">
+                    <a href="https://file.kirinpool.com/download/One-clickUpgrading.app.zip?attname=" target="">{{$t("m.account.key94")}}</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -64,32 +70,34 @@
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="" class="tool-btn">{{$t("m.download.key32")}}</a>
+                  <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="" class="tool-btn">{{$t("m.account.key93")}}</a>
                 </div>
               </div>
             </div>
-            <!-- <div class="flex_b Download_item">
+            <div class="flex_b Download_item">
               <div class="flex_b header-text">
-                <img src="../assets/img/donwn_logo3.png" alt="">
+                <img src="../assets/img/down_logo1.png" alt="">
                 <div class="flex_c down_text">
-                  <span>GpuMiner:</span>
-                  <span>{{$t("m.download.key35")}}</span>
+                  <span>KIRINMINER:</span>
+                  <span>{{$t("m.download.key29")}}</span>
                 </div>
               </div>
               <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/Test%20machine%20configuration.pdf?attname=">{{$t("m.download.key36")}}</a>
+                <a href="https://file.kirinpool.com/download/KIRINMINER_InstructionManual-v1.zip?attname=">{{$t("m.download.key30")}}</a>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/GpuMiner.zip?attname=" target="">{{$t("m.download.key32")}}</a>
+                  <a href="https://file.kirinpool.com/download/KIRINMINER_Install.exe?attname=" target="">{{$t("m.account.key93")}}</a>
+                </div>
+                <div class="tool-box">
+                  <a href="https://file.kirinpool.com/download/KIRINMINER.dmg?attname=" target="">{{$t("m.account.key94")}}</a>
                 </div>
               </div>
-            </div> -->
-          </div>
+            </div>
           </div>
         </div>
+        <!-- </div> -->
         <!--常见问题-->
-        
         <div class="main-box__content main-box-right1" v-show="this.downloadtype[0]==3">
           <div class="gonggao">
           <el-collapse class="problem_main">
@@ -136,8 +144,25 @@
           </el-collapse>
           </div>
         </div>
+        <!-- 矿池公告 -->
         <div class="main-box__content main-box-right1" v-show="this.downloadtype[0]==4">
           <div class="gonggao">
+            <div class="dialogCon">
+              <div class="dialogTitle" style="text-align:center">{{$t("m.account.key101")}}</div>
+              <div class="dialogTable">
+                <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{$t("m.account.key102")}}</p>
+                <p>{{$t("m.account.key103")}}</p>
+                <p>{{$t("m.account.key104")}}</p>
+                <p>{{$t("m.account.key105")}}</p>
+                <p>{{$t("m.account.key106")}}</p>
+                <p>{{$t("m.account.key107")}}</p>
+                <p>{{$t("m.account.key108")}}</p>
+              </div>
+              <div class="dialogFoot">
+                <p>{{$t("m.account.key109")}}</p>
+                <p style="text-align:right">2019-09-24</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -281,7 +306,7 @@ li {
 }
 
 .gonggao {
-  min-height: 2.9rem;
+  /* min-height: 2.9rem; */
 }
 
 .problem_main {}
@@ -295,10 +320,25 @@ li {
 
 
 
-
-
-
-
+.help_boxli1{
+  width: 80%;
+  padding-bottom: 40px;
+  border-bottom: 1px dashed #dddddd
+}
+.dialogTable{
+  padding: 20px 0px;
+}
+.dialogTable p{
+  line-height: 30px;
+}
+.dialogTitle{
+  font-size: 16px;
+  text-align: center;
+  font-weight: 600
+}
+.dialogCon{
+  padding: 0px 60px;
+}
 
 
 
@@ -452,7 +492,7 @@ li {
   min-height: 100px;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 50px;
+  padding-bottom: 100px;
 }
 
 .top-box-left p {
@@ -589,12 +629,14 @@ li {
 .main-box-right1 {
   width: 100%;
   box-sizing: border-box;
-  border: 2px solid rgba(242, 242, 242, 1);
+  /* border: 2px solid rgba(242, 242, 242, 1); */
   border-radius: 4px;
   padding: 0 0.15rem;
 }
 
-
+.home_bcg img{
+  width: 100%;
+}
 
 
 .header-text {
@@ -631,6 +673,7 @@ li {
   border: 1px solid rgba(46, 115, 232, 1);
   border-radius: 4px;
   color: rgba(46, 115, 232, 1);
+  margin: 0.01rem;
 }
 
 .main-box__content img {
@@ -762,6 +805,7 @@ li {
 .help_boxli2 {
   line-height: 0.17rem;
    font-size: 14px;
+   cursor: pointer;
 }
 
 .help_boxli2_t {

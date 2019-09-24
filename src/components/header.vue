@@ -24,7 +24,7 @@
                 </div>
               </router-link>
             </div>
-            <div class="nav_main" :class="username?'nav_mained':''">
+            <div class="nav_main" :class="isLogin?'nav_mained':''">
               <div class="nav-div">
                 <ul class="nav-div-ul" v-if="!isLogin">
                   <li
@@ -37,7 +37,7 @@
                   </li>
                   <li :class="$route.path === '/wallet'?'active':'no_active'">
                     <a
-                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5"
+                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5" target="_blank"
                     >{{$t("m.header.key26")}}</a>
                   </li>
                 </ul>
@@ -58,7 +58,7 @@
                   </li>
                   <li :class="$route.path === '/'?'active':'no_active'">
                     <a
-                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5"
+                      href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5" target="_blank"
                     >{{$t("m.header.key26")}}</a>
                   </li>
                 </ul>
@@ -67,16 +67,18 @@
 
             <div class="lang-box">
               <ul class="lang-box_main" :class="isLogin?'lang-box_mained':''">
-                <a :href="baseHerf2+ $i18n.locale" v-show="!isLogin">
-                  <li class="register_li">{{$t("m.header.key12")}}</li>
-                </a>
-                <li v-if="isLogin">
-                  <el-dropdown trigger="click" placement="bottom" click="user_main">
-                    <span class="el-dropdown-link lang_left">
+                  <li v-if="!isLogin" class="langbox_item">
+                       <router-link to="register">
+                      <div class="login-box register_li">  {{$t("m.header.key12")}}</div>
+                    </router-link>
+                    </li>
+                <li v-if="isLogin"  class="langbox_item">
+                  <el-dropdown trigger="click" placement="bottom" class="langbox_list">
+                    <div class="el-dropdown-link lang_left">
                       <img src="../assets/img/user_img.png" alt class="user_img" />
                       <span>{{user_head}}</span>
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
-                    </span>
+                    </div>
                     <el-dropdown-menu slot="dropdown" class="user_list">
                       <el-dropdown-item class="user_head">
                         <div class="user_head">
@@ -110,9 +112,9 @@
                       </el-dropdown-item>
                       <el-dropdown-item class="user_bottom">
                         <li class="user_b_main">
-                          <span class="user_b_main_item">
-                            <a :href="baseHerf3">{{$t("m.header.key30")}}</a>
-                          </span>
+                           <router-link to="/personal">
+                              <span class="text_color">{{$t("m.header.key30")}}</span>
+                            </router-link>
                           <span class="user_b_main_item">
                             <router-link to="/sublist">
                               <span class="text_color">{{$t("m.header.key32")}}</span>
@@ -134,18 +136,18 @@
                                                                                               <li @click="sing_up">{{$t("m.header.key13")}}</li>
                                                                                             </ul>
                 </li>-->
-                <li v-if="!isLogin">
+                <li v-if="!isLogin"  class="langbox_item">
                   <router-link to="login">
                     <div class="login-box register_li">{{$t("m.home.key1")}}</div>
                  </router-link>
                 </li>
                 <li class="username-li" style="position: relative">
-                  <el-dropdown trigger="click" placement="bottom">
-                    <span class="el-dropdown-link lang_right">
+                  <el-dropdown trigger="click" placement="bottom" class="langbox_list">
+                    <div class="el-dropdown-link lang_right">
                       <img class="switch-lang-img" src="../assets/img/langs.png" alt />
-                      <span id="lang-span">{{lang_title}}</span>
+                      <div id="lang-span">{{lang_title}}</div>
                       <i class="el-icon-caret-bottom el-icon--right arrow__down"></i>
-                    </span>
+                    </div>
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item>
                         <li @click="switchLang('zh')" class="lang_item">中文</li>
@@ -201,12 +203,11 @@ export default {
       subnameList: "",
       subnameList_item: [],
       subnameList_i: [],
-      timer: null
+      timer: null,
     };
   },
   created() {
-    this.getAccountInfo2()
-    this.getsubusername()
+    let _that=this
     if (localStorage.getItem("lang")=='en') {
       this.lang_title='English'
     }if (localStorage.getItem("lang")=='zh') {
@@ -214,7 +215,11 @@ export default {
     }if (localStorage.getItem("lang")=='ko') {
       this.lang_title='한글'
     }
+    console.log(localStorage.getItem("isLogin"),typeof(localStorage.getItem("isLogin")),99999999);
+    
      if(localStorage.getItem("isLogin")){
+        this.getAccountInfo2()
+          this.getsubusername()    
     this.isLogin = localStorage.getItem("isLogin");
      }   
     localStorage.setItem("subusername", this.head_username);
@@ -231,6 +236,7 @@ export default {
     bus.$on("payfee", function(res) {
       vueThis.payfee = res;
     });
+
   },
   mounted() {
     let _that = this;
@@ -250,7 +256,6 @@ export default {
       this.user_head = this.subnameList[index].subUsername;
       localStorage.setItem("subusername", this.user_head);
       localStorage.setItem("change", this.user_head);
-      console.log(this.$route.path);    
       if(this.$route.path!=='/myltc'){
            this.$router.push({name:'myprofit'})
       }   
@@ -301,18 +306,23 @@ export default {
     //获取用户信息
     getAccountInfo2(){
       let _that=this
-      console.log(this.subnameparams);  
+
       this.$ajax('post', this.GLOBAL.baseUrl + 'account/getAccountInfo',this.subnameparams, function(data) {
-        console.log(JSON.parse(data) ,'getAccountInfo211111');
+
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
-              }if(JSON.parse(data).code==1068){
-                console.log(111111555);
+              }if(JSON.parse(data).code==1068){ 
                 _that.setCookie('token',null)
                  _that.setCookie('username',null)
                  _that.isLogin=false
-                  alert('登录已失效，请重新登录')
-              _that.$router.push({name:'login'})
+                   _that.$message.error(_that.$t("m.account.key2")); 
+                   console.log(_that.$route,99999);
+                   
+                 if (_that.$route.path!=='/home'&& _that.$route.path!=='/download'&&_that.$route.path!=='/register'&&_that.$route.path!=='/restePassword'){         
+                    _that.$router.push({name:'login'})  
+                    localStorage.removeItem("isLogin")    
+                 } 
+
               }
                if(JSON.parse(data).code==1){
                     _that.head_username =
@@ -334,19 +344,19 @@ export default {
             _that.gethaveson();
               }
                 }, function(error) {
-                    console.log(error)
+                    // console.log(error)
                 })   
     },
     //是否有子账户
     gethaveson() {
       let _that = this;
-      console.log(this.subnameparams);
+      // console.log(this.subnameparams);
       this.$ajax(
         "post",
         this.GLOBAL.baseUrl + "v2/userIsHaveSubUser",
         this.subnameparams,
         function(res) {
-          console.log(res, "是否有子账户");
+          // console.log(res, "是否有子账户");
           if (JSON.parse(res).code !== 1) {
             // _that.$router.push({ name: 'unsub' })
             return;
@@ -354,14 +364,14 @@ export default {
           }
         },
         function(error) {
-          console.log(error);
+          // console.log(error);
         }
       );
     },
     //获取子账号列表
     getsubusername() {
       let _that = this;
-      console.log('获取子账号列表');   
+      // console.log('获取子账号列表');   
       // _that.subnameList = res.minerPow;
       if (this.subnameparams.token == "") {
         this.timer = null;
@@ -384,7 +394,7 @@ export default {
           // localStorage.setItem('username', _that.subnameList[0].subUsername);
         },
         function(error) {
-          console.log(error);
+          // console.log(error);
         }
       );
     },
@@ -459,17 +469,20 @@ export default {
       let _that=this
       this.subnameparams.token=this.getCookie('token')
       this.subnameparams.username=this.getCookie('username')
-            console.log(this.subnameparams);
+            // console.log(this.subnameparams);
         this.$ajax('post', this.GLOBAL.baseUrl + 'account/tuichu',this.subnameparams, function(data) {
-          console.log(data,'datadatadatadata'); 
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
               }
                if(JSON.parse(data).code==1039){
                 alert("手机号未注册")
+              }if(JSON.parse(data).code==1046){
+             _that.isLogin=false
+                _that.$router.push({ name: "home" });                   
               }
                if(JSON.parse(data).code==1){
-                           console.log(data,'datadatadatadat2222222222222222a'); 
+                          //  console.log(data,'datadatadatadat2222222222222222a'); 
+              _that.$router.push({ name: "home" }); 
                _that.setCookie('token',null)
                 _that.setCookie('username',null)
                 _that.head_username=''
@@ -480,15 +493,15 @@ export default {
                   localStorage.removeItem('username')
                 localStorage.removeItem("change");
                 localStorage.removeItem("subusername");         
-                 _that.$router.push({ name: "home" }); 
+                 
               }
                 }, function(error) {
-                    console.log(error)
+                    // console.log(error)
                 })     
     }
   },
   watch: {
-    $route(to, from) {  
+    $route(to, from) {   
       if (to.name == 'myltc' && from.name=='unsub') {
         localStorage.setItem("subusername", this.head_username);
         var vueThis = this;
@@ -507,11 +520,11 @@ export default {
       }if(from.name=='login'){ 
             this.head_username = localStorage.getItem("username");
              this.subnameparams.token=this.getCookie('token')
-      this.subnameparams.username=this.getCookie('username') 
+         this.subnameparams.username=this.getCookie('username') 
            this.isLogin = localStorage.getItem("isLogin");
         this.getsubusername()
       this.getAccountInfo2()}
-    }
+    },  
   }
 };
 </script>
@@ -545,18 +558,31 @@ ul {
 .lang-box li {
   cursor: pointer;
 }
-
+.langbox_item{
+  width: 30%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 .logo-box img {
   width: 0.89rem;
   height: 0.14rem;
 }
-
+#lang-span{
+  margin-left: 0.05rem;
+  min-width: 10px;
+}
 .lang-box {
-  min-width: 1.2rem;
+  min-width: 200px;
   height: 0.35rem;
+  line-height: 0.35rem;
+  padding: 0.15rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.nav_mained{
+  min-width: 400px;
 }
 .lang-box_main {
   min-width: 1.2rem;
@@ -578,7 +604,7 @@ ul {
   border: 1px solid #2e73e8;
   color: #fff;
   box-sizing: border-box;
-  border-radius: 2px;
+  border-radius: 4px;
   line-height: 0.14rem;
 }
 .register_li:hover{
@@ -627,7 +653,7 @@ ul {
 }
 
 .lang_left {
-  width: 0.5rem;
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -642,8 +668,9 @@ ul {
 }
 
 .switch-lang-img {
-  width: 0.08rem;
-  height: 0.08rem;
+  width:16px;
+  height:16px;
+  margin-right:2px;
 }
 
 .el-dropdown-menu {
@@ -651,12 +678,14 @@ ul {
   border: solid 1px #434343;
   box-sizing: border-box;
 }
-
+.langbox_list{
+  width: 100%;
+}
 .user_img {
-  width: 0.08rem;
-  height: 0.08rem;
+  width:16px;
+  height:16px;
   margin-bottom: 0.01rem;
-  margin-right: 4px;
+  margin-right: 6px;
 }
 
 .user_el_list:hover {

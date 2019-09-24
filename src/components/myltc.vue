@@ -39,8 +39,8 @@
                         <span> {{$t("m.myMill.key33")}}</span>
                         </div>
                         <div class="ltc_c_title_r flex_b">
-                            <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">小时</span>
-                            <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">日期</span>
+                            <span class="ltc_c_time" :class="select_type=='hour'?'bg_click':''" @click="selecttype(1)">{{$t("m.myMill.key34")}}</span>
+                            <span class="ltc_c_time" :class="select_type=='hour'?'':'bg_click'" @click="selecttype(2)">{{$t("m.myMill.key35")}}</span>
                         </div>
                     </div>
                     <!--曲线图-->
@@ -172,7 +172,8 @@ export default {
                 { latestHrInfo: '', minHrInfo: '', dayHrInfo: '' }
             ],
             noson_type: false,
-            timer: ''
+            timer: '',
+            yAxisName:''
         }
     },
     created() {
@@ -191,11 +192,11 @@ export default {
     }   else {
             this.wokerList()
             this.getmyltcdata()
-            this.wokerAllKlinedata()
         }
     },
     methods: {
         selecttype(index) {
+            console.log(index);
             if (index == 1) {
                 this.select_type = 'hour'
                 this.allkline_params.type = 'hour'
@@ -264,13 +265,13 @@ export default {
                 },
                 yAxis: {
                     show: true,
-                    name: 'MH/s',
+                    name: _that.yAxisName,
                     type: 'value',
                     scale: true,
-                    max: 600,
+                    // max: 600,
                     min: 0,
                     boundaryGap: [0.2, 0.2],
-                    splitNumber: 13,
+                    splitNumber: 12,
                     splitLine: {
                         lineStyle: {
                             color: "#333",
@@ -280,43 +281,43 @@ export default {
                     axisTick: {
                         show: false
                     },
-                    axisLabel: {
-                        formatter: function(value) {
-                            var texts = [];
-                            if (value == 0) {
-                                texts.push('0');
-                            }
-                            else if (value <= 50) {
-                                texts.push('50');
-                            }
-                            else if (value <= 100) {
-                                texts.push('100');
-                            }
-                            else if (value <= 150) {
-                                texts.push('150');
-                            } else if (value <= 200) {
-                                texts.push('200');
-                            } else if (value <= 250) {
-                                texts.push('250');
-                            } else if (value <= 300) {
-                                texts.push('300');
-                            } else if (value <= 350) {
-                                texts.push('350');
-                            } else if (value <= 400) {
-                                texts.push('400');
-                            } else if (value <= 450) {
-                                texts.push('450');
-                            } else if (value <= 500) {
-                                texts.push('500');
-                            } else if (value <= 550) {
-                                texts.push('550');
-                            } else if (value <= 600) {
-                                texts.push('600');
-                            }
+                    // axisLabel: {
+                    //     formatter: function(value) {
+                    //         var texts = [];
+                    //         if (value == 0) {
+                    //             texts.push('0');
+                    //         }
+                    //         else if (value <= 50) {
+                    //             texts.push('50');
+                    //         }
+                    //         else if (value <= 100) {
+                    //             texts.push('100');
+                    //         }
+                    //         else if (value <= 150) {
+                    //             texts.push('150');
+                    //         } else if (value <= 200) {
+                    //             texts.push('200');
+                    //         } else if (value <= 250) {
+                    //             texts.push('250');
+                    //         } else if (value <= 300) {
+                    //             texts.push('300');
+                    //         } else if (value <= 350) {
+                    //             texts.push('350');
+                    //         } else if (value <= 400) {
+                    //             texts.push('400');
+                    //         } else if (value <= 450) {
+                    //             texts.push('450');
+                    //         } else if (value <= 500) {
+                    //             texts.push('500');
+                    //         } else if (value <= 550) {
+                    //             texts.push('550');
+                    //         } else if (value <= 600) {
+                    //             texts.push('600');
+                    //         }
 
-                            return texts;
-                        }
-                    }
+                    //         return texts;
+                    //     }
+                    // }
                 },
                 series: [{
                     data: _that.AllKlinedata.val,
@@ -371,9 +372,20 @@ export default {
             let _that = this
             this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllInfo', this.myltc_param, function(data) {
                 console.log(data, "子账户下总矿机算力")
-                _that.wokerAlldata = JSON.parse(data).minerPow
+                console.log();
+                let nowHashrate = _that.changpow(JSON.parse(data).minerPow[0].latestHrInfo);
+                console.log(nowHashrate);
+                if(nowHashrate.includes('G')){
+                    _that.yAxisName='GH/s'
+                }else{
+                    _that.yAxisName='MH/s'
+                }
+                _that.wokerAlldata = JSON.parse(data).minerPow;
+                _that.wokerAllKlinedata()
+                // _that.nowHashrate=
             }, function(error) {
-                alert("网络出现一点点问题，请稍后再试")
+                // alert("网络出现一点点问题，请稍后再试")
+                 _that.$message.error(_that.$t("m.key"));
             })
         },
         //子账户下单个矿机的列表
@@ -403,12 +415,13 @@ export default {
                 }
             }, function(error) {
                 console.log(error);
-                alert("网络出现一点点问题，请稍后再试1")
+                // alert("网络出现一点点问题，请稍后再试1")
+                 _that.$message.error(_that.$t("m.key"));
             })
         },
         //总矿机曲线
         wokerAllKlinedata() {
-            let _that = this
+            let _that = this;
             let data = {
                 "hourInfo": [
                     {
@@ -420,28 +433,29 @@ export default {
                         "16:00": 600,
                         "17:00": 100,
 
-                    }]
+                    }
+                ]
             }
             this.AllKlinedata = { //总曲线数据
                 xAxisdata: [],
                 val: []
             },
-                // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
-                    console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
-                    if (_that.select_type == 'hour') {
-                        _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                        console.log(JSON.parse(data).hourInfo[0], "ssssss1")
-                    } else {
-                        _that.getValueByKey(JSON.parse(data).dayAllKlineInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
-                        console.log(JSON.parse(data).dayAllKlineInfo[0], "ssssss2222")
-                    }
-                    console.log(_that.AllKlinedata, "ssssss555555总矿机曲线")
-                    _that.$nextTick(() => { _that.drawLine() })
-                }, function(error) {
-                    alert("网络出现一点点问题，请稍后再试2")
-                })
-
+            // _that.getValueByKey(data.hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+            this.$ajax('post', this.GLOBAL.baseUrl + 'v2/wokerAllKlineInfo', this.allkline_params, function(data) {
+                console.log(data, "wokerAllKlineInfo33333", _that.allkline_params)
+                if (_that.select_type == 'hour') {
+                    _that.getValueByKey(JSON.parse(data).hourInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                    console.log(JSON.parse(data).hourInfo[0], "ssssss1")
+                } else {
+                    _that.getValueByKey(JSON.parse(data).dayAllKlineInfo[0], _that.AllKlinedata.xAxisdata, _that.AllKlinedata.val)
+                    console.log(JSON.parse(data).dayAllKlineInfo[0], "ssssss2222")
+                }
+                console.log(_that.AllKlinedata, "ssssss555555总矿机曲线")
+                _that.$nextTick(() => { _that.drawLine() })
+            }, function(error) {
+                // alert("网络出现一点点问题，请稍后再试2")
+                 _that.$message.error(_that.$t("m.key"));
+            })
         },
         //单台矿机内k线
         wokerListKlinedata() {
@@ -479,7 +493,8 @@ export default {
                 console.log(_that.ListKlinedata, "sssss22111s1")
                 _that.$nextTick(() => { _that.eject_chart() })
             }, function(error) {
-                alert("网络出现一点点问题，请稍后再试3")
+                //alert("网络出现一点点问题，请稍后再试3")
+                _that.$message.error(_that.$t("m.key"));
             })
         },
         //弹出框图表
@@ -623,8 +638,8 @@ export default {
     beforeDestroy(){
         this.timer=null
         this.eject_data=[]
-         this.wokerAlldata=[]
-          this.wokerListdata=[]
+        this.wokerAlldata=[]
+        this.wokerListdata=[]
     },
     watch:{
 
@@ -1082,7 +1097,8 @@ export default {
 }
 
 .myltct_t_bt {
-    margin-top: 0.64rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
     display: flex;
     justify-content: space-between;
 }

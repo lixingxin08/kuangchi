@@ -141,7 +141,7 @@ Vue.prototype.vmf = function (str) {
 },
   //验证密码
   Vue.prototype.isNumberOr_Letter = function (s) {
-    var regu = /^(?=.*\d)(?=.*[a-zA-Z]).{6,16}$/;
+    var regu =  /^(?=.*\d)(?=.*[a-zA-Z]).{6,16}$/
     if (regu.test(s)) {
       return true;
     } else {
@@ -158,7 +158,7 @@ Vue.prototype.vmf = function (str) {
   };
 //校验用户名
 Vue.prototype.verifyUsername = function (str) {
-  var re = /^[a-z][a-z0-9]{7,15}$/;
+  var re = /^[a-z][a-z0-9]{6,14}$/;
   if (re.test(str) !== true) {
     return false;
   } else {
@@ -172,6 +172,7 @@ Vue.prototype.verifyUsername2 = function (str) {
     return false;
   } else {
     return true
+    
   }
 },
 Vue.prototype.verifyUsernam3 = function (str) {
@@ -266,9 +267,19 @@ Vue.prototype.changpow2 = function (val) {
   val = Number(val)
   let val1 = new Number()
   var num = 1024.00;
-  val1 = val / Math.pow(num, 2)
-  val1 = val1.toFixed(2)
-  return val1;
+  if (val < Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 2)
+    val1 = val1.toFixed(2)
+    return val1;
+  } else if (val < Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(2)
+    return val1;
+  } else if (val > Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(2)
+    return val1;
+  }
 }
 //设置cookie
 Vue.prototype.setCookie = function (key, val, time) {

@@ -9,9 +9,9 @@
                     <span> {{$t("m.home.key2")}}</span>
                 </div>
                 <div>
-                    <div class="go_search">
-                        <input type="text" class="search_inp" :placeholder="placehoder" v-model="nosearch_data" @keydown="btKeyUp" @keyup.enter="no_tosearch()">
-                        <span class="el-icon-search search" @click="no_tosearch()"></span>
+                    <div class="go_search" :style="InputStyle">
+                        <input type="text" class="search_inp" :placeholder="placehoder" v-model="nosearch_data" @keydown="btKeyUp" @keyup.enter="no_tosearch()"  @focus="InputStyleFun()" @blur="InputStyleBlur()">
+                        <span class="el-icon-search search" @click="no_tosearch()" :style="InputIconStyle"></span>
                     </div>
                 </div>
             </div>
@@ -29,17 +29,42 @@
 <script>
 export default {
     data() {
-            return{
-                nosearch_data:localStorage.getItem('nosearch'),
-                placehoder: this.$t("m.home.key8"),
+        return{
+            nosearch_data:localStorage.getItem('nosearch'),
+            placehoder: this.$t("m.home.key8"),
+            InputStyle:{
+                border: '1px solid #e5e5e5;'
+            },
+            InputIconStyle:{
+                color: "#737682;"
             }
+        }
     },
     methods: {
+        InputStyleFun(){
+     
+            this.InputStyle={ 
+                border: '1px solid rgb(87, 20, 209)'
+            };
+            this.InputIconStyle={ 
+                color: 'rgb(87, 20, 209)'
+            };
+            },
+        InputStyleBlur(){
+
+            this.InputStyle={ 
+                border: '1px solid #e5e5e5'
+            };
+            this.InputIconStyle={ 
+            color: "#737682"
+            };
+        },
         no_tosearch(){
                 localStorage.setItem('nosearch',this.nosearch_data)
              this.$router.push({ name: 'homeitem'})
         }
-    }
+    },
+
 }
 </script>
 <style scoped>

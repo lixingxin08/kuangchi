@@ -15,7 +15,7 @@ const login = resolve => require(['@/components/login'], resolve);
 const register = resolve => require(['@/components/register'], resolve);
 const restePassword = resolve => require(['@/components/restePassword'], resolve);
 const personal = resolve => require(['@/components/personal'], resolve);
-const sevices = resolve => require(['@/components/termsOfSevices'], resolve);
+// const sevices = resolve => require(['@/components/termsOfSevices'], resolve);
 // import wallet from '@/components/wallet'
 // const wallet=resolve=>require(['@/components/wallet'],resolve);
 // import register from '@/components/register'
@@ -115,11 +115,11 @@ export default new Router({
       meta: {
       }
     },
-    {
-      path: '/sevices',
-      name: 'sevices',
-      component: sevices,
-    },
+    // {
+    //   path: '/sevices',
+    //   name: 'sevices',
+    //   component: sevices,
+    // },
     {
       path: '/nothing',
       name: 'nothing',

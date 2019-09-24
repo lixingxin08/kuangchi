@@ -25,9 +25,9 @@
             <span> {{$t("m.home.key2")}}</span>
           </div>
           <div>
-            <div class="go_search">
-              <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()">
-              <span class="el-icon-search search" @click="tosearch()"></span>
+            <div class="go_search" :style="InputStyle">
+              <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()" @focus="InputStyleFun()" @blur="InputStyleBlur()"> 
+              <span class="el-icon-search search" @click="tosearch()" :style="InputIconStyle"></span>
             </div>
           </div>
         </div>
@@ -62,8 +62,7 @@
             </div>
           </div>
           <div class="next" v-if="hometype==2">
-            <span @click="other_block(-1)">
-              <<{{$t( "m.home.key12")}}{{Number(target_data)-1}}</span>
+            <span @click="other_block(-1)">{{$t( "m.home.key12")}}{{Number(target_data)-1}}</span>
                 <span @click="other_block(1)">{{$t("m.home.key13")}}{{Number(target_data)+1}}>></span>
           </div>
           <div class="search_box block_bottom_title" v-show="hometype!==4">
@@ -148,10 +147,61 @@
 
         </div>
       </div>
-
+      <!-- 指导 -->
+      <el-dialog title="" :visible.sync="dialogTableVisible" width="4rem"  custom-class="dialogConTop" @close="closeLDialog">
+        <div class="beginTep01" v-if="step0">
+          <p class="step0_title">欢迎使用KIRINPOOL 2.0全新版本</p>
+          <p class="step0_text">请点击立即开始，感受全新挖矿体验</p>
+          <p class="step0_img">
+            <img src="../assets/img/step/img1.png" alt="">
+          </p>
+          <p class="stepo_btn" @click="stepo_btn()">立即开始</p>
+        </div>
+        <div class="beginTep02" v-if="step1">
+          <div class="step1_img"  style="background:#f8fafc" v-if="step00">
+            <p class="step1_title">下载一键升级工具</p>
+            <p class="step1_text">进入帮助中心->工具下载，选择一键升级工具下载</p>
+          </div>
+          <div class="step1_img"  style="background:#f8fafc" v-if="step01">
+            <p class="step1_title">一键升级工具使用</p>
+            <p class="step1_text">运行一键升级，点击“升级”搜寻网段内KIRINMINER</p>
+          </div>
+          <div class="step1_img"  style="background:#f8fafc" v-if="step02">
+            <p class="step1_title">确认KIRINMINER升级</p>
+            <p class="step1_text">矿机升级完成后，显示矿机的升级结果</p>
+          </div>
+          <div class="step1_img"  style="background:#f8fafc" v-if="step03">
+            <p class="step1_title">登录矿机进行配置</p>
+            <p class="step1_text">访问一台矿机IP    账户/密码：root/root</p>
+          </div>
+          <div class="step1_img"  style="background:#f8fafc" v-if="step04">
+            <p class="step1_title">为矿机配置矿池</p>
+            <p class="step1_text">前往帮助中心->工具下载，下载《矿机管理软件操作指南》</p>
+          </div>
+          <div style="margin-top:0.18rem">
+            <el-carousel :interval="5000" arrow="always" :autoplay="false" :loop="false" trigger="click"  @change="onChange">
+              <el-carousel-item style="margin-bottom:0.5rem">
+                <img src="../assets/img/step/step1.jpg" alt="">
+              </el-carousel-item>
+              <el-carousel-item>
+                  <img src="../assets/img/step/step2.jpg" alt="">
+              </el-carousel-item>
+              <el-carousel-item>
+                  <img src="../assets/img/step/step3.jpg" alt="">
+              </el-carousel-item>
+              <el-carousel-item>
+                <img src="../assets/img/step/step4.jpg" alt="">
+              </el-carousel-item>
+              <el-carousel-item>
+                <img src="../assets/img/step/step5.jpg" alt="">
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+          <div class="skip" v-if="SKIP1" @click="closeLDialog1">跳过了解</div>
+          <div class="skip" v-else @click="closeLDialog1">立即体验</div>
+        </div>
+      </el-dialog>
     </div>
-    
-  </div> 
   </div>
 </template>
 <script>
@@ -201,11 +251,31 @@ export default {
         gasPrice: 0
       },
       wallet_changes: false,
+      InputStyle:{
+         border: '1px solid #e5e5e5;'
+      },
+      InputIconStyle:{
+        color: "#737682;"
+      },
+      dialogTableVisible:true,
+      step0:true,
+      step1:false,
+      step00:false,
+      step01:false,
+      step02:false,
+      step03:false,
+      step04:false,
+      SKIP1:true,
     }
   },
   created() {
     if (getCookie("isLogin")) {
       // this.getAccountMill();
+    }
+    if(sessionStorage.getItem('offer')){
+      this.dialogTableVisible=false
+    }else{
+      this.dialogTableVisible=true
     }
   },
   mounted() {
@@ -220,7 +290,76 @@ export default {
     }
   },
   methods: {
-
+    closeLDialog(){
+      sessionStorage.setItem("offer",'1');
+    },
+    closeLDialog1(){
+      sessionStorage.setItem("offer",'1');
+      this.dialogTableVisible=false
+    },
+    onChange(index,a){
+      console.log(index);
+      if(index=='0'){
+        this.step00=true;
+        this.step01=false;
+        this.step02=false;
+        this.step03=false;
+        this.step04=false;
+        this.SKIP1=true;
+      }else if(index=='1'){
+        this.step00=false;
+        this.step01=true;
+        this.step02=false;
+        this.step03=false;
+        this.step04=false;
+        this.SKIP1=true;
+      }else if(index=='2'){
+        this.step00=false;
+        this.step01=false;
+        this.step02=true;
+        this.step03=false;
+        this.step04=false;
+        this.SKIP1=true;
+      }else if(index=='3'){
+        this.step00=false;
+        this.step01=false;
+        this.step02=false;
+        this.step03=true;
+        this.step04=false;
+        this.SKIP1=true;
+      }else if(index=='4'){
+        this.step00=false;
+        this.step01=false;
+        this.step02=false;
+        this.step03=false;
+        this.step04=true;
+        this.SKIP1=false;
+      }
+    },
+    indexChang(){
+    },
+    stepo_btn(){
+      this.step0=false;
+      this.step1=true;
+    },
+    InputStyleFun(){
+      console.log(1);
+      this.InputStyle={ 
+        border: '1px solid rgb(87, 20, 209)'
+      };
+      this.InputIconStyle={ 
+        color: 'rgb(87, 20, 209)'
+      };
+    },
+    InputStyleBlur(){
+      console.log(111)
+      this.InputStyle={ 
+         border: '1px solid #e5e5e5'
+      };
+      this.InputIconStyle={ 
+       color: "#737682"
+      };
+    },
     wallet_change(val) {
       this.wallet_changes = val,
         this.datas = []
@@ -392,7 +531,8 @@ export default {
           _that.homedatalist = JSON.parse(data).chainInfo
           _that.$set(_that.totalSize, 0, JSON.parse(data).chainCount || 0)
           if (JSON.parse(data).code !== 200) {
-            alert(JSON.parse(data).msg)
+            // alert(JSON.parse(data).msg)
+             _that.$message.error(JSON.parse(data).msg)
           }
           for (let i = 0; i < _that.homedatalist.length; i++) {
             _that.datas[i] = JSON.parse(_that.homedatalist[i])
@@ -437,6 +577,77 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.step0_title{
+   background-image: -webkit-linear-gradient(#001f80,#2f25ff,#00ffdd);
+  -webkit-background-clip:text; 
+  -webkit-text-fill-color:transparent; 
+  font-size: 0.12rem;
+  font-weight: 600
+}
+.step0_text{
+	font-family: MicrosoftYaHei;
+	font-size: 0.09rem;
+	font-weight: normal;
+	font-stretch: normal;
+	color: #333333;
+  text-align: center;
+  margin-top: 0.08rem;
+}
+.step0_img{
+  margin-top: 0.17rem;
+}
+.stepo_btn{
+  width: 0.6rem;
+  height: 0.2rem;
+  margin: auto;
+  margin-top: 0.27rem;
+	background-color: #2e73e8;
+	border-radius: 4px;
+  line-height: 0.2rem;
+  color: #f2f2f2;
+  cursor: pointer;
+  margin-bottom: 0.32rem;
+  font-size: 0.07rem;
+}
+.step1_title{
+  font-size: 0.12rem;
+}
+.step1_text{
+  padding-top: 0.08rem;
+  font-size: 0.09rem;
+  color: #2e73e8
+}
+.step1_img img{
+  margin-top: 0.2rem
+}
+.step1_img{
+  padding-bottom: 0.1rem;
+  padding-top: 0.15rem;
+}
+.skip{
+  position: absolute;
+  right: 81px;
+  bottom: 35px;
+  font-size: 15px;
+  z-index: 222;
+  color: rgb(46, 115, 232);
+  cursor: pointer;
+}
+.beginTep01{
+  padding-top: 50px;
+  padding-bottom: 30px;
+}
+.beginTep02{
+
+}
+
+
+
+
+
+
+
+
 
 h1,
 h2 {
@@ -461,103 +672,6 @@ li {
 .color1:hover{
     color: rgba(70,138,255,1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*顶部*/
 
@@ -607,10 +721,12 @@ li {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border: 1px solid #2e73e8;
+  border: 1px solid #e5e5e5;
   border-radius: 0.09rem;
 }
-
+.go_search:focus{
+  border: 1px solid rgb(87, 20, 209)
+}
 .search {
   width: 0.4rem;
   height: 0.18rem;
@@ -618,7 +734,8 @@ li {
   padding-right: 0.09rem;
   text-align: right;
   font-size: 0.08rem;
-  color: #2e73e8;
+  color: #737682;
+  cursor: pointer;
 }
 
 .search_inp {
@@ -1051,8 +1168,8 @@ input:-ms-input-placeholder {
   font-size: 14px;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-  padding: 0 0.15rem;
+  align-items: left;
+  padding: 0 0.2rem;
 }
 
 .header-ul li {
@@ -1062,6 +1179,7 @@ input:-ms-input-placeholder {
   color: rgba(0, 0, 0, 0.63921568627451);
   font-weight: 700;
   font-style: normal;
+  text-align: left;
 }
 
 .center-ul {
@@ -1069,7 +1187,7 @@ input:-ms-input-placeholder {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 0.15rem;
+  padding: 0 0.2rem;
   border-bottom: 1px solid #f2f2f2;
 }
 
@@ -1077,6 +1195,7 @@ input:-ms-input-placeholder {
   height: 0.25rem;
   font-size: 14px;
   line-height: 0.25rem;
+  text-align: left
 }
 
 .active_color {
@@ -1105,7 +1224,7 @@ input:-ms-input-placeholder {
 }
 
 .li3 {
-  flex: 4;
+  flex: 6;
   text-overflow: ellipsis;
   overflow: hidden;
   color: #2e73e8;
@@ -1119,7 +1238,7 @@ input:-ms-input-placeholder {
 }
 
 .li5 {
-  flex: 4;
+  flex: 2;
   text-overflow: ellipsis;
   overflow: hidden;
 }
@@ -1128,7 +1247,7 @@ input:-ms-input-placeholder {
   flex: 2;
   text-overflow: ellipsis;
   overflow: hidden;
-  text-align: right;
+  text-align: right!important;
 }
 
 .li_other {
