@@ -113,7 +113,7 @@
                       <el-dropdown-item class="user_bottom">
                         <li class="user_b_main">
                            <router-link to="/personal">
-                              <span class="text_color">{{$t("m.header.key30")}}</span>
+                              <span class="text_color user_b_main_item">{{$t("m.header.key30")}}</span>
                             </router-link>
                           <span class="user_b_main_item">
                             <router-link to="/sublist">
@@ -173,7 +173,7 @@
 import Qs from "qs";
 import bus from "../assets/eventBus";
 import { setCookie, getCookie, delCookie } from "../assets/cookie";
-import { HappyScroll } from "vue-happy-scroll";
+// import { HappyScroll } from "vue-happy-scroll";
 export default {
   inject: ["reload", "reloadTwo"],
   data() {
@@ -204,6 +204,7 @@ export default {
       subnameList_item: [],
       subnameList_i: [],
       timer: null,
+      timer2:null
     };
   },
   created() {
@@ -214,13 +215,15 @@ export default {
       this.lang_title='中文'
     }if (localStorage.getItem("lang")=='ko') {
       this.lang_title='한글'
-    }
-    console.log(localStorage.getItem("isLogin"),typeof(localStorage.getItem("isLogin")),99999999);
-    
+    }    
      if(localStorage.getItem("isLogin")){
         this.getAccountInfo2()
           this.getsubusername()    
     this.isLogin = localStorage.getItem("isLogin");
+        let _that = this;
+    this.timer = setInterval(function() {
+      _that.getsubusername();
+    }, 1800000);
      }   
     localStorage.setItem("subusername", this.head_username);
     var vueThis = this;
@@ -236,13 +239,8 @@ export default {
     bus.$on("payfee", function(res) {
       vueThis.payfee = res;
     });
-
   },
   mounted() {
-    let _that = this;
-    this.timer = setInterval(function() {
-      _that.getsubusername();
-    }, 300000);
   },
   beforeDestroy() {
     this.timer = null;
@@ -312,12 +310,12 @@ export default {
               if(JSON.parse(data).code==1038){
                 alert("平台信息有误")
               }if(JSON.parse(data).code==1068){ 
+                    if (_that.isLogin) {
+                       _that.$message.error(_that.$t("m.account.key2")); 
+                    }                  
                 _that.setCookie('token',null)
                  _that.setCookie('username',null)
-                 _that.isLogin=false
-                   _that.$message.error(_that.$t("m.account.key2")); 
-                   console.log(_that.$route,99999);
-                   
+                 _that.isLogin=false     
                  if (_that.$route.path!=='/home'&& _that.$route.path!=='/download'&&_that.$route.path!=='/register'&&_that.$route.path!=='/restePassword'){         
                     _that.$router.push({name:'login'})  
                     localStorage.removeItem("isLogin")    
@@ -420,7 +418,7 @@ export default {
         this.lang_title = "한글";
         // document.title = "Backend Management System"
       }
-      this.reloadTwo();
+      this.$router.go(0);
     },
     //计算时间
     adTime(a) {
@@ -472,10 +470,11 @@ export default {
             // console.log(this.subnameparams);
         this.$ajax('post', this.GLOBAL.baseUrl + 'account/tuichu',this.subnameparams, function(data) {
               if(JSON.parse(data).code==1038){
-                alert("平台信息有误")
+               _that.$message.error(_that.$t("m.account.key1"));
+
               }
                if(JSON.parse(data).code==1039){
-                alert("手机号未注册")
+                  _that.$message.error(_that.$t("m.setting.key49"));
               }if(JSON.parse(data).code==1046){
              _that.isLogin=false
                 _that.$router.push({ name: "home" });                   
@@ -492,8 +491,7 @@ export default {
                  _that.isLogin=false
                   localStorage.removeItem('username')
                 localStorage.removeItem("change");
-                localStorage.removeItem("subusername");         
-                 
+                localStorage.removeItem("subusername");                     
               }
                 }, function(error) {
                     // console.log(error)
@@ -518,12 +516,17 @@ export default {
           vueThis.payfee = res;
         });
       }if(from.name=='login'){ 
-            this.head_username = localStorage.getItem("username");
+        if ( localStorage.getItem("isLogin")) {
+                      this.head_username = localStorage.getItem("username");
              this.subnameparams.token=this.getCookie('token')
          this.subnameparams.username=this.getCookie('username') 
            this.isLogin = localStorage.getItem("isLogin");
         this.getsubusername()
       this.getAccountInfo2()}
+        }
+      if (to.name=='login'&&to.query.isLogin==false) {
+            this.isLogin=false           
+      }
     },  
   }
 };
@@ -540,6 +543,7 @@ ul {
 
 .center_box {
   width: 6rem;
+  min-width: 650px;
   margin: 0 auto;
 }
 
@@ -559,9 +563,26 @@ ul {
   cursor: pointer;
 }
 .langbox_item{
-  width: 30%;
-  display: flex;
+  min-width: 30%;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: flex-start;
+  -webkit-justify-content: flex-start;
+-moz-justify-content: flex-start;
+-ms-justify-content: flex-start;
+-o-justify-content: flex-start;
+justify-content: flex-start;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 .logo-box img {
@@ -569,7 +590,6 @@ ul {
   height: 0.14rem;
 }
 #lang-span{
-  margin-left: 0.05rem;
   min-width: 10px;
 }
 .lang-box {
@@ -577,29 +597,77 @@ ul {
   height: 0.35rem;
   line-height: 0.35rem;
   padding: 0.15rem;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+  -webkit-justify-content: space-between;
+-moz-justify-content: space-between;
+-ms-justify-content: space-between;
+-o-justify-content: space-between;
+justify-content: space-between;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 .nav_mained{
-  min-width: 400px;
+  min-width: 410px;
 }
 .lang-box_main {
   min-width: 1.2rem;
   height: 0.35rem;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+  -webkit-justify-content: space-between;
+-moz-justify-content: space-between;
+-ms-justify-content: space-between;
+-o-justify-content: space-between;
+justify-content: space-between;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
   padding-top: 0.04rem;
 }
 
 .lang-box_mained {
+  min-width: 250px;
   justify-content: space-around;
+  -webkit-justify-content: space-around;
+-moz-justify-content: space-around;
+-ms-justify-content: space-around;
+-o-justify-content: space-around;
+justify-content: space-around;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 
 .register_li {
   width: 0.35rem;
+  min-width: 49px;
   height: 0.14rem;
   border: 1px solid #2e73e8;
   color: #fff;
@@ -612,8 +680,19 @@ ul {
 }
 .header-box-ul {
   width: 4.69rem;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+ -webkit-justify-content: space-between;
+-moz-justify-content: space-between;
+-ms-justify-content: space-between;
+-o-justify-content: space-between;
+justify-content: space-between;
+ 
   font-family: "MicrosoftYaHei";
   font-size: 6px;
   font-weight: normal;
@@ -625,18 +704,51 @@ ul {
 }
 
 .nav-box-parent {
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: center;
+
+-webkit-box-pack: center;
+/* 12版 */
+-webkit-justify-content: center;
+-moz-justify-content: center;
+-ms-justify-content: center;
+-o-justify-content: center;
+justify-content: center;
+
   font-size: 0.07rem;
   background-color: #00001e;
 }
 
 .nav_box {
   width: 100%;
-  display: flex;
+  min-width: 650px;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   height: 0.35rem;
+  
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
   justify-content: space-between;
+ -webkit-justify-content:  space-between;
+-moz-justify-content:  space-between;
+-ms-justify-content:  space-between;
+-o-justify-content:  space-between;
+justify-content:  space-between;
+ 
   color: #fff;
 }
 
@@ -646,23 +758,69 @@ ul {
 }
 
 .nav-div ul {
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+  -webkit-justify-content:  space-between;
+-moz-justify-content:  space-between;
+-ms-justify-content:  space-between;
+-o-justify-content:  space-between;
+justify-content:  space-between;
+
   height: 100%;
+  
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 
 .lang_left {
   width: 100%;
-  display: flex;
-  justify-content: space-around;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex;  
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;            
   align-items: center;
   text-overflow: ellipsis;
 }
 
 .lang_right {
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: flex-start;
+ -webkit-justify-content:  flex-start;
+-moz-justify-content: flex-start;
+-ms-justify-content: flex-start;
+-o-justify-content: flex-start;
+justify-content: flex-start;
+ 
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
   font-size: 0.06rem;
 }
@@ -670,7 +828,7 @@ ul {
 .switch-lang-img {
   width:16px;
   height:16px;
-  margin-right:2px;
+  margin-right:6px;
 }
 
 .el-dropdown-menu {
@@ -733,12 +891,29 @@ ul {
 
 .user_b_main {
   width: 100%;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+-webkit-justify-content: space-between;
+-moz-justify-content: space-between;
+-ms-justify-content: space-between;
+-o-justify-content: space-between;
+justify-content: space-between;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 .user_b_main_item{
-  margin-right: 0.1rem;
+  margin-right: 0.05rem;
 }
 .user_b_main_item:hover {
   color: #2e73e8;
@@ -751,8 +926,25 @@ ul {
 
 .user_item {
   height: 0.18rem;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
   justify-content: space-between;
+  -webkit-justify-content: space-between;
+-moz-justify-content: space-between;
+-ms-justify-content: space-between;
+-o-justify-content: space-between;
+justify-content: space-between;
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
   color: #fff;
   border-bottom: 1px solid #434343;
@@ -794,7 +986,19 @@ ul {
 .nav-div-ul a {
   color: #ffffff;
   height: 0.35rem;
-  display: flex;
+display: box;               /* OLD - Android 4.4- */
+display: -webkit-box;       /* OLD - iOS 6-, Safari 3.1-6 */
+display: -moz-box;          /* OLD - Firefox 19- (buggy but mostly works) */
+display: -ms-flexbox;       /* TWEENER - IE 10 */
+display: -webkit-flex;      /* NEW - Chrome */
+display: flex; 
+
+-webkit-box-align: center;
+/* 12版 */
+-webkit-align-items: center;
+-moz-align-items: center;
+-ms-align-items: center;
+-o-align-items: center;
   align-items: center;
 }
 

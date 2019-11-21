@@ -95,10 +95,10 @@
         <div class="flex_c remove_son_c_item">
           <span>{{$t("m.sonset.key10")}}</span>
           <input
-            type="text"
+            type="password"
             class="add_inp"
             :placeholder="sonset_inp_1"
-            v-model="delete_params.paypassword"
+            v-model="delete_params.paypassword" 
           />
         </div>
         <div class="flex_c remove_son_c_item">
@@ -127,10 +127,11 @@
       <div class="remove_son_c">
         <div class="flex_c remove_son_c_item">
           <input
-            type="text"
+            type="password"
             class="add_inp"
             :placeholder="sonset_inp_1"
             v-model="address_paramgs.paypassword"
+            autocomplete='new-password'
           />
         </div>
         <div class="flex_c remove_son_c_item">
@@ -220,23 +221,11 @@ export default {
         msg: "success",
         subList: [
           {
-            name: "lilinskt1",
-            address: "0x90990117dbaac41df782cb712df4155c58e90a6c",
-            workerNumber: 0,
-            createTime: "1566369359"
-          },
-          {
-            name: "asdjkl",
+            name: "",
             address: "",
-            workerNumber: 0,
-            createTime: "1566477212000"
+            workerNumber: "",
+            createTime: ""
           },
-          {
-            name: "asdjkl3",
-            address: "",
-            workerNumber: 0,
-            createTime: "1566477238000"
-          }
         ]
       },
       timer: null
@@ -245,8 +234,8 @@ export default {
   created() {
     this.get_sonlist();
     this.add_sons.username = localStorage.getItem("subusername");
-    this.setGoogleAuth = localStorage.getItem("setGoogleAuth");
-    this.setPaymentCode = localStorage.getItem("setPaymentCode");
+    this.setGoogleAuth = JSON.parse(localStorage.getItem("personal_msg")).setGoogleAuth;
+    this.setPaymentCode = JSON.parse(localStorage.getItem("personal_msg")).setPaymentCode;
     let _that = this;
      if (localStorage.getItem("subnameList") == null||localStorage.getItem("subnameList") < 1) {
      this.subListtype=true
@@ -283,6 +272,21 @@ export default {
         this.GLOBAL.baseUrl + "v2/accountSubList",
         this.subList_params,
         function(res) {
+           if(JSON.parse(res).code==1102){ 
+              _that.$message.error(_that.$t("m.account.key2"));    
+                //     localStorage.removeItem("isLogin")              
+                // _that.setCookie('token',null)
+                //  _that.setCookie('username',null)
+                  //  _that.$router.push({name:'login'})
+                  _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                localStorage.removeItem('token')
+                 localStorage.removeItem('isLogin')
+                  localStorage.removeItem('username')
+                localStorage.removeItem("change");
+                localStorage.removeItem("subusername");      
+                   _that.$router.push({name:'login',query:{isLogin:false}})
+              }
           _that.loading=false;
           console.log(res, "子账户管理页面");
           _that.sonset_list = JSON.parse(res).subList;
@@ -316,6 +320,24 @@ export default {
         function(data) {
           _that.delete_params.paypassword = "";
           _that.delete_params.code = "";
+         if (JSON.parse(data).code == 1001) {
+             _that.$message.error(_that.$t("m.noson.key3"));
+            return;
+          }if (JSON.parse(data).code == 1002) {
+               console.log(JSON.parse(data).code,5555);
+            _that.address_paramgs.address = "";
+             _that.$message.error(_that.$t("m.account.key100"));
+            return;
+          }if (JSON.parse(data).code == 1003) {
+             _that.$message.error(_that.$t("m.sonset.key13"),_that.$t("m.sonset.key11"));
+            return;
+          }if (JSON.parse(data).code == 1004) {
+             _that.$message.error(_that.$t("m.wallet.key34"));
+            return;
+          }if (JSON.parse(data).code == 1005) {
+             _that.$message.error(_that.$t("m.wallet.key38"));
+            return;
+          } 
           if (JSON.parse(data).code !== 200) {
             //    _that.$set(_that.tiptype, 0, true);
             // _that.$set(
@@ -333,14 +355,15 @@ export default {
             
           }
           localStorage.removeItem("subusername");
-          console.log(_that.sonset_list.length);
           // _that.$set(_that.tiptype, 0, true);
           // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
           // _that.$set(_that.tiptype, 0, true);
           _that.$message.success(_that.$t("m.account.key95"));
           _that.get_sonlist();
+         
           _that.sonset_list.splice(_that.item_index, 1);
           // _that.$router.go(0);
+           _that.$parent.$children[0].getsubusername()
         },
         function(error) {
           console.log(error);
@@ -350,12 +373,24 @@ export default {
       );
     },
     delete_item(indexs) {
+      if (this.setPaymentCode==false) {
+          this.$message.error(this.$t("m.wallet.key43"));  
+          return    
+      }
+    //  if (this.setPaymentCode=='false') {
+    //       this.$message.error(this.$t("m.wallet.key43"));  
+    //       return    
+    //   } 
       this.item_index = indexs;
       this.pop_type = 2;
       // this.sonset_list.splice(indexs, 1)
     },
     //编辑
     edit_sons(indexs) {
+       if (this.setPaymentCode==false) {
+          this.$message.error(this.$t("m.wallet.key43"));  
+          return    
+      }
       let _that = this;
       _that.address_paramgs.address = "";
       _that.edit_son = indexs;
@@ -363,6 +398,7 @@ export default {
     },
     //编辑地址
     address_edit() {
+
       let _that = this;
       console.log();
       
@@ -410,8 +446,28 @@ export default {
           _that.address_paramgs.code = "";
           console.log(JSON.parse(data).code);
           
-          if (JSON.parse(data).code !== 200) {
+      if (JSON.parse(data).code == 1001) {
+             _that.$message.error(_that.$t("m.wallet.key17"));
+            return;
+          }if (JSON.parse(data).code == 1002) {
+            _that.address_paramgs.address = "";
+             _that.$message.error(_that.$t("m.account.key100"));
+            return;
+          }if (JSON.parse(data).code == 1003) {
                console.log(JSON.parse(data).code,5555);
+            _that.address_paramgs.address = "";
+             _that.$message.error(_that.$t("m.sonset.key13"),_that.$t("m.sonset.key11"));
+            return;
+          }if (JSON.parse(data).code == 1004) {
+             _that.$message.error(_that.$t("m.wallet.key34"));
+            return;
+          }if (JSON.parse(data).code == 1005) {
+             _that.$message.error(_that.$t("m.wallet.key38"));
+            return;
+          } if (JSON.parse(data).code == 1006) {
+             _that.$message.error(_that.$t("m.noson.key3"));
+            return;
+          }  if (JSON.parse(data).code !== 200) {
             _that.address_paramgs.address = "";
             // _that.$set(
             //   _that.tips_data,
@@ -439,7 +495,7 @@ export default {
     createdson() {
       let _that = this;
       this.$set(_that.tiptype, 0, false);
-      if (!this.verifyUsername(this.add_sons.subusername)) {
+      if (!this.verifyUsername4(this.add_sons.subusername)) {
         this.add_sons.subusername = "";
         return _that.$message.error(_that.$t("m.sonset.key9"));
       }
@@ -452,7 +508,17 @@ export default {
         "post",
         this.GLOBAL.baseUrl + "v2/createAccountSub",
         this.add_sons,
-        function(data) {
+        function(data) 
+        {
+          if (JSON.parse(data).code == 1001) {
+           // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+           _that.$message.error(_that.$t("m.account.key78"));
+            return;
+          }if (JSON.parse(data).code == 1002) {
+           // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
+           _that.$message.error(_that.$t("m.upgrade.key20"));
+            return;
+          }
           if (JSON.parse(data).code !== 200) {
            // _that.$set(_that.tips_data, 0, JSON.parse(data).msg);
            _that.$message.error(_that.$t("m.account.key97"));
@@ -467,6 +533,7 @@ export default {
           _that.get_sonlist();
           _that.add_sons.subusername = "";
           // _that.$router.go(0);
+           _that.$parent.$children[0].getsubusername()
         },
         function(error) {
           console.log(error);
@@ -551,7 +618,8 @@ export default {
 }
 
 .sonset {
-  min-height: 3.14rem;
+  min-height: 3.26rem;
+  padding-bottom: 0.56rem;
 }
 
 .flex_c {
@@ -593,7 +661,9 @@ export default {
   color: #2e73e8;
   text-align: center;
 }
-
+.sonset_main{
+  min-width: 2.25rem;
+}
 .sonset_main_item {
   height: 0.25rem;
   padding-left: 0.15rem;
@@ -602,6 +672,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   text-align: left;
+  border-bottom: 1px solid #ebebeb
 }
 
 .sonset_m_head {
@@ -609,26 +680,26 @@ export default {
 }
 
 .sonset_list1 {
-  flex: 2;
+  flex: 3;
   font-size: 12px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
 .sonset_list2 {
-  flex: 2;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.sonset_list3 {
   flex: 4;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
+.sonset_list3 {
+  flex: 5;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .sonset_list4 {
-  flex: 8;
+  flex:9;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 0.15rem;
@@ -642,7 +713,7 @@ export default {
 }
 
 .sonset_list6 {
-  flex: 1;
+  flex: 2;
   cursor: pointer;
   text-overflow: ellipsis;
   overflow: hidden;

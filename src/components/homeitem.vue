@@ -1,7 +1,9 @@
 <template>
     <div class="home">
         <div class="home_bcg">
-            <img src="../assets/img/banner.jpg" alt="">
+               <div v-if="lang=='zh'"> <img src="../assets/img/banner.jpg" alt=""></div>
+     <div v-if="lang=='en'"> <img src="../assets/img/banner-en.jpg" alt=""></div>
+     <div v-if="lang=='ko'"> <img src="../assets/img/banner-kr.jpg" alt=""></div>
         </div>
         <div class="home_tips" v-if="hometype==1">
             <div class="center-box">
@@ -34,17 +36,17 @@
             </div>
         </div>
         <!--首页底部-->
-        <div class="center-box">
+        <div class="center-box block_bottom">
             <!--块详情-->
             <div class="block_detail">
                 <div class="block_detail_top_main" v-if="hometype!==1">
                     <div class="block_detail_top">
-                        <span v-if="hometype!==4"> {{$t("m.home.key9")}}1{{$t("m.home.key10")}}:{{user_detail_data[0][0]}}</span>
-                        <span v-if="hometype==4"> {{$t("m.home.key9")}}1{{$t("m.home.key10")}}:{{user_detail_data[1][0]}}</span>
+                        <span v-if="hometype!==4"> {{$t("m.home.key9")}}1{{$t("m.home.key10")}}: {{user_detail_data[0][0]}}</span>
+                        <span v-if="hometype==4"> {{$t("m.home.key9")}}1{{$t("m.home.key10")}}: {{user_detail_data[1][0]}}</span>
                     </div>
                     <div class="block_center">
                         <div class="block_c_t" :class="[this.hometype==3?'bgc2':'',this.hometype==4?'bgc3':'']">
-                            <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}:<span v-show="hometype!==4">{{user_detail_data[0][index]}}</span>
+                            <span v-for="(item,index) in block_top_data[0]" :key="index">{{item}}: <span v-show="hometype!==4">{{user_detail_data[0][index]}}</span>
                             <span v-show="hometype==4" class="color1" @click="item_search(user_detail_data[0][[0]])">{{user_detail_data[0][index]}}</span> 
                             </span>
                         </div>
@@ -66,13 +68,13 @@
                     </div>
                     <div class="next" v-if="hometype==2">
                         <span @click="other_block(-1)">
-                            <<{{$t( "m.home.key12")}}{{Number(target_data)-1}}</span>
-                                <span @click="other_block(1)">{{$t("m.home.key13")}}{{Number(target_data)+1}}>></span>
+                            <<{{$t( "m.home.key12")}} {{comdify(Number(target_data)-1)}}</span>
+                                <span @click="other_block(1)">{{$t("m.home.key13")}} {{comdify(Number(target_data)+1)}}>></span>
                     </div>
                     <div class="search_box block_bottom_title" v-show="hometype!==4">
                         <div class="bottom-box-text">
                             <div class="bottom-box-text_l"></div>
-                            <div class="wallet_change" v-if="hometype!==3">{{$t("m.home.key14")}}:{{comdify(datas.length)}}</div>
+                            <div class="wallet_change" v-if="hometype!==3">{{$t("m.home.key14")}}: {{comdify(datas.length)}}</div>
                             <div class="wallet_change" v-if="hometype==3">
                                 <span @click="wallet_change(true)" class="wallet_change_item1" :class="wallet_changes?'color1':''"> {{$t("m.home.key14")}}</span>
                                 <span @click="wallet_change(false)" :class="wallet_changes?'':'color1'"> {{$t("m.home.key32")}}</span>
@@ -215,14 +217,15 @@ export default {
         }
     },
     created() {
+          this.lang=localStorage.getItem('lang')||'zh'
         if (localStorage.getItem('search_data') !== '') {
             this.search_data = localStorage.getItem('search_data')
             localStorage.removeItem('search_data')
         }
-        if (localStorage.getItem('nosearch') !== '') {
-            this.search_data = localStorage.getItem('nosearch')
-            localStorage.setItem('nosearch', '')
-        }
+        // if (localStorage.getItem('nosearch') !== '') {
+        //     this.search_data = localStorage.getItem('nosearch')
+        //     localStorage.setItem('nosearch', '')
+        // }
         this.sethomedata()
         this.tosearch()
     },
@@ -230,10 +233,10 @@ export default {
         InputStyleFun(){
             console.log(1);
             this.InputStyle={ 
-                border: '1px solid rgb(87, 20, 209)'
+                border: '1px solid #2e73e8'
             };
             this.InputIconStyle={ 
-                color: 'rgb(87, 20, 209)'
+                color: '#2e73e8'
             };
             },
             InputStyleBlur(){
@@ -248,7 +251,7 @@ export default {
         wallet_change(val) {
             let _that = this
             this.wallet_changes = val,
-                this.datas = []
+            this.datas = []
             console.log(this.wallet_changes, 'sasdas1111')
             if (this.wallet_changes) {
                 _that.datas = []
@@ -319,7 +322,7 @@ export default {
             // this.$router.push({ name: 'homeitem',query:{t:Math.random()}})
             let _that = this;
             this.datas = []
-            console.log(this.search_data)
+            console.log(this.search_data,999999)
             if (this.search_data == null) {
                 this.$router.push({ name: 'home' })
             }
@@ -345,7 +348,43 @@ export default {
                 [this.$t("m.home.key22"), this.$t("m.home.key23"), '']]
                 console.log(this.search_data)
                 this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchTxInfo', { param: this.search_data }, function(data) {
+                    if (JSON.parse(data).code == 10004) {   
+                         _that.hometype = 2      
+                _that.target_data = _that.search_data
+                _that.blockListObj.param = _that.search_data;
+
+                _that.homedata.pagination = [_that.$t("m.myMill.key27"), _that.$t("m.home.key22"), _that.$t("m.home.key23"), _that.$t("m.home.key24"), _that.$t("m.home.key25")]
+                _that.block_top_data = [[_that.$t("m.myMill.key26"), _that.$t("m.home.key16")],
+                [_that.$t("m.myMill.key10"), _that.$t("m.home.key18"), _that.$t("m.home.key6"), _that.$t("m.home.key35")],
+                [_that.$t("m.home.key17"), _that.$t("m.home.key14"), _that.$t("m.home.key21")]]
+                console.log(2222222)
+                _that.$ajax('post', _that.GLOBAL.baseUrl + 'v2/searchBlockInfo', _that.blockListObj, function(data) {
+                    console.log(JSON.parse(data))
                     if (JSON.parse(data).code !== 200) {
+                          localStorage.setItem('search_data',_that.search_data)
+                        _that.$router.push({ name: 'nothing' })
+                        return
+                    }
+                    let blockInfo = JSON.parse(data).blockInfo[0]
+                    _that.$set(_that.user_detail_data, 0, [_that.comdify(blockInfo.number), blockInfo.hash])
+                    _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + ' Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)])
+                    _that.$set(_that.user_detail_data, 2, [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner])
+                    _that.datas = JSON.parse(data).TxArray
+                    console.log(_that.datas,'11122')
+                    _that.$set(_that.totalSize, 0, JSON.parse(data).TxArray.length)
+                    if (JSON.parse(data).TxArray.length < 1) {
+                        _that.no_list = true
+                    } else {
+                        _that.no_list = false
+                    }
+                  
+                }, function(error) {
+                    console.log(error)
+                })
+                        return
+                    }
+                    if (JSON.parse(data).code !== 200) {
+                          localStorage.setItem('search_data',_that.search_data)
                         _that.$router.push({ name: 'nothing' })
                         return
                     }
@@ -354,7 +393,7 @@ export default {
                     _that.$set(_that.user_detail_data, 1, [blockInfo.hash, ((blockInfo.gasPrice / Math.pow(10, 18)) * blockInfo.gas).toFixed(8), (blockInfo.value / Math.pow(10, 18)).toFixed(8)])
 
                     _that.$set(_that.user_detail_data, 2, [blockInfo.fromAddress, blockInfo.toAddress, ''])
-
+                     
                 }, function(error) {
                     console.log(error)
                 })
@@ -369,12 +408,11 @@ export default {
                 console.log(this.blockListObj, ' this.blockListObj')
                 this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchMinerInfo', this.blockListObj, function(data) {
                     if (JSON.parse(data).code !== 200) {
+                          localStorage.setItem('search_data',_that.search_data)
                         _that.$router.push({ name: 'nothing' })
                         return
                     }
-                    _that.totalSize[0] = JSON.parse(data).blockCount
-                    console.log(_that.wallet_changes, 'totalSizesss')
-
+                    _that.totalSize[0] = JSON.parse(data).blockCount;
                     let balance = Number(JSON.parse(data).balance) / Math.pow(10, 18);
                     _that.$set(_that.user_detail_data, 0, [_that.search_data])
                     _that.$set(_that.user_detail_data, 1, [_that.format(balance, 8), _that.comdify(JSON.parse(data).TxCount)])
@@ -404,7 +442,9 @@ export default {
                         for (let i = 0; i < _that.homedatalist.transcationArray.length; i++) {
                             _that.$set(_that.datas, i, _that.homedatalist.transcationArray[i])
                         }
+                       
                     }
+                 
                 }, function(error) {
                     console.log(error)
                 })
@@ -414,6 +454,7 @@ export default {
                 _that.search_data = Number(_that.search_data)
                 _that.target_data = _that.search_data
                 _that.blockListObj.param = this.search_data;
+
                 this.homedata.pagination = [this.$t("m.myMill.key27"), this.$t("m.home.key22"), this.$t("m.home.key23"), this.$t("m.home.key24"), this.$t("m.home.key25")]
                 this.block_top_data = [[this.$t("m.myMill.key26"), this.$t("m.home.key16")],
                 [this.$t("m.myMill.key10"), this.$t("m.home.key18"), this.$t("m.home.key6"), this.$t("m.home.key35")],
@@ -422,12 +463,13 @@ export default {
                 this.$ajax('post', this.GLOBAL.baseUrl + 'v2/searchBlockInfo', this.blockListObj, function(data) {
                     console.log(JSON.parse(data))
                     if (JSON.parse(data).code !== 200) {
+                          localStorage.setItem('search_data',_that.search_data)
                         _that.$router.push({ name: 'nothing' })
                         return
                     }
                     let blockInfo = JSON.parse(data).blockInfo[0]
                     _that.$set(_that.user_detail_data, 0, [_that.comdify(blockInfo.number), blockInfo.hash])
-                    _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + 'Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)])
+                    _that.$set(_that.user_detail_data, 1, [_that.timestampToTime(blockInfo.timestamp), blockInfo.size + ' Bytes', _that.format(blockInfo.MinerblockRewad, 8), _that.format(blockInfo.MinerTxReward,8)])
                     _that.$set(_that.user_detail_data, 2, [_that.changpow(blockInfo.difficulty), _that.comdify(blockInfo.transactionNumber), blockInfo.miner])
                     _that.datas = JSON.parse(data).TxArray
                     console.log(_that.datas,'11122')
@@ -437,6 +479,7 @@ export default {
                     } else {
                         _that.no_list = false
                     }
+                  
                 }, function(error) {
                     console.log(error)
                 })
@@ -464,6 +507,7 @@ export default {
             }
             else {
                 _that.$message.error(_that.$t("m.account.key3"));
+                localStorage.setItem('search_data',_that.search_data)
                 _that.search_data = ''
                 _that.$router.push({ name: 'nothing' })
                 return
@@ -710,27 +754,44 @@ li {
 }
 
 .go_search {
-    width: 1.9rem;
+    width: 2rem;
     height: 0.18rem;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    border: 0.01rem solid #2e73e8;
+    border: 1px solid #e5e5e5;
+        box-sizing: border-box;
     border-radius: 0.09rem;
 }
-
-.search {
+.go_search:hover{
+  border: 1px solid #2e73e8;
+}
+.go_search:hover .search{
     width: 0.4rem;
     height: 0.18rem;
     line-height: 0.18rem;
     padding-right: 0.09rem;
     text-align: right;
-    font-size: 0.08rem;
+    font-size: 0.08rem;  
     color: #2e73e8;
 }
+.search {
+    width: 0.3rem;
+    height: 0.18rem;
+    line-height: 0.18rem;
+    padding-right: 0.09rem;
+    text-align: right;
+    font-size: 0.08rem;
 
+}
+.search:hover{
+    color: #2e73e8;
+}
+.center-bottom-box{
+       box-shadow: 0px 0px 0.08rem 0.02rem rgba(0, 0, 0, 0.06);
+}
 .search_inp {
-    width: 1.5rem;
+    width: 1.8rem;
     font-size: 14px;
     border: none;
     font-weight: normal;
@@ -990,7 +1051,7 @@ input:-ms-input-placeholder {
 
 .center-box {
     width: 6rem;
-    min-width: 810px;
+    min-width: 750px;
     margin: 0 auto;
 }
 
@@ -1272,7 +1333,7 @@ input:-ms-input-placeholder {
     flex: 4;
     text-overflow: ellipsis;
     overflow: hidden;
-    color: #2e73e8;
+    /* color: #2e73e8; */
     cursor: pointer;
 }
 
@@ -1425,8 +1486,11 @@ input:-ms-input-placeholder {
 
 .page-box {
     text-align: right;
-    margin-top: 0.3rem;
-    margin-bottom: 0.6rem;
+    margin-top: 0.2rem;
+    padding-bottom: 0.1rem
+}
+.block_bottom{
+    margin-bottom: 0.6rem
 }
 
 
@@ -1569,6 +1633,7 @@ input:-ms-input-placeholder {
 .block_center {
     border: 1px solid #f8fafc;
     box-sizing: border-box;
+    box-shadow: 0px 0px 0.08rem 0.02rem rgba(0, 0, 0, 0.06);
 }
 
 .block_c_t {
@@ -1592,13 +1657,13 @@ input:-ms-input-placeholder {
 }
 
 .block_c_main {
-    height: 0.6rem;
+    height: 0.4rem;
     padding: 0 0.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-overflow: ellipsis;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.1rem;
 }
 
 .block_c_main_item {

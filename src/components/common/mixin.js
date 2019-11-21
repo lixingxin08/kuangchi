@@ -25,6 +25,7 @@ const Ajax=function(type, url, data, success, failed){
         xhr.open('POST', url, true);
         // 如果需要像 html 表单那样 POST 数据，请使用 setRequestHeader() 来添加 http 头。
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("token", localStorage.getItem('token'));
         xhr.send(data);
     }
  

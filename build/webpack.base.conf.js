@@ -13,6 +13,7 @@ function resolve (dir) {
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
+
   entry: {
     app: ["babel-polyfill", "./src/main.js"]
   },
@@ -31,6 +32,7 @@ module.exports = {
        'vendor': resolve('src/vendor'),
     }
   },
+
   module: {
     rules: [
       {

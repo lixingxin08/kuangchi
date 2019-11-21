@@ -9,8 +9,8 @@
                     <span> {{$t("m.home.key2")}}</span>
                 </div>
                 <div>
-                    <div class="go_search" :style="InputStyle">
-                        <input type="text" class="search_inp" :placeholder="placehoder" v-model="nosearch_data" @keydown="btKeyUp" @keyup.enter="no_tosearch()"  @focus="InputStyleFun()" @blur="InputStyleBlur()">
+                    <div class="go_search">
+                        <input type="text" class="search_inp" :placeholder="placehoder" v-model="searchdata" @keydown="btKeyUp" @keyup.enter="no_tosearch()"  @focus="InputStyleFun()" @blur="InputStyleBlur()">
                         <span class="el-icon-search search" @click="no_tosearch()" :style="InputIconStyle"></span>
                     </div>
                 </div>
@@ -30,19 +30,20 @@
 export default {
     data() {
         return{
-            nosearch_data:localStorage.getItem('nosearch'),
+            nosearch_data:localStorage.getItem('search_data'),
+            searchdata:'',
             placehoder: this.$t("m.home.key8"),
             InputStyle:{
                 border: '1px solid #e5e5e5;'
             },
             InputIconStyle:{
                 color: "#737682;"
-            }
+            },
+            timer:""
         }
     },
     methods: {
-        InputStyleFun(){
-     
+        InputStyleFun(){  
             this.InputStyle={ 
                 border: '1px solid rgb(87, 20, 209)'
             };
@@ -60,11 +61,25 @@ export default {
             };
         },
         no_tosearch(){
-                localStorage.setItem('nosearch',this.nosearch_data)
+            let _that=this
+            if (this.searchdata=='') {
+                localStorage.removeItem('search_data')
+                           _that.$router.push({ name: 'home'})        
+            }else{    
+          localStorage.setItem('search_data',this.searchdata)
              this.$router.push({ name: 'homeitem'})
+            }
+        
         }
     },
-
+beforeDestroy() { 
+     if (this.searchdata=='') {
+          localStorage.removeItem('search_data')
+     }
+        this.no_tosearch()
+        clearTimeout(this.timer)
+        this.timer=null
+},
 }
 </script>
 <style scoped>
@@ -96,7 +111,18 @@ export default {
     text-align: right;
     font-size: 0.08rem;
 }
-
+.go_search:hover{
+  border: 1px solid #2e73e8!important;
+}
+.go_search:hover .search{
+    width: 0.4rem;
+    height: 0.18rem;
+    line-height: 0.18rem;
+    padding-right: 0.09rem;
+    text-align: right;
+    font-size: 0.08rem;  
+    color: #2e73e8!important;
+}
 .search_inp {
     width: 1.5rem;
     font-size: 14px;
@@ -157,7 +183,7 @@ export default {
 }
 .nothing_cb{
     margin-top: 0.1rem;
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
 }
 </style>

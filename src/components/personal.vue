@@ -1,9 +1,34 @@
 <template>
     <div id="personal" class="center ">
         <div class="personal_title">{{$t("m.account.key14")}}</div>
-      <div class="flex_b personal_main">
+      <div class="flex_f personal_main">
        <div class="flex_f_c personal_l">
-           <div class="head_bg personal_litem"> <img src="../assets/img/personal_img1.png" alt=""> {{personal_msg.username}}</div>
+           <div class="head_bg personal_litem position1"> <img src="../assets/img/personal_img1.png" alt=""> {{personal_msg.username}}
+              <div class="personal_l_img poolhead">
+               <div v-if="minerIdentitytype=='MN'" class="personal_l_img ">  <img src="../assets/img/MN.png" alt=""></div>
+               <div v-if="minerIdentitytype=='GMN'" class="personal_l_img ">  <img src="../assets/img/GMN.png" alt=""> </div>
+               <div v-if="minerIdentitytype=='SMN'" class="personal_l_img ">  <img src="../assets/img/SMN.png" alt=""> </div>
+               <div v-if="minerIdentitytype==''" class="personal_l_img ">  <img src="../assets/img/norm.png" alt=""> </div>
+                <div class="pool" v-if="lang=='zh'">            
+                   <span v-if="minerIdentitytype=='MN'"> 手续费: 0%</span>
+                   <span v-if="minerIdentitytype=='GMN'"> 手续费: 0%</span>
+                   <span v-if="minerIdentitytype=='SMN'"> 手续费: 0%</span>
+                   <span v-if="minerIdentitytype==''"> 手续费: 3%</span>
+               </div>
+               <div class="pool" v-if="lang=='en'">
+                     <span v-if="minerIdentitytype=='MN'"> Pool Fee: 0%</span>
+                   <span v-if="minerIdentitytype=='GMN'"> Pool Fee: 0%</span>
+                   <span v-if="minerIdentitytype=='SMN'"> Pool Fee: 0%</span>
+                   <span v-if="minerIdentitytype==''"> Pool Fee: 3%</span>
+               </div>
+               <div class="pool" v-if="lang=='ko'">
+                   <span v-if="minerIdentitytype=='MN'"> 비율: 0%</span>
+                   <span v-if="minerIdentitytype=='GMN'"> 비율: 0%</span>
+                   <span v-if="minerIdentitytype=='SMN'"> 비율: 0%</span>
+                   <span v-if="minerIdentitytype==''"> 비율: 3%</span>
+               </div>
+               </div>
+           </div>
            <div class="flex_f personal_litem" @click="change(true)" :class="bindtype?'color1':''">  <div  v-if="bindtype"><img src="../assets/img/personal_img2.png" alt=""></div>  <div  v-if="!bindtype"><img src="../assets/img/personal_img3.png" alt=""></div> {{$t("m.account.key15")}}</div>
            <div class="flex_f personal_litem" @click="change(false)" :class="bindtype?'':'color1'">  <div  v-if="!bindtype"><img src="../assets/img/personal_img4.png" alt=""></div>  <div  v-if="bindtype"><img src="../assets/img/personal_img5.png" alt=""></div>  {{$t("m.account.key21")}}</div>
        </div>
@@ -111,12 +136,13 @@
                             <img src="../assets/img/bind_img5.png" alt="">
                         </div>
                         <div class="flex_bf_c emailuser_tr">
-                             <div class="font4">{{$t("m.sonset.key12")}}</div>
+                            <div class="font4"  v-if="personal_msg.setGoogleAuth">{{$t("m.FAQ.key102")}}</div>
+                             <div class="font4 color6"  v-if="!personal_msg.setGoogleAuth">{{$t("m.FAQ.key104")}}</div>
                              <div class="font5">{{$t("m.account.key24")}}</div>                
                         </div>
                     </div> 
                       <div @click="showshare(7)" class="bind_btn"  v-if="!personal_msg.setGoogleAuth">{{$t("m.setting.key8")}}</div>
-                       <div @click="showshare(7)" class="bind_btn"  v-if="personal_msg.setGoogleAuth">{{$t("m.wallet.key7")}}</div>  
+                       <div @click="showshare(7)" class="bind_btn"  v-if="personal_msg.setGoogleAuth">{{$t("m.wallet.key8")}}</div>  
                 </div>
                  </div>
             </div>
@@ -135,7 +161,7 @@
                 <el-step :title="$t('m.account.key39')" description=""></el-step>
             </el-steps>
             </div>
-            <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key28")}}:{{personal_msg.phone}}</div>
+            <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key28")}}: {{personal_msg.phone}}</div>
             <div class="securityphone_item securityphone_text2" v-if="activeid==0">{{$t("m.account.key29")}}</div>
              <div class="securityphone_item"  v-if="activeid==0"> <div class="securityphone_itemborder position1"><input type="text" v-model="changePhone_params.oldPhoneCode" :placeholder="$t('m.setting.key26')"> <div class="getcode color1" @click="getOldPhoneCode()">{{code_tips}}</div></div> </div>
             <div class="securityphone_item" v-if="activeid==1"> <div class="securityphone_itemborder position1"><input type="text" v-model="changePhone_params.phone" :placeholder="$t('m.account.key31')"></div></div>
@@ -160,7 +186,7 @@
                 <el-step :title="$t('m.account.key39')" description=""></el-step>
             </el-steps>
             </div>
-            <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key34")}}:{{personal_msg.email}}</div>
+            <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key34")}}: {{personal_msg.email}}</div>
             <div class="securityphone_item securityphone_text2" v-if="activeid==0">{{$t("m.account.key35")}}</div>
              <div class="securityphone_item"  v-if="activeid==0"> <div class="securityphone_itemborder position1"><input type="text" v-model="bindPhone_params.emailCode" :placeholder="$t('m.setting.key26')"> <div class="getcode color1" @click="getEmailCodeWhenBindPhone()">{{code_tips}}</div></div> </div>
             <div class="securityphone_item" v-if="activeid==1"> <div class="securityphone_itemborder login_itemphone position1"><input type="text" v-model="bindPhone_params.phone" :placeholder="$t('m.account.key31')">
@@ -174,7 +200,8 @@
                       <el-dropdown-item class="prefix_countryCode">
                         <ul  v-for="(item,index) in perfix" :key="index" class="flex_f prefix_countryCode_ul" @click="selectcountryCode(index)">
                              <li class="prefix_countryCode_item">{{item.tel}}</li>
-                        <li class="prefix_countryCode_item2">{{item.name}}</li>
+                          <li class="prefix_countryCode_item2" v-if="lang=='zh'">{{item.name}}</li>
+                       <li class="prefix_countryCode_item2" v-if="lang!=='zh'">{{item.en}}</li>
                        
                         </ul>
                       </el-dropdown-item>
@@ -186,7 +213,7 @@
                <div class="securityphone_item flex_a" v-if="activeid==2"> <div class="isdone"> <img src="../assets/img/isdone.png" alt=""></div> </div>
                <div class="securityphone_item" v-if="activeid==2">{{isdonetext}}</div>
             </div>
-            <div class="securityphone_item flex_a" @click="authEmailCodeWhenBindPhone()" v-if="activeid===0"> <div class="personal_btn1">{{$t("m.account.key32")}}</div> </div>
+            <div class="securityphone_item flex_a" @click="authEmailCodeWhenBindPhone()" v-if="activeid==0"> <div class="personal_btn1">{{$t("m.account.key32")}}</div> </div>
              <div class="securityphone_item flex_a" @click="bindPhone()" v-if="activeid===1"> <div class="personal_btn1">{{$t("m.account.key32")}}</div> </div>
              <div class="securityphone_item flex_a" @click="hideshare()" v-if="activeid===2"><div class="personal_btn1">{{$t("m.account.key25")}}</div></div>
         </div>  
@@ -226,7 +253,7 @@
                 <el-step :title="$t('m.account.key39')" description=""></el-step>
             </el-steps>
             </div>
-             <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key28")}}:{{personal_msg.phone}}</div>
+             <div class="securityphone_item securityphone_text1" v-if="activeid==0">{{$t("m.account.key28")}}: {{personal_msg.phone}}</div>
             <div class="securityphone_item securityphone_text2" v-if="activeid==0">{{$t("m.account.key41")}}</div>
              <div class="securityphone_item"  v-if="activeid==0"> <div class="securityphone_itemborder position1"><input type="text" v-model="bindEmail_params.phoneCode" :placeholder="$t('m.setting.key26')"> <div class="getcode color1" @click="getPhoneCodeWhenBindEmail()">{{code_tips}}</div></div> </div>
             <div class="securityphone_item" v-if="activeid==1"> <div class="securityphone_itemborder position1"><input type="text" v-model="bindEmailCode_params.email" :placeholder="$t('m.setting.key20')"></div></div>
@@ -260,6 +287,7 @@
             <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.newPaymentKey" :placeholder="$t('m.account.key46')"></div>
               <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.resetnewPassword" :placeholder="$t('m.account.key47')"></div>
                <div class="securityphone_item securityphone_itemborder"><input type="text" v-model="changePaymentKey_params.googleCode"  :placeholder="$t('m.account.key48')"></div>
+                <div class="securityphone_item securityphone_item_b">  <span @click="showshare(8)">{{$t("m.login.key6")}}</span>  </div>
                 </div>
               <div class="securityphone_item flex_a"><div @click="hideshare()" class="personal_btn">{{$t("m.sonset.key15")}}</div> <div  @click="changePaymentKey()" class="personal_btn2">{{$t("m.wallet.key19")}}</div></div>
                 
@@ -271,11 +299,18 @@
             </div>
              <div class="change_lgmain">
             <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.newPaymentKey" :placeholder="$t('m.account.key46')"></div>
-              <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.resetnewPassword" :placeholder="$t('m.account.key46')"></div>
+             
+              <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.resetnewPassword" :placeholder="$t('m.account.key47')"></div>
+               <div class="securityphone_item securityphone_itemborder" v-if="personal_msg.email==''||personal_msg.phone!==''"><div class="position1"><input type="text" v-model="changePaymentKey_params.code" :placeholder="$t('m.setting.key26')"> <div class="getcode color1" @click="paykeyResetPhoneCode()">{{code_tips}}</div></div></div>
+          
+               <div class="securityphone_item securityphone_itemborder" v-if="personal_msg.email!==''&&personal_msg.phone==''"><div class="position1"><input type="text" v-model="changePaymentKey_params.code" :placeholder="$t('m.account.key36')"> <div class="getcode color1" @click="paykeyResetEmailCode()">{{code_tips}}</div></div></div>
+          
+
                <div class="securityphone_item securityphone_itemborder"><input type="password" v-model="changePaymentKey_params.googleCode"  :placeholder="$t('m.account.key48')"></div>
+                              
                 </div>       
               <div class="securityphone_item flex_a"><div @click="hideshare()" class="personal_btn">{{$t("m.sonset.key15")}}</div> <div  @click="setPaymentKey()" class="personal_btn2">{{$t("m.wallet.key19")}}</div></div>
-        </div>         
+        </div>              
         <!--设置谷歌验证--> 
           <div class="flex_fc_c securityphone setGoole"  v-if="sharetype&&shareid==7"> 
             <div class="securityphone_item securityphone_title">{{$t("m.setting.key23")}}
@@ -288,7 +323,7 @@
               </div>                
                 <div class="setGoole_item flex_a">  <div id="qrcode"></div></div>
                    <div class="setGoole_item font5" >{{$t("m.account.key49")}}</div>
-                   <div class="flex_b setGoole_item font6"><span class="tag-read" data-clipboard-text="setGoogleKey_params.googleKey">{{$t("m.setting.key25")}}:{{setGoogleKey_params.googleKey}}</span>
+                   <div class="flex_b setGoole_item font6"><span class="tag-read" data-clipboard-text="setGoogleKey_params.googleKey">{{$t("m.setting.key25")}}: {{setGoogleKey_params.googleKey}}</span>
                     <div v-clipboard:copy='setGoogleKey_params.googleKey' class="color1" @click="iscopy()">{{$t("m.setting.key90")}}</div> </div>
                    <div class="setGoole_item font5"> {{setGoogleKey_params.text}}</div>
                        <div class="setGoole_item"> <input type="text" v-model="setGoogleKey_params.code" :placeholder="$t('m.setting.key26')"> 
@@ -307,7 +342,27 @@
 import QRCode from 'qrcodejs2'
 export default {
   created(){
-    this.personal_msg=JSON.parse(localStorage.getItem('personal_msg'))
+      this.minerIdentity()
+      if(localStorage.getItem('lang')){
+        if (localStorage.getItem('lang')=='zh') {
+          this.lang='zh'
+        }else if (localStorage.getItem('lang')=='en') {
+            this.lang='en'
+        }else{
+          this.lang='ko'
+        }
+    }
+    if (localStorage.getItem('personal_msg')) {
+        this.personal_msg=JSON.parse(localStorage.getItem('personal_msg'))
+        console.log(this.personal_msg,111111111111111);
+        
+    }else{
+               _that.$message.error(_that.$t("m.account.key2")); 
+               _that.setCookie('token',null)
+                 _that.setCookie('username',null)     
+                     _that.$router.go(0)
+    }
+  
      this.setGoogleKey_params.mode=this.personal_msg.mode
       this.setGoogleKey_params.text=this.personal_msg.email
      if (this.personal_msg.email=='') {
@@ -339,6 +394,8 @@ export default {
               oldPhoneCode:'',
               phone:'',    
             },
+            minerIdentitytype:'',
+            ischangePhonetype:false,
             BindPhoneCode_params:{
                  username: this.getCookie("username"),
                  token:this.getCookie("token"),
@@ -394,7 +451,11 @@ export default {
                 newPaymentKey:'',
                 oldPaymentKey:'',
                googleCode:'', 
-               resetnewPassword:'',               
+               resetnewPassword:'', 
+               mode:"",
+               phone:'',
+               countryCode:"",
+                 paymentKey:""     
             },
             authPhoneCodeWhenBindEmail_params:{
               code:'',
@@ -441,11 +502,12 @@ export default {
             },
             setphone_text:this.$t("m.account.key30"),
             setGoogleType:true,
+            lang:"zh",
             title:this.$t("m.account.key15"),
             isdonetext:this.$t("m.account.key50"),
                  perfix:[{"short":"AD","name":"安道尔共和国","en":"Andorra","tel":"376"},{"short":"AE","name":"阿拉伯联合酋长国","en":"UnitedArabEmirates","tel":"971"},{"short":"AF","name":"阿富汗","en":"Afghanistan","tel":"93"},{"short":"AG","name":"安提瓜和巴布达","en":"AntiguaandBarbuda","tel":"1268"},{"short":"AI","name":"安圭拉岛","en":"Anguilla","tel":"1264"},{"short":"AL","name":"阿尔巴尼亚","en":"Albania","tel":"355"},{"short":"AM","name":"亚美尼亚","en":"Armenia","tel":"374"},{"short":"","name":"阿森松","en":"Ascension","tel":"247"},{"short":"AO","name":"安哥拉","en":"Angola","tel":"244"},{"short":"AR","name":"阿根廷","en":"Argentina","tel":"54"},{"short":"AT","name":"奥地利","en":"Austria","tel":"43"},{"short":"AU","name":"澳大利亚","en":"Australia","tel":"61"},{"short":"AZ","name":"阿塞拜疆","en":"Azerbaijan","tel":"994"},{"short":"BB","name":"巴巴多斯","en":"Barbados","tel":"1246"},{"short":"BD","name":"孟加拉国","en":"Bangladesh","tel":"880"},{"short":"BE","name":"比利时","en":"Belgium","tel":"32"},{"short":"BF","name":"布基纳法索","en":"Burkina-faso","tel":"226"},{"short":"BG","name":"保加利亚","en":"Bulgaria","tel":"359"},{"short":"BH","name":"巴林","en":"Bahrain","tel":"973"},{"short":"BI","name":"布隆迪","en":"Burundi","tel":"257"},{"short":"BJ","name":"贝宁","en":"Benin","tel":"229"},{"short":"BL","name":"巴勒斯坦","en":"Palestine","tel":"970"},{"short":"BM","name":"百慕大群岛","en":"BermudaIs.","tel":"1441"},{"short":"BN","name":"文莱","en":"Brunei","tel":"673"},{"short":"BO","name":"玻利维亚","en":"Bolivia","tel":"591"},{"short":"BR","name":"巴西","en":"Brazil","tel":"55"},{"short":"BS","name":"巴哈马","en":"Bahamas","tel":"1242"},{"short":"BW","name":"博茨瓦纳","en":"Botswana","tel":"267"},{"short":"BY","name":"白俄罗斯","en":"Belarus","tel":"375"},{"short":"BZ","name":"伯利兹","en":"Belize","tel":"501"},{"short":"CA","name":"加拿大","en":"Canada","tel":"1"},{"short":"","name":"开曼群岛","en":"CaymanIs.","tel":"1345"},{"short":"CF","name":"中非共和国","en":"CentralAfricanRepublic","tel":"236"},{"short":"CG","name":"刚果","en":"Congo","tel":"242"},{"short":"CH","name":"瑞士","en":"Switzerland","tel":"41"},{"short":"CK","name":"库克群岛","en":"CookIs.","tel":"682"},{"short":"CL","name":"智利","en":"Chile","tel":"56"},{"short":"CM","name":"喀麦隆","en":"Cameroon","tel":"237"},{"short":"CN","name":"中国","en":"China","tel":"86"},{"short":"CO","name":"哥伦比亚","en":"Colombia","tel":"57"},{"short":"CR","name":"哥斯达黎加","en":"CostaRica","tel":"506"},{"short":"CS","name":"捷克","en":"Czech","tel":"420"},{"short":"CU","name":"古巴","en":"Cuba","tel":"53"},{"short":"CY","name":"塞浦路斯","en":"Cyprus","tel":"357"},{"short":"CZ","name":"捷克","en":"CzechRepublic","tel":"420"},{"short":"DE","name":"德国","en":"Germany","tel":"49"},{"short":"DJ","name":"吉布提","en":"Djibouti","tel":"253"},{"short":"DK","name":"丹麦","en":"Denmark","tel":"45"},{"short":"DO","name":"多米尼加共和国","en":"DominicaRep.","tel":"1890"},{"short":"DZ","name":"阿尔及利亚","en":"Algeria","tel":"213"},{"short":"EC","name":"厄瓜多尔","en":"Ecuador","tel":"593"},{"short":"EE","name":"爱沙尼亚","en":"Estonia","tel":"372"},{"short":"EG","name":"埃及","en":"Egypt","tel":"20"},{"short":"ES","name":"西班牙","en":"Spain","tel":"34"},{"short":"ET","name":"埃塞俄比亚","en":"Ethiopia","tel":"251"},{"short":"FI","name":"芬兰","en":"Finland","tel":"358"},{"short":"FJ","name":"斐济","en":"Fiji","tel":"679"},{"short":"FR","name":"法国","en":"France","tel":"33"},{"short":"GA","name":"加蓬","en":"Gabon","tel":"241"},{"short":"GB","name":"英国","en":"UnitedKingdom","tel":"44"},{"short":"GD","name":"格林纳达","en":"Grenada","tel":"1809"},{"short":"GE","name":"格鲁吉亚","en":"Georgia","tel":"995"},{"short":"GF","name":"法属圭亚那","en":"FrenchGuiana","tel":"594"},{"short":"GH","name":"加纳","en":"Ghana","tel":"233"},{"short":"GI","name":"直布罗陀","en":"Gibraltar","tel":"350"},{"short":"GM","name":"冈比亚","en":"Gambia","tel":"220"},{"short":"GN","name":"几内亚","en":"Guinea","tel":"224"},{"short":"GR","name":"希腊","en":"Greece","tel":"30"},{"short":"GT","name":"危地马拉","en":"Guatemala","tel":"502"},{"short":"GU","name":"关岛","en":"Guam","tel":"1671"},{"short":"GY","name":"圭亚那","en":"Guyana","tel":"592"},{"short":"HK","name":"香港特别行政区","en":"Hongkong","tel":"852"},{"short":"HN","name":"洪都拉斯","en":"Honduras","tel":"504"},{"short":"HT","name":"海地","en":"Haiti","tel":"509"},{"short":"HU","name":"匈牙利","en":"Hungary","tel":"36"},{"short":"ID","name":"印度尼西亚","en":"Indonesia","tel":"62"},{"short":"IE","name":"爱尔兰","en":"Ireland","tel":"353"},{"short":"IL","name":"以色列","en":"Israel","tel":"972"},{"short":"IN","name":"印度","en":"India","tel":"91"},{"short":"IQ","name":"伊拉克","en":"Iraq","tel":"964"},{"short":"IR","name":"伊朗","en":"Iran","tel":"98"},{"short":"IS","name":"冰岛","en":"Iceland","tel":"354"},{"short":"IT","name":"意大利","en":"Italy","tel":"39"},{"short":"","name":"科特迪瓦","en":"IvoryCoast","tel":"225"},{"short":"JM","name":"牙买加","en":"Jamaica","tel":"1876"},{"short":"JO","name":"约旦","en":"Jordan","tel":"962"},{"short":"JP","name":"日本","en":"Japan","tel":"81"},{"short":"KE","name":"肯尼亚","en":"Kenya","tel":"254"},{"short":"KG","name":"吉尔吉斯坦","en":"Kyrgyzstan","tel":"331"},{"short":"KH","name":"柬埔寨","en":"Kampuchea(Cambodia)","tel":"855"},{"short":"KP","name":"朝鲜","en":"NorthKorea","tel":"850"},{"short":"KR","name":"韩国","en":"Korea","tel":"82"},{"short":"KT","name":"科特迪瓦共和国","en":"RepublicofIvoryCoast","tel":"225"},{"short":"KW","name":"科威特","en":"Kuwait","tel":"965"},{"short":"KZ","name":"哈萨克斯坦","en":"Kazakstan","tel":"327"},{"short":"LA","name":"老挝","en":"Laos","tel":"856"},{"short":"LB","name":"黎巴嫩","en":"Lebanon","tel":"961"},{"short":"LC","name":"圣卢西亚","en":"St.Lucia","tel":"1758"},{"short":"LI","name":"列支敦士登","en":"Liechtenstein","tel":"423"},{"short":"LK","name":"斯里兰卡","en":"SriLanka","tel":"94"},{"short":"LR","name":"利比里亚","en":"Liberia","tel":"231"},{"short":"LS","name":"莱索托","en":"Lesotho","tel":"266"},{"short":"LT","name":"立陶宛","en":"Lithuania","tel":"370"},{"short":"LU","name":"卢森堡","en":"Luxembourg","tel":"352"},{"short":"LV","name":"拉脱维亚","en":"Latvia","tel":"371"},{"short":"LY","name":"利比亚","en":"Libya","tel":"218"},{"short":"MA","name":"摩洛哥","en":"Morocco","tel":"212"},{"short":"MC","name":"摩纳哥","en":"Monaco","tel":"377"},{"short":"MD","name":"摩尔多瓦","en":"Moldova,Republicof","tel":"373"},{"short":"MG","name":"马达加斯加","en":"Madagascar","tel":"261"},{"short":"ML","name":"马里","en":"Mali","tel":"223"},{"short":"MM","name":"缅甸","en":"Burma","tel":"95"},{"short":"MN","name":"蒙古","en":"Mongolia","tel":"976"},{"short":"MO","name":"澳门","en":"Macao","tel":"853"},{"short":"MS","name":"蒙特塞拉特岛","en":"MontserratIs","tel":"1664"},{"short":"MT","name":"马耳他","en":"Malta","tel":"356"},{"short":"","name":"马里亚那群岛","en":"MarianaIs","tel":"1670"},{"short":"","name":"马提尼克","en":"Martinique","tel":"596"},{"short":"MU","name":"毛里求斯","en":"Mauritius","tel":"230"},{"short":"MV","name":"马尔代夫","en":"Maldives","tel":"960"},{"short":"MW","name":"马拉维","en":"Malawi","tel":"265"},{"short":"MX","name":"墨西哥","en":"Mexico","tel":"52"},{"short":"MY","name":"马来西亚","en":"Malaysia","tel":"60"},{"short":"MZ","name":"莫桑比克","en":"Mozambique","tel":"258"},{"short":"NA","name":"纳米比亚","en":"Namibia","tel":"264"},{"short":"NE","name":"尼日尔","en":"Niger","tel":"977"},{"short":"NG","name":"尼日利亚","en":"Nigeria","tel":"234"},{"short":"NI","name":"尼加拉瓜","en":"Nicaragua","tel":"505"},{"short":"NL","name":"荷兰","en":"Netherlands","tel":"31"},{"short":"NO","name":"挪威","en":"Norway","tel":"47"},{"short":"NP","name":"尼泊尔","en":"Nepal","tel":"977"},{"short":"","name":"荷属安的列斯","en":"NetheriandsAntilles","tel":"599"},{"short":"NR","name":"瑙鲁","en":"Nauru","tel":"674"},{"short":"NZ","name":"新西兰","en":"NewZealand","tel":"64"},{"short":"OM","name":"阿曼","en":"Oman","tel":"968"},{"short":"PA","name":"巴拿马","en":"Panama","tel":"507"},{"short":"PE","name":"秘鲁","en":"Peru","tel":"51"},{"short":"PF","name":"法属玻利尼西亚","en":"FrenchPolynesia","tel":"689"},{"short":"PG","name":"巴布亚新几内亚","en":"PapuaNewCuinea","tel":"675"},{"short":"PH","name":"菲律宾","en":"Philippines","tel":"63"},{"short":"PK","name":"巴基斯坦","en":"Pakistan","tel":"92"},{"short":"PL","name":"波兰","en":"Poland","tel":"48"},{"short":"PR","name":"波多黎各","en":"PuertoRico","tel":"1787"},{"short":"PT","name":"葡萄牙","en":"Portugal","tel":"351"},{"short":"PY","name":"巴拉圭","en":"Paraguay","tel":"595"},{"short":"QA","name":"卡塔尔","en":"Qatar","tel":"974"},{"short":"","name":"留尼旺","en":"Reunion","tel":"262"},{"short":"RO","name":"罗马尼亚","en":"Romania","tel":"40"},{"short":"RU","name":"俄罗斯","en":"Russia","tel":"7"},{"short":"SA","name":"沙特阿拉伯","en":"SaudiArabia","tel":"966"},{"short":"SB","name":"所罗门群岛","en":"SolomonIs","tel":"677"},{"short":"SC","name":"塞舌尔","en":"Seychelles","tel":"248"},{"short":"SD","name":"苏丹","en":"Sudan","tel":"249"},{"short":"SE","name":"瑞典","en":"Sweden","tel":"46"},{"short":"SG","name":"新加坡","en":"Singapore","tel":"65"},{"short":"SI","name":"斯洛文尼亚","en":"Slovenia","tel":"386"},{"short":"SK","name":"斯洛伐克","en":"Slovakia","tel":"421"},{"short":"SL","name":"塞拉利昂","en":"SierraLeone","tel":"232"},{"short":"SM","name":"圣马力诺","en":"SanMarino","tel":"378"},{"short":"","name":"东萨摩亚(美)","en":"SamoaEastern","tel":"684"},{"short":"","name":"西萨摩亚","en":"SanMarino","tel":"685"},{"short":"SN","name":"塞内加尔","en":"Senegal","tel":"221"},{"short":"SO","name":"索马里","en":"Somali","tel":"252"},{"short":"SR","name":"苏里南","en":"Suriname","tel":"597"},{"short":"ST","name":"圣多美和普林西比","en":"SaoTomeandPrincipe","tel":"239"},{"short":"SV","name":"萨尔瓦多","en":"EISalvador","tel":"503"},{"short":"SY","name":"叙利亚","en":"Syria","tel":"963"},{"short":"SZ","name":"斯威士兰","en":"Swaziland","tel":"268"},{"short":"TD","name":"乍得","en":"Chad","tel":"235"},{"short":"TG","name":"多哥","en":"Togo","tel":"228"},{"short":"TH","name":"泰国","en":"Thailand","tel":"66"},{"short":"TJ","name":"塔吉克斯坦","en":"Tajikstan","tel":"992"},{"short":"TM","name":"土库曼斯坦","en":"Turkmenistan","tel":"993"},{"short":"TN","name":"突尼斯","en":"Tunisia","tel":"216"},{"short":"TO","name":"汤加","en":"Tonga","tel":"676"},{"short":"TR","name":"土耳其","en":"Turkey","tel":"90"},{"short":"TT","name":"特立尼达和多巴哥","en":"TrinidadandTobago","tel":"1809"},
                   {"short":"TW","name":"台湾省","en":"Taiwan","tel":"886"},{"short":"TZ","name":"坦桑尼亚","en":"Tanzania","tel":"255"},
-                   {"short":"UA","name":"乌克兰","en":"Ukraine","tel":"380"},{"short":"UG","name":"乌干达","en":"Uganda","tel":"256"},{"short":"US","name":"美国","en":"UnitedStatesofAmerica","tel":"1"},{"short":"UY","name":"乌拉圭","en":"Uruguay","tel":"598"},{"short":"UZ","name":"乌兹别克斯坦","en":"Uzbekistan","tel":"233"},{"short":"VC","name":"圣文森特岛","en":"SaintVincent","tel":"1784"},{"short":"VE","name":"委内瑞拉","en":"Venezuela","tel":"58"},{"short":"VN","name":"越南","en":"Vietnam","tel":"84"},{"short":"YE","name":"也门","en":"Yemen","tel":"967"},{"short":"YU","name":"南斯拉夫","en":"Yugoslavia","tel":"381"},{"short":"ZA","name":"南非","en":"SouthAfrica","tel":"27"},{"short":"ZM","name":"赞比亚","en":"Zambia","tel":"260"},{"short":"ZR","name":"扎伊尔","en":"Zaire","tel":"243"},{"short":"ZW","name":"津巴布韦","en":"Zimbabwe","tel":"263"}]   
+                   {"short":"UA","name":"乌克兰","en":"Ukraine","tel":"380"},{"short":"UG","name":"乌干达","en":"Uganda","tel":"256"},{"short":"US","name":"美国","en":"UnitedStatesofAmerica","tel":"1"},{"short":"UY","name":"乌拉圭","en":"Uruguay","tel":"598"},{"short":"UZ","name":"乌兹别克斯坦","en":"Uzbekistan","tel":"233"},{"short":"VC","name":"圣文森特岛","en":"SaintVincent","tel":"1784"},{"short":"VE","name":"委内瑞拉","en":"Venezuela","tel":"58"},{"short":"VN","name":"越南","en":"Vietnam","tel":"84"},{"short":"YE","name":"也门","en":"Yemen","tel":"967"},{"short":"ZA","name":"南非","en":"SouthAfrica","tel":"27"},{"short":"ZM","name":"赞比亚","en":"Zambia","tel":"260"},{"short":"ZR","name":"扎伊尔","en":"Zaire","tel":"243"},{"short":"ZW","name":"津巴布韦","en":"Zimbabwe","tel":"263"}]   
 
         }
     },
@@ -500,7 +562,7 @@ export default {
             clearInterval(this.getcodetimer)
               this.getcodetimer=null
             this.registertime=60
-            this.getcodetype=true        
+            this.getcodetype=true   
         },
         showshare(id){
                 this.sharetype=true
@@ -544,6 +606,17 @@ export default {
               } if (id===7) {
                  this.setGoogleKey_params.code=''
                   this.setGoogleKey_params.googleCode=''
+                  if (this.ischangePhonetype) {
+                    if (this.personal_msg.email=='') {
+            this.setGoogleKeyType=false
+            this.setGoogleKey_params.text=this.personal_msg.phone
+            this.setGoogleKey_params.countryCode=this.personal_msg.countryCode
+          } 
+           if (this.personal_msg.phone=='') {
+            this.setGoogleKeyType=true
+             this.setGoogleKey_params.text=this.personal_msg.email
+          } 
+                  }
               } if (id===8) {
                 
                 this.changePaymentKey_params.newPaymentKey=''
@@ -619,7 +692,7 @@ export default {
         },
         //39. 初次绑定手机时，获取邮箱验证码
          getEmailCodeWhenBindPhone(){
-          let _that=this
+          let _that=this        
              if(this.getcodetype){
            this.getcodetype=false;
                     _that.getcodetimer=setInterval(function(){
@@ -644,7 +717,9 @@ export default {
               }              
               if(JSON.parse(data).code==9019){
                 //账户未登录
-                  _that.$message.error(_that.$t("m.setting.key63"));
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                  _that.$router.go(0)
                 return
               }if(JSON.parse(data).code==11020){
                 //用户已绑定手机号
@@ -657,7 +732,9 @@ export default {
               }
                if(JSON.parse(data).code==1){
                  //email发送成功
+                  _that.getcodetype=true;
               _that.$message.success(_that.$t("m.account.key60"));
+              return
               }
                 }, function(error) {
                     // console.log(error)
@@ -666,7 +743,7 @@ export default {
         //40. 绑定手机时，验证邮箱验证码
        authEmailCodeWhenBindPhone(){
           let _that=this
-             if(this.getcodetype){
+        if(this.getcodetype){
            this.getcodetype=false;
                   this.authEmailCodeWhenBindPhone_params.code= this.bindPhone_params.emailCode
                 this.authEmailCodeWhenBindPhone_params.email=this.personal_msg.email
@@ -723,7 +800,9 @@ export default {
                 //  console.log(data,'获取用户信息');            
              if(JSON.parse(data).code==1076){
                 // alert("账户未登录")
-                _that.$message.error(_that.$t("m.setting.key63"));
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                 _that.$router.go(0)
                 return
               }if(JSON.parse(data).code==1077){
                 // alert("请输入完整信息")
@@ -741,6 +820,8 @@ export default {
                if(JSON.parse(data).code==1){
               //  alert('绑定手机成功')
               _that.$message.success(_that.$t("m.account.key65"));
+              _that.personal_msg.phone=_that.bindPhone_params.phone
+               _that.personal_msg.countryCode=_that.bindPhone_params.countryCode
                _that.activeid++  
               }
                 }, function(error) {
@@ -774,7 +855,19 @@ export default {
                   clearInterval(_that.getcodetimer)
                   _that.getcodetimer=null
                   _that.registertime=60
-              }              
+              }   
+              if(JSON.parse(data).code==9019){
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                  _that.$router.go(0)
+                return
+              } if(JSON.parse(data).code==9020){
+                 _that.$message.error(_that.$t("m.setting.key67"));
+                return
+              }if(JSON.parse(data).code==9007){
+                 _that.$message.error(_that.$t("m.setting.key68"));
+                return
+              }          
               if(JSON.parse(data).code==1072){
                  _that.$message.error(_that.$t("m.setting.key70"));
                 return
@@ -789,7 +882,7 @@ export default {
                 return
               }
                if(JSON.parse(data).code==1){
-              _that.$message.success(_that.$t("m.account.key56"));
+             return  _that.$message.success(_that.$t("m.account.key56"));
               }
                 }, function(error) {
                     // console.log(error)
@@ -830,7 +923,9 @@ export default {
                   _that.registertime=60
               }            
               if(JSON.parse(data).code==9019){
-                _that.$message.error(_that.$t("m.setting.key63"));
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                  _that.$router.go(0)
                 return
               }if(JSON.parse(data).code==9020){
                _that.$message.error(_that.$t("m.setting.key30"));
@@ -849,7 +944,27 @@ export default {
                     // console.log(error)
                 }) }
         },
-
+        //获取用户身份
+        minerIdentity(){
+            let _that=this
+            this.$ajax('post', this.GLOBAL.baseUrl + 'account/minerIdentity ',this.bindEmailCode_params, function(data) {
+                //  console.log(data,'获取绑定手机验证码');  
+                console.log(data,111111111111111);
+                
+               if(JSON.parse(data).code!==1){
+                //   _that.setCookie('token',null)
+                //  _that.setCookie('username',null)
+                //  _that.$router.go(0)
+              }            
+               if(JSON.parse(data).code==200){
+                  _that.minerIdentitytype=JSON.parse(data).minerIsIdentity[0].identity
+                  console.log(_that.minerIdentitytype);
+                  
+              }
+                }, function(error) {
+                    // console.log(error)
+                })   
+        },
         //获取绑定邮箱验证码
         getBindEmailCode(){
             let _that=this
@@ -921,7 +1036,9 @@ export default {
                 //  console.log(data,'获取用户信息');            
              if(JSON.parse(data).code==9076){
                 // alert("账户未登录")
-                _that.$message.error(_that.$t("m.setting.key63"));
+                _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+               _that.$router.go(0)
                 return
               }if(JSON.parse(data).code==9077){
                 // alert("请输入完整信息")
@@ -949,7 +1066,12 @@ export default {
                 return
               }
                if(JSON.parse(data).code==1){
+                   _that.personal_msg.phone=_that.changePhone_params.phone
+               _that.personal_msg.countryCode=_that.changePhone_params.countryCode
               //  alert('绑定手机成功')
+              _that.ischangePhonetype=true
+              console.log( _that.personal_msg,888888888888888888888);
+              
               _that.$message.success(_that.$t("m.account.key65"));
                _that.activeid++  
               }
@@ -1009,7 +1131,8 @@ export default {
              
              this.bindEmail_params.username=this.personal_msg.username
               //  console.log(this.bindEmail_params,999999)
-             this.bindEmail_params.email= this.bindEmailCode_params.email     
+             this.bindEmail_params.email= this.bindEmailCode_params.email   
+             this.bindEmail_params.countryCode=this.personal_msg.countryCode  
             this.$ajax('post', this.GLOBAL.baseUrl + 'account/bindEmail',this.bindEmail_params, function(data) {
                 
                  if(JSON.parse(data).code!==1){
@@ -1021,7 +1144,10 @@ export default {
               }            
              if(JSON.parse(data).code==1084){
                 // alert("账户未登录")
-                _that.$message.error(_that.$t("m.setting.key63"));
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                 _that.$router.go(0)
+                
                 return
               }if(JSON.parse(data).code==1085){
                 // alert("请输入完整信息")
@@ -1037,6 +1163,7 @@ export default {
                 return
               }
                if(JSON.parse(data).code==1){
+                 _that.personal_msg.email=_that.bindEmail_params.email
               //  alert('绑定邮箱成功')
                  _that.activeid++ 
               _that.$message.success(_that.$t("m.account.key67"));
@@ -1076,7 +1203,10 @@ export default {
                   _that.registertime=60
               }            
               if(JSON.parse(data).code==9019){
-                 _that.$message.error(_that.$t("m.setting.key63"));
+                  _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                 _that.$router.go(0)
+               
                 return
               }if(JSON.parse(data).code==9020){
                _that.$message.error(_that.$t("m.setting.key67"));
@@ -1172,7 +1302,10 @@ export default {
                 _that.$message.error(_that.$t("m.register.key10"));
               }if(JSON.parse(data).code==1090){
                 // alert("账户未登录")
-                _that.$message.error(_that.$t("m.setting.key63"));
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                   _that.$router.go(0)
+                  
               }if(JSON.parse(data).code==1091){
                 // alert("请输入旧密码")
                  _that.$message.error(_that.$t("m.setting.key15"));
@@ -1195,28 +1328,161 @@ export default {
                     // console.log(error)
                 })           
         },
-        //设置/重置支付密码
+        //设置支付密码获取邮箱验证码
+        paykeyResetEmailCode(){     
+              let _that=this 
+            // console.log(this.setPaymentKey_params,'修改资金密码');   
+            this.changePaymentKey_params.email=this.personal_msg.email
+             if(this.getcodetype){
+              this.getcodetype=false;
+                    _that.getcodetimer=setInterval(function(){
+                      _that.registertime--
+                        _that.code_tips=  _that.registertime                      
+                      if( _that.registertime<=0){
+                        _that.getcodetype=true;
+                        _that.registertime=60
+                        _that.code_tips=_that.$t("m.account.key76");           
+                          clearInterval(_that.getcodetimer)
+                           _that.getcodetimer=null
+                      }
+                  },1000) }
+            this.$ajax('post', this.GLOBAL.baseUrl + 'account/paykeyResetEmailCode',this.changePaymentKey_params, function(data) {
+                 if(this.getcodetype){
+              this.getcodetype=false;
+                    _that.getcodetimer=setInterval(function(){
+                      _that.registertime--
+                        _that.code_tips=  _that.registertime                      
+                      if( _that.registertime<=0){
+                        _that.getcodetype=true;
+                        _that.registertime=60
+                        _that.code_tips=_that.$t("m.account.key76");           
+                          clearInterval(_that.getcodetimer)
+                           _that.getcodetimer=null
+                      }
+                  },1000) }          
+              if(JSON.parse(data).code==1023){
+                // alert("账户未登录")
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)         
+              }if(JSON.parse(data).code==1024){
+                // alert("请输入邮箱")
+                _that.$message.error(_that.$t("m.setting.key20"));
+              }if(JSON.parse(data).code==1025){
+                // alert("邮箱验证码发送失败'")
+                _that.$message.error(_that.$t("m.setting.key66"));
+              }if(JSON.parse(data).code==1026){
+                // alert("未设置谷歌验证码")
+               _that.$message.error(_that.$t("m.account.key71"));
+              }if(JSON.parse(data).code==1324){
+                // alert("设置失败")
+               _that.$message.error(_that.$t("m.setting.key77"));
+              }
+               if(JSON.parse(data).code==1){
+              // alert('设置成功')
+               _that.$message.success(_that.$t("m.register.key16"));
+              }if(JSON.parse(data).code!==1){
+                  _that.getcodetype=true;
+                  _that.code_tips=_that.$t("m.account.key76")
+                  clearInterval(_that.getcodetimer)
+                  _that.getcodetimer=null
+                  _that.registertime=60
+              }
+                }, function(error) {
+                    // console.log(error)
+                })           
+        }, 
+        //设置支付密码获取手机验证码
+        paykeyResetPhoneCode(){      
+            // console.log(this.setPaymentKey_params,'修改资金密码');   
+            let _that=this
+            this.changePaymentKey_params.phone=this.personal_msg.phone  
+            this.changePaymentKey_params.countryCode=this.personal_msg.countryCode 
+            console.log(this.getcodetype,111111111111);
+            
+             if(this.getcodetype){
+              this.getcodetype=false;
+                    _that.getcodetimer=setInterval(function(){
+                      _that.registertime--
+                        _that.code_tips=  _that.registertime                      
+                      if( _that.registertime<=0){
+                        _that.getcodetype=true;
+                        _that.registertime=60
+                        _that.code_tips=_that.$t("m.account.key76");           
+                          clearInterval(_that.getcodetimer)
+                           _that.getcodetimer=null
+                      }
+                  },1000) }
+            this.$ajax('post', this.GLOBAL.baseUrl + 'account/paykeyResetPhoneCode',this.changePaymentKey_params, function(data) {         
+              if(JSON.parse(data).code==1027){
+                // alert("账户未登录")
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)         
+              }if(JSON.parse(data).code==1028){
+                // alert("请输入手机号")
+                _that.$message.error(_that.$t("m.setting.key30"));
+              }if(JSON.parse(data).code==1029){
+                // alert("手机短信发送失败'")
+                _that.$message.error(_that.$t("m.setting.key68"));
+              }if(JSON.parse(data).code==1324){
+                // alert("未设置谷歌验证码")
+               _that.$message.error(_that.$t("m.account.key71"));
+              }if(JSON.parse(data).code==1030){
+                // alert("手机号未注册")
+               _that.$message.error(_that.$t("m.setting.key49"));
+              }
+               if(JSON.parse(data).code==1){
+              // alert('设置成功')
+               _that.$message.success(_that.$t("m.register.key16"));
+              }if(JSON.parse(data).code!==1){
+                  _that.getcodetype=true;
+                  _that.code_tips=_that.$t("m.account.key76")
+                  clearInterval(_that.getcodetimer)
+                  _that.getcodetimer=null
+                  _that.registertime=60
+              }
+                }, function(error) {
+                    // console.log(error)
+                })           
+        },               
+        //设置支付密码
         setPaymentKey(){
             let _that=this 
             if(!this.isNumberOr_Letter(this.changePaymentKey_params.newPaymentKey)){
               this.changePaymentKey_params.newPaymentKey=''
-             return  this.$message.error(this.$t("m.account.key43"));
+             return  this.$message.error(this.$t("m.key13"));
             }
             if(this.changePaymentKey_params.newPaymentKey!==this.changePaymentKey_params.resetnewPassword){
               this.changePaymentKey_params.resetnewPassword=''
                return  this.$message.error(this.$t("m.account.key68"));
-            }                        
+            }       
+            this.changePaymentKey_params.countryCode=this.personal_msg.countryCode
+             this.changePaymentKey_params.phone=this.personal_msg.phone
+              this.changePaymentKey_params.email=this.personal_msg.email
+               this.changePaymentKey_params.paymentKey= this.changePaymentKey_params.newPaymentKey
+              if (this.personal_msg.phone=='') {
+                 this.changePaymentKey_params.mode='email'
+              }else{
+                this.changePaymentKey_params.mode='phone'
+              }       
             // console.log(this.setPaymentKey_params,'修改资金密码');     
-            this.$ajax('post', this.GLOBAL.baseUrl + 'account/setPaymentKey',this.setPaymentKey_params, function(data) {
+            this.$ajax('post', this.GLOBAL.baseUrl + 'account/setPaymentKey',this.changePaymentKey_params, function(data) {
                          
               if(JSON.parse(data).code==1052){
-                // alert("新密码不能为空")
-                _that.$message.error(_that.$t("m.setting.key80"));
+                // alert("账户未登录")
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
+               
               }if(JSON.parse(data).code==1053){
                 // alert("请输入旧密码")
                 _that.$message.error(_that.$t("m.setting.key70"));
               }if(JSON.parse(data).code==1054){
                 // alert("验证码错误")
+                _that.$message.error(_that.$t("m.setting.key35"));
+              }if(JSON.parse(data).code==1333){
+                // alert("旧密码不正确")
                 _that.$message.error(_that.$t("m.setting.key35"));
               }if(JSON.parse(data).code==1055){
                 // alert("旧密码不正确")
@@ -1257,7 +1523,10 @@ export default {
                 _that.$message.error(_that.$t("m.setting.key80"));
               }if(JSON.parse(data).code==1058){
                 // alert("账户未登录")
-                _that.$message.error(_that.$t("m.setting.key63"));
+                 _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
+               
               }if(JSON.parse(data).code==1059){
                 // alert("请输入旧密码")
                  _that.$message.error(_that.$t("m.setting.key15"));
@@ -1319,6 +1588,12 @@ export default {
                if(JSON.parse(data).code==1){
               // alert('email发送成功')
               _that.$message.success(_that.$t("m.account.key60"));
+              }if(JSON.parse(data).code==1023){
+              // alert('账户未登录')
+               _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
+               
               }if(JSON.parse(data).code==1024){
               // alert('请输入邮箱')
               _that.$message.error(_that.$t("m.register.key4"));
@@ -1367,7 +1642,10 @@ export default {
               _that.$message.success(_that.$t("m.account.key72"));
               }if(JSON.parse(data).code==1015){
               // alert('账户未登录')
-              _that.$message.error(_that.$t("m.setting.key63"));
+               _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
+               
               }if(JSON.parse(data).code==1017){
               // alert('邮箱验证码发送失败')
               _that.$message.error(_that.$t("m.setting.key66"));
@@ -1393,6 +1671,7 @@ export default {
               let _that=this 
              this.bindPhone_params.phone=this.personal_msg.phone 
              this.bindPhone_params.countryCode=this.personal_msg.countryCode 
+                console.log( _that.personal_msg,888888888888888888888);
              if(this.getcodetype){
                this.getcodetype=false;
                     _that.getcodetimer=setInterval(function(){
@@ -1419,7 +1698,10 @@ export default {
               }
               if(JSON.parse(data).code==1019){
               // alert('账户未登录')
-                return  _that.$message.error(_that.$t("m.setting.key63"));
+              _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
+                return 
               }if(JSON.parse(data).code==1020){
               // alert('请输入手机号')
                 return  _that.$message.error(_that.$t("m.setting.key30"));
@@ -1443,7 +1725,9 @@ export default {
             this.$ajax('post', this.GLOBAL.baseUrl + 'account/setGoogleKey',this.setGoogleKey_params, function(data) {
               if(JSON.parse(data).code==1063){
               // alert('账户未登录')
-              _that.$message.error(_that.$t("m.setting.key63"));
+              _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                _that.$router.go(0)
               }if(JSON.parse(data).code==1064){
               // alert('请输入完整信息')
                _that.$message.error(_that.$t("m.setting.key70"));
@@ -1467,6 +1751,7 @@ export default {
               // _that.personal_msg
               _that.sharetype=false
              _that.shareid=0;
+                 _that.$router.go(0)
               }if(JSON.parse(data).code!==1){
                   _that.getcodetype=true;
                   _that.code_tips=_that.$t("m.account.key76")
@@ -1480,7 +1765,7 @@ export default {
         }, 
         //复制
         iscopy(){
-          return   this.$message.success(this.$t("m.setting.key90"));
+          return   this.$message.success(this.$t("m.account.key115"));
         }           
     },
   beforeDestroy() {
@@ -1494,7 +1779,8 @@ export default {
 <style scoped>
 .center{
     width: 6rem;
-   margin: 0 auto
+   margin: 0 auto;
+   min-width: 750px;
 }
 #personal{
   background-color: #fafafa;
@@ -1514,15 +1800,21 @@ export default {
 }
 .personal_l{
     width: 1.1rem;
+    min-width: 190px;
     height: 2.96rem;
     border: 2px solid #ededed;
     box-sizing: border-box;
   background-color: #ffffff;
 	border-radius: 4px; 
+  margin-right: 10px;
 
+}
+.personal_l_img{
+  display: inline-block;
 }
 .personal_r{
     width: 4.6rem;
+    min-width: 700px;
     height: 2.96rem;
     border: 2px solid #ededed;
     box-sizing: border-box;
@@ -1535,6 +1827,7 @@ export default {
   line-height: 0.25rem;
   text-align: left;
     padding-left: 0.1rem;
+    cursor: pointer;
 }
 .personal_litem img{
   margin-right: 0.06rem;
@@ -1553,7 +1846,7 @@ export default {
   justify-content: center;
 }
 .color6{
-  color: #ff9a23;
+  color: #ff9a23!important;
 }
 .flex_f{
   display: flex;
@@ -1616,6 +1909,13 @@ export default {
   width: 100%;
   padding: 0 0.3rem;
 }
+.securityphone_item_b{
+  text-align: right;
+  color: #2f76ec;
+  padding: 0;
+  padding-top: 0.1rem;
+  cursor: pointer;
+}
 .securityphone_itemborder{
   width: 100%;
   height: 0.25rem;
@@ -1628,14 +1928,14 @@ export default {
 }
 .securityphone_text1{
   margin-top: 0.18rem;
-  height: 17px;
+  min-height: 17px;
   color: #333;
   font-size: 18px;
   text-overflow: ellipsis;
 }
 .securityphone_text2{
   font-size: 14px;
-  height: 12px;
+  min-height: 12px;
   color: #888;
   margin-top: 0.06rem;
 }
@@ -1703,6 +2003,7 @@ export default {
 	font-weight: normal;
 	font-stretch: normal;
 	letter-spacing: 0px;
+  cursor: pointer;
 }
 .bindphone_main{
   width: 100%;
@@ -1748,6 +2049,7 @@ export default {
   height: 0.18rem;
   line-height: 0.18rem;
   color: #fff;
+  cursor: pointer;
   font-size: 14px;
   background-color: #2f76ec;
 	border-radius: 4px;
@@ -1822,6 +2124,23 @@ export default {
   top: 50%;
   transform: translateY(-50%);
   right: 0.08rem;
+}
+
+.pool{
+  min-width: 100px;
+  display: none;
+  position: absolute;
+  right:50%;
+  top: 6%;
+  padding-left: 24px;
+  transform: translate(50%,50%);
+  font-size: 12px;
+}
+.poolhead{
+  position: relative;
+}
+.poolhead:hover .pool{
+  display: block;
 }
 .isdone{
   width: 0.35rem;

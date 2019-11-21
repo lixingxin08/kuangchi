@@ -2,13 +2,16 @@
   <div class="foo">
     <div class="parent-box">
       <div class="foo-parent-box">
-        <div class="login-box"><img src="../assets/img/bottom_logo.png" alt="">
+        <div class="login-box">
+          <router-link to="/">
+          <img src="../assets/img/bottom_logo.png" alt="">
+          </router-link>
           <!-- <div class="app-download" @mouseover="func(1)" @mouseout="func2(1)" id="app-download">{{$t("m.header.key21")}}</div>
               <div class="QrCode-div"><div class="QrCode-box" id="QrCode-box"> <img src="../assets/img/1560146560.png" alt=""><p style="color: black;margin-top: 5px;">{{$t("m.header.key22")}}</p></div></div> -->
         </div>
         <div class="foo_r">
           <div class="service-box">
-            <h5 style="font-size: 12px;font-weight: bold;color: #fff;opacity: 0.5;padding-bottom: 32px;">SERVICES</h5>
+            <h5 style="font-size: 12px;font-weight: bold;color: #fff;opacity: 0.5;padding-bottom: 32px;">{{$t("m.foo.key1")}}</h5>
             <!--<p class="service-box-p">{{$t("m.header.key17")}}</p>-->
             <p class="service-box-p" style="cursor: pointer">
               <router-link :to="{name:'download',query:{t:4}}">
@@ -21,13 +24,13 @@
               </router-link>
             </p>
             <p class="service-box-p" style="cursor: pointer">
-              <a href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5">
+              <a href="https://kirinminer.waltymall.com/pc/home_0?ver=2.5" target="_blank">
                 {{$t("m.header.key26")}}
               </a>
             </p>
           </div>
           <div class="relation-box">
-            <h5 style="font-size: 12px;font-weight: bold;color: #fff;opacity: 0.5;padding-bottom: 32px">CONTACT US</h5>
+            <h5 style="font-size: 12px;font-weight: bold;color: #fff;opacity: 0.5;padding-bottom: 32px">{{$t("m.foo.key2")}}</h5>
             <p class="relation-box-p">
               <a href="mailto:service@kirinpool.com">E-mail: service@kirinpool.com</a>
             </p>
@@ -45,6 +48,8 @@
             </div>
 
             <p style="font-size: 12px;color: #fff;opacity: 0.6;padding-top: 10px;"> © 2019 www.kirinpool.com. All Rights Reserved.</p>
+               <p style="font-size: 12px;color: #fff;opacity: 0.6;padding-top: 10px;"><a href="http://www.beian.miit.gov.cn" target="_blank">粤ICP备17155526号-3</a> </p>
+
           </div>
         </div>
       </div>
@@ -156,8 +161,11 @@ a:active {
 .service-box,
 .relation-box {
   text-align: left;
+  margin-right: 0.2rem;
 }
-
+.login-box{
+  padding-top: 0.2rem
+}
 .service-box-p a:hover {
   color: #ffffff;
 }
@@ -227,7 +235,7 @@ a:active {
 position: relative;
 }
 .foo_r {
-  width: 2.5rem;
+  min-width: 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

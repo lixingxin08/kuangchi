@@ -1,7 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import "babel-polyfill"
+import './components/common/rem.js'
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap/dist/js/bootstrap.min"
+// import './css/style.css'
 import ElementUI from "element-ui"
 import "element-ui/lib/theme-chalk/index.css"
 import router from './router'
@@ -12,10 +15,14 @@ import i18n from "./i18n/i18n"
 import axios from "axios"
 import global from "./components/Global/Global"
 import Qs from "qs"
-import "babel-polyfill"
 import md5 from "js-md5"
-import './components/common/rem.js'
-import echarts from 'echarts'
+// import echarts from 'echarts'
+let echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/title')
+require('echarts/lib/component/legend')
+require('echarts/lib/component/legendScroll')
 import ajax from './components/common/mixin.js'
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
@@ -26,13 +33,13 @@ Vue.config.productionTip = false;
 Vue.prototype.GLOBAL = global;
 Vue.prototype.md5 = md5;
 Vue.prototype.$ajax = ajax;
-import HappyScroll from 'vue-happy-scroll'
-import 'vue-happy-scroll/docs/happy-scroll.css'
+// import HappyScroll from 'vue-happy-scroll'
+// import 'vue-happy-scroll/docs/happy-scroll.css'
 import Blob from './vendor/Blob'
 import Export2Excel from './vendor/Export2Excel.js'
 import { number } from "echarts/lib/export"
 
-Vue.use(HappyScroll)
+// Vue.use(HappyScroll)
 // axios.defaults.headers.common['Authorization'] = "Bearer " + getCookie("userToken");
 axios.defaults.withCredentials = true;//让ajax携带cookie
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -73,7 +80,6 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
-    console.log(response.data,'response.data.code');
     if (response.data.code === 1068) {
       alert('登录已失效，请重新登录')
       this.$router.push({name:'login'})
@@ -158,7 +164,7 @@ Vue.prototype.vmf = function (str) {
   };
 //校验用户名
 Vue.prototype.verifyUsername = function (str) {
-  var re = /^[a-z][a-z0-9]{6,14}$/;
+  var re = /^[a-z][a-z0-9]{7,15}$/;
   if (re.test(str) !== true) {
     return false;
   } else {
@@ -175,8 +181,18 @@ Vue.prototype.verifyUsername2 = function (str) {
     
   }
 },
+
 Vue.prototype.verifyUsernam3 = function (str) {
   var re = /^[a-z][a-z0-9]{1,15}$/;
+  if (re.test(str) !== true) {
+    return false;
+  } else {
+    return true
+  }
+},
+//1，不能全部是数字2，不能全部是字母3，必须是数字或字母且长度要在8-16位之间
+Vue.prototype.verifyUsername4 = function (str) {
+  var re = /^[a-z][a-z0-9]{7,15}$/;
   if (re.test(str) !== true) {
     return false;
   } else {
@@ -252,16 +268,64 @@ Vue.prototype.changpow = function (val) {
   if (val < Math.pow(num, 3)) {
     val1 = val / Math.pow(num, 2)
     val1 = val1.toFixed(2)
-    return val1 + "M";
+    return val1 + " M";
   } else if (val < Math.pow(num, 4)) {
     val1 = val / Math.pow(num, 3)
     val1 = val1.toFixed(2)
-    return val1 + "G"
+    return val1 + " G"
   } else if (val > Math.pow(num, 4)) {
     val1 = val / Math.pow(num, 4)
     val1 = val1.toFixed(2)
-    return val1 + "T";
+    return val1 + " T";
   }
+}
+//转化M
+Vue.prototype.changpowM = function (val) {
+  val = Number(val)
+  let val1 = new Number()
+  var num = 1024.00;
+    val1 = val / Math.pow(num, 2)
+    val1 = val1.toFixed(2)
+    return val1;
+}
+//转化G
+Vue.prototype.changpowG = function (val) {
+  val = Number(val)
+  let val1 = new Number()
+  var num = 1024.00;
+  if (val < Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(3)
+    return val1
+  } else if (val < Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(2)
+    return val1
+  } else if (val > Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 3)
+    val1 = val1.toFixed(2)
+    return val1
+  }
+
+}
+//转化T
+Vue.prototype.changpowT = function (val) {
+  val = Number(val)
+  let val1 = new Number()
+  var num = 1024.00;
+  if (val < Math.pow(num, 3)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(6)
+    return val1
+  } else if (val < Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(3)
+    return val1 
+  } else if (val > Math.pow(num, 4)) {
+    val1 = val / Math.pow(num, 4)
+    val1 = val1.toFixed(2)
+    return val1 
+  }  
 }
 Vue.prototype.changpow2 = function (val) {
   val = Number(val)

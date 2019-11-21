@@ -17,7 +17,7 @@
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key27")}}</li>
             <li v-show="downloadtype[0]==3" :class="this.switch?'systemActive':''">
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key28")}}</li>
-            <li v-show="downloadtype[0]==4" :class="this.switch?'systemActive':''">
+            <li v-show="downloadtype[0]==4" :class="this.switch?'systemActive':''"  @click="switchBox(4)">
               <span class="el-icon-arrow-right"></span>{{$t("m.download.key38")}}</li>
           </ul>
         </div>
@@ -28,8 +28,8 @@
             <ul class="flex_a_c help_box" v-for="(item,index) in helplist" :key="index" @click="switchBox(index+1)">
               <li class="help_boxli1"><img :src="imgsrc[index]" alt=""></li>
               <li class="flex_a_c help_boxli2">
-                <span class="help_boxli2_t">{{item.center}}</span>
-                <span>{{item.bottom}}</span>
+                <div class="flex_a_c"> <span class="help_boxli2_t">{{item.center}}</span>
+                <span v-if="lang!=='en'">{{item.bottom}}</span></div>           
               </li>
             </ul>
           </div>
@@ -40,19 +40,20 @@
                 <div class="flex_b header-text">
                   <img src="../assets/img/updata.png" width="50">
                   <div class="flex_c down_text">
-                    <span>Updata:</span>
+                    <span>One-clickUpgrading:</span>
                     <span>{{$t("m.account.key91")}}</span>
                   </div>
                 </div>
+                <!--一键升级工具-->
                 <div class="guide-box">
-                  <a href="https://file.kirinpool.com/download/OneClickUpgrading_InstructionManual-v1.zip?attname=">{{$t("m.account.key92")}}</a>
+                  <a href="https://file.kirinpool.com/download/OneClickUpgrading_InstructionManual_20190928_1.zip?attname=OneClickUpgrading_InstructionManual.zip" target="_blank">{{$t("m.account.key92")}}</a>
                 </div>
                 <div class="Download-main">
                   <div class="tool-box">
-                    <a href="https://file.kirinpool.com/download/One-clickUpgrading.exe?attname=" target="">{{$t("m.account.key93")}}</a>
+                    <a  href="https://file.kirinpool.com/download/One-clickUpgrading_20191101_1.exe?attname=One-clickUpgrading-v6-0.exe" target="_blank">{{$t("m.account.key93")}}</a>
                   </div>
                   <div class="tool-box">
-                    <a href="https://file.kirinpool.com/download/One-clickUpgrading.app.zip?attname=" target="">{{$t("m.account.key94")}}</a>
+                    <a href="https://file.kirinpool.com/download/OneClickUpgrading_20191101_1.zip?attname=One-clickUpgrading-v6-0.zip" target="_blank">{{$t("m.account.key94")}}</a>
                   </div>
                 </div>
               </div>
@@ -66,11 +67,17 @@
                 </div>
               </div>
               <div class="guide-box">
-                <a href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=">{{$t("m.download.key34")}}</a>
+                <!-- <a  v-bind:href="'http://file.kirinpool.com/download/zh/FINDMINER.pdf?'+timestamp">{{$t("m.download.key34")}}</a> -->
+                <div v-if="lang=='zh'">
+                <a  href="http://file.kirinpool.com/download/zh/FINDMINER.pdf?attname=FINDMINER.pdf" target="_blank">{{$t("m.download.key34")}}</a>
+                </div>
+                  <div v-if="lang!=='zh'">
+                <a  href="https://file.kirinpool.com/download/en/FINDMINER.pdf?attname=FINDMINER.pdf" target="_blank">{{$t("m.download.key34")}}</a>
+                </div>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=" target="" class="tool-btn">{{$t("m.account.key93")}}</a>
+                  <a  href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname=FINDMINER_1_0_0.zip" target="_blank" class="tool-btn">{{$t("m.account.key93")}}</a>
                 </div>
               </div>
             </div>
@@ -83,14 +90,14 @@
                 </div>
               </div>
               <div class="guide-box">
-                <a href="https://file.kirinpool.com/download/KIRINMINER_InstructionManual-v1.zip?attname=">{{$t("m.download.key30")}}</a>
+                <a  href="https://file.kirinpool.com/download/KIRINMINER_InstructionManual-v3_20191101_1.zip?attname=KIRINMINER_InstructionManual-v3.zip" target="_blank">{{$t("m.download.key30")}}</a>
               </div>
               <div class="Download-main">
                 <div class="tool-box">
-                  <a href="https://file.kirinpool.com/download/KIRINMINER_Install.exe?attname=" target="">{{$t("m.account.key93")}}</a>
+                  <a href="https://file.kirinpool.com/download/KIRINMINER_Install_20191101_1.exe?attname=KIRINMINER_Install.exe" target="_blank">{{$t("m.account.key93")}}</a>
                 </div>
                 <div class="tool-box">
-                  <a href="https://file.kirinpool.com/download/KIRINMINER.dmg?attname=" target="">{{$t("m.account.key94")}}</a>
+                  <a  href="https://file.kirinpool.com/download/KIRINMINER_20191101_1.dmg?attname=KIRINMINER.dmg" target="_blank">{{$t("m.account.key94")}}</a>
                 </div>
               </div>
             </div>
@@ -102,65 +109,229 @@
           <div class="gonggao">
           <el-collapse class="problem_main">
             <el-collapse-item :title="problem_tile[0]" name="1" class="problem_item">
-              <p>{{$t("m.download.key2")}}</p>
+              <p>{{$t("m.FAQ.key2")}}</p>
+              <p>{{$t("m.FAQ.key3")}}</p>
+              <p>{{$t("m.FAQ.key4")}}</p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[1]" name="2" class="problem_item">
-              <p>{{$t("m.download.key4")}}</p>
-              <div>
-                <span style="margin-right: 10px;">{{$t("m.download.key5")}}</span>
-              </div>
-              <p>{{$t("m.download.key37")}}</p>
+              <p>{{$t("m.FAQ.key6")}}</p>
+              <p>{{$t("m.FAQ.key7")}}</p>
+              <p>{{$t("m.FAQ.key8")}}
+                <a href="https://token.im/"  target="_blank"> https://token.im/</a>
+              </p>
+              <p>{{$t("m.FAQ.key9")}}</p>
+              <p v-if="lang=='zh'">{{$t("m.FAQ.key10")}}
+                <a href="https://support.token.im/hc/zh-cn/articles/360008124173" target="_blank"> https://support.token.im/hc/zh-cn/articles/360008124173</a>
+              </p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[2]" name="3" class="problem_item">
-              <p>{{$t("m.download.key10")}}</p>
-              <p>{{$t("m.download.key11")}}
-                <span>{{$t("m.download.key12")}}</span>
-                <a href="http://file.kirinpool.com/download/FINDMINER_1_0_0.zip?attname="> http://file.kirinpool.com/download/FINDMINER</a>
+              <p>{{$t("m.FAQ.key12")}}</p>
+              <p>{{$t("m.FAQ.key13")}}</p>
+              <p>{{$t("m.FAQ.key14")}}
+                <a href="asia.kirinpool.com:5555"  target="_blank"> asia.kirinpool.com:5555</a>
               </p>
-              <p>{{$t("m.download.key13")}}
-                <span>{{$t("m.download.key14")}}</span>
-                <a href="http://file.kirinpool.com/download/KIRINMINER_1_0_0.zip?attname="> http://file.kirinpool.com/download/KIRINMINER</a>
+              <p>{{$t("m.FAQ.key15")}}
+                <a href="asia.kirinpool.com:6666"  target="_blank"> asia.kirinpool.com:6666</a>
+              </p>
+              <p>{{$t("m.FAQ.key16")}}
+                <a href="asia.kirinpool.com:7777"  target="_blank">asia.kirinpool.com:7777</a>
+              </p>
+              <p>{{$t("m.FAQ.key17")}}</p>
+              <p>{{$t("m.FAQ.key18")}}
+                <a href="america.kirinpool.com:5555"  target="_blank">america.kirinpool.com:5555</a>
+              </p>
+              <p>{{$t("m.FAQ.key19")}}
+                <a href="america.kirinpool.com:6666"  target="_blank"> america.kirinpool.com:6666</a>
+              </p>
+              <p>{{$t("m.FAQ.key20")}}
+                <a href="america.kirinpool.com:7777"  target="_blank">america.kirinpool.com:7777</a>
+              </p>
+              <p>{{$t("m.FAQ.key21")}}</p>
+              <p>{{$t("m.FAQ.key22")}}
+                <a href="europe.kirinpool.com:555"  target="_blank">europe.kirinpool.com:5555</a>
+              </p>
+              <p>{{$t("m.FAQ.key23")}}
+                <a href="europe.kirinpool.com:6666"  target="_blank">europe.kirinpool.com:6666</a>
+              </p>
+              <p>{{$t("m.FAQ.key24")}}
+                <a href="europe.kirinpool.com:7777"  target="_blank">europe.kirinpool.com:7777</a>
+              </p>
+              <p>{{$t("m.FAQ.key25")}}</p>
+              <p>{{$t("m.FAQ.key26")}}
+                <a href="australia.kirinpool.com:5555"  target="_blank">australia.kirinpool.com:5555</a>
+              </p>
+              <p>{{$t("m.FAQ.key27")}}
+                <a href="australia.kirinpool.com:6666"  target="_blank">australia.kirinpool.com:6666</a>
+              </p>
+              <p>{{$t("m.FAQ.key28")}}
+                <a href="australia.kirinpool.com:7777"  target="_blank">australia.kirinpool.com:7777</a>
               </p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[3]" name="4" class="problem_item">
-              <p>{{$t("m.download.key16")}}</p>
-              <p>www.kirinpool.com:5555 </p>
-              <p>www.kirinpool.com:6666</p>
-              <p>www.kirinpool.com:7777</p>
+              <p>{{$t("m.FAQ.key30")}}</p>
+              <p>{{$t("m.FAQ.key31")}}</p>
+              <p>{{$t("m.FAQ.key32")}}</p>
+              <p>{{$t("m.FAQ.key33")}}</p>
+              <p>{{$t("m.FAQ.key34")}}</p>
+              <p>{{$t("m.FAQ.key35")}}</p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[4]" name="5" class="problem_item">
-              <p>{{$t("m.download.key18")}}</p>
+              <p>{{$t("m.FAQ.key37")}}</p>
+              <p>{{$t("m.FAQ.key38")}}</p>
+              <p>{{$t("m.FAQ.key39")}}</p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[5]" name="6" class="problem_item">
-              <p>{{$t("m.download.key20")}}</p>
-              <p>{{$t("m.download.key21")}}</p>
-              <p>{{$t("m.download.key22")}}</p>
-              <p>{{$t("m.download.key23")}}</p>
+              <p>{{$t("m.FAQ.key41")}}</p>
+              <p>{{$t("m.FAQ.key42")}}</p>
             </el-collapse-item>
             <el-collapse-item :title="problem_tile[6]" name="7" class="problem_item">
-              <p>{{$t("m.download.key25")}}</p>
-              <p>{{$t("m.download.key26")}}</p>
+              <p>{{$t("m.FAQ.key44")}}</p>
+            </el-collapse-item>
+             <el-collapse-item :title="problem_tile[7]" name="8" class="problem_item">
+              <p>{{$t("m.FAQ.key46")}}</p>
+              <p>{{$t("m.FAQ.key47")}}</p>
+              <p>{{$t("m.FAQ.key48")}}</p>
+              <p>{{$t("m.FAQ.key49")}}</p>
+              <p>
+                <a href="asia.kirinpool.com:5555"  target="_blank">{{$t("m.FAQ.key50")}}</a>
+              </p>
+              <p>
+                <a href="asia.kirinpool.com:6666"  target="_blank">{{$t("m.FAQ.key51")}}</a>
+              </p>
+              <p>
+                <a href="asia.kirinpool.com:7777"  target="_blank">{{$t("m.FAQ.key52")}}</a>
+              </p>
+              <P>{{$t("m.FAQ.key53")}}</P>
+            </el-collapse-item>
+             <el-collapse-item :title="problem_tile[8]" name="9" class="problem_item">
+              <p>{{$t("m.FAQ.key55")}}</p>
+              <p>{{$t("m.FAQ.key56")}}</p>
+            </el-collapse-item>
+              <el-collapse-item :title="problem_tile[9]" name="10" class="problem_item">
+              <p>{{$t("m.FAQ.key108")}}</p>
+              <p>{{$t("m.FAQ.key109")}}</p>
+               <p>{{$t("m.FAQ.key110")}}</p>
+            </el-collapse-item>
+              <el-collapse-item :title="problem_tile[10]" name="11" class="problem_item">
+              <p>{{$t("m.FAQ.key112")}}</p>
+              <p>{{$t("m.FAQ.key113")}}</p>
+               <p>{{$t("m.FAQ.key114")}}</p>
             </el-collapse-item>
           </el-collapse>
           </div>
         </div>
         <!-- 矿池公告 -->
         <div class="main-box__content main-box-right1" v-show="this.downloadtype[0]==4">
-          <div class="gonggao">
+          <div class="Upgrade" v-if="Upgradeid==0">
+            <div class="flex_b Upgrade_item" v-for="(item,index) in Upgrade_list[0]" :key="index" @click="selectUpgrade(index+1)">
+              <div class="Upgrade_item_l">
+                   <div class="Upgrade_item_lt"> {{Upgrade_list[2][index]}}</div>
+                   <div class="Upgrade_item_lb">{{item}}</div>
+              </div>
+              <div class="Upgrade_item_r">
+               {{Upgrade_list[1][index]}}
+                <div class="Upgrade_item_rb">{{$t("m.upgrade.key19")}}></div>
+              </div>
+             
+            </div>
+          </div>
+          <div class="gonggao minheight" v-if="Upgradeid==1">
+            <div class="dialogCon">
+              <div class="dialogTitle" style="text-align:center">{{$t("m.upgrade.key1")}}</div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key2")}}</strong></p>
+               </div>  
+              <div class="dialogTable"> 
+                <p>{{$t("m.upgrade.key26")}}</p>
+              </div> 
+                <div class="dialogTable">
+                <p><strong>{{$t("m.account.key109")}}</strong></p>
+                <p>{{$t("m.account.key110")}}</p>
+                <p>{{$t("m.account.key111")}}</p>
+              </div>  
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key27")}}</strong></p>
+                <p><strong>{{$t("m.upgrade.key28")}}</strong></p>
+              </div>
+            </div>
+          </div>              
+          <div class="gonggao minheight" v-if="Upgradeid==2">
+            <div class="dialogCon">
+              <div class="dialogTitle" style="text-align:center">{{$t("m.upgrade.key1")}}</div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key2")}}</strong></p>
+               </div>  
+              <div class="dialogTable"> 
+                <p>{{$t("m.upgrade.key22")}}</p>
+                 <p>{{$t("m.upgrade.key23")}}</p>
+              </div> 
+                <div class="dialogTable">
+                <p><strong>{{$t("m.account.key109")}}</strong></p>
+                <p>{{$t("m.account.key110")}}</p>
+                <p>{{$t("m.account.key111")}}</p>
+              </div>  
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key15")}}</strong></p>
+                <p><strong>{{$t("m.upgrade.key24")}}</strong></p>
+              </div>
+            </div>
+          </div>          
+          <div class="gonggao minheight" v-if="Upgradeid==3">
+            <div class="dialogCon">
+              <div class="dialogTitle" style="text-align:center">{{$t("m.upgrade.key1")}}</div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key2")}}</strong></p>
+               </div>  
+              <div class="dialogTable"> 
+                <p>{{$t("m.upgrade.key3")}}</p>
+              </div>  
+               <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key4")}}</strong></p>
+                <p>{{$t("m.upgrade.key5")}}</p>
+                <p>{{$t("m.upgrade.key6")}}</p>
+              </div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key7")}}</strong></p>
+                <p>{{$t("m.upgrade.key8")}}</p>
+                <p>{{$t("m.upgrade.key9")}}</p>
+                 <p>{{$t("m.upgrade.key10")}}</p>
+                <p>{{$t("m.upgrade.key11")}}</p>
+              </div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key12")}}</strong></p>
+                <p>{{$t("m.upgrade.key13")}}</p>
+                 <p>{{$t("m.upgrade.key14")}}</p>
+              </div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.upgrade.key15")}}</strong></p>
+                <p><strong>{{$t("m.upgrade.key16")}}</strong></p>
+              </div>
+            </div>
+          </div>  
+                <div class="gonggao" v-if="Upgradeid==4">
             <div class="dialogCon">
               <div class="dialogTitle" style="text-align:center">{{$t("m.account.key101")}}</div>
               <div class="dialogTable">
-                <p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{$t("m.account.key102")}}</p>
+                <p><strong>{{$t("m.account.key102")}}</strong></p>
+               </div>  
+              <div class="dialogTable"> 
                 <p>{{$t("m.account.key103")}}</p>
-                <p>{{$t("m.account.key104")}}</p>
+              </div>  
+               <div class="dialogTable">
+                <p><strong>{{$t("m.account.key104")}}</strong></p>
                 <p>{{$t("m.account.key105")}}</p>
                 <p>{{$t("m.account.key106")}}</p>
                 <p>{{$t("m.account.key107")}}</p>
                 <p>{{$t("m.account.key108")}}</p>
               </div>
-              <div class="dialogFoot">
-                <p>{{$t("m.account.key109")}}</p>
-                <p style="text-align:right">2019-09-24</p>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.account.key109")}}</strong></p>
+                <p>{{$t("m.account.key110")}}</p>
+                <p>{{$t("m.account.key111")}}</p>
+              </div>
+              <div class="dialogTable">
+                <p><strong>{{$t("m.account.key112")}}</strong></p>
+                <p><strong>{{$t("m.account.key113")}}</strong></p>
               </div>
             </div>
           </div>
@@ -190,12 +361,18 @@ export default {
       switch: false,
       downloadtype: [1],
       imgsrc: [img1, img2, img3],
+      Upgradeid:0,
+      lang:'zh',
+      Upgrade_list:[[this.$t("m.upgrade.key26"),this.$t("m.upgrade.key22"),this.$t("m.upgrade.key3"),this.$t("m.account.key103")],
+      [this.$t("m.upgrade.key28"),this.$t("m.upgrade.key24"),this.$t("m.upgrade.key16"),this.$t("m.upgrade.key18")],
+      [this.$t("m.upgrade.key31"),this.$t("m.upgrade.key30"),this.$t("m.upgrade.key1"),this.$t("m.account.key101")]],
       helplist: [
         { top: "ICON", center: this.$t("m.header.key28"), bottom: this.$t("m.download.key40") },
         { top: "ICON", center: this.$t("m.header.key18"), bottom: this.$t("m.download.key41") },
         { top: "ICON", center: this.$t("m.download.key38"), bottom: this.$t("m.download.key39") }],
-      problem_tile: [this.$t("m.download.key1"), this.$t("m.download.key3"), this.$t("m.download.key9"), this.$t("m.download.key15"), this.$t("m.download.key17")
-        , this.$t("m.download.key19"), this.$t("m.download.key24")]
+      problem_tile: [this.$t("m.FAQ.key1"), this.$t("m.FAQ.key5"), this.$t("m.FAQ.key11"), this.$t("m.FAQ.key29"), this.$t("m.FAQ.key36")
+        , this.$t("m.FAQ.key40"), this.$t("m.FAQ.key43"), this.$t("m.FAQ.key45"), this.$t("m.FAQ.key54"),this.$t("m.FAQ.key107"),this.$t("m.FAQ.key111")],
+        timestamp:Date.parse(new Date())
     }
   },
   props: {
@@ -208,6 +385,13 @@ export default {
   },
   created() {
     console.log(localStorage.getItem('to_down2'))
+    if (localStorage.getItem('lang')=='zh') {
+      this.lang='zh'
+    }else if(localStorage.getItem('lang')=='en'){
+       this.lang='en'
+    }else if(localStorage.getItem('lang')=='ko'){
+       this.lang='ko'
+    }
     if (localStorage.getItem('to_down2')) {
       this.$set(this.downloadtype, 0, localStorage.getItem('to_down2'))
       localStorage.removeItem('to_down2')
@@ -215,7 +399,7 @@ export default {
   },
   methods: {
     switchBox(index) {
-      console.log(index)
+     this.Upgradeid=0
       if (index == 0) {
         this.switch = false
         // this.downloadtype[0] = 1
@@ -237,7 +421,9 @@ export default {
         return
       }
     },
-
+      selectUpgrade(id){
+        this.Upgradeid=id
+      },
   },
   watch: {
     '$route'(to, from) {
@@ -270,9 +456,11 @@ ul {
 li {
   /*display: inline-block;*/
 }
-
+.minheight{
+  min-width: 2.9rem;
+}
 .color1 {
-  color: rgba(51, 51, 255, 1)
+  color: #2e73e8;
 }
 
 .problem_item {
@@ -308,7 +496,42 @@ li {
 .gonggao {
   /* min-height: 2.9rem; */
 }
+.Upgrade{
+  padding: 0 0.15rem;
+}
+.Upgrade_item{
+  min-height: 0.65rem;
+  padding: 0.1rem 0;
+  border-bottom: 1px solid #d5d8dc;
 
+}
+.Upgrade_item_l{
+    margin-right: 0.88rem;
+       cursor: pointer;
+}
+.Upgrade_item_r{
+  min-width:130px ;
+  position: relative;
+     cursor: pointer;
+}
+.Upgrade_item_rb{
+  position: absolute;
+  bottom: -0.2rem;
+  color: #2e73e8;
+  cursor: pointer;
+}
+.Upgrade_item_lt{
+  font-family: MicrosoftYaHei-Bold;
+	font-size: 16px;
+	font-weight: 600;
+     line-height: 35px;
+	font-stretch: normal;
+	letter-spacing: 0px;
+	color: #2c3e50;
+}
+.Upgrade_item_lb{
+   line-height: 35px;
+}
 .problem_main {}
 
 
@@ -322,11 +545,11 @@ li {
 
 .help_boxli1{
   width: 80%;
-  padding-bottom: 40px;
+  padding-bottom: 0.2rem;
   border-bottom: 1px dashed #dddddd
 }
 .dialogTable{
-  padding: 20px 0px;
+  padding: 5px 0px;
 }
 .dialogTable p{
   line-height: 30px;
@@ -334,10 +557,13 @@ li {
 .dialogTitle{
   font-size: 16px;
   text-align: center;
-  font-weight: 600
+  font-weight: 600;
+  height: 0.4rem;
+  line-height: 0.4rem;
+  border-bottom: 1px solid #d5d8dc;
 }
 .dialogCon{
-  padding: 0px 60px;
+  padding: 0px 0.5rem;
 }
 
 
@@ -715,7 +941,7 @@ li {
 }
 
 .main-box__bg-1 {
-  margin-top: 0.4rem;
+  margin-top: 0.2rem;
   width: 100%;
   text-align: center;
   display: flex;
@@ -755,7 +981,7 @@ li {
 }
 
 .main-box-left_title:hover {
-  color: rgb(0, 0, 255);
+  color: #2e73e8;
 }
 
 .main-box-left-1 ul .systemActive {
@@ -787,7 +1013,7 @@ li {
 
 .help_main {
   width: 100%;
-  min-height: 2.9rem;
+  min-height: 2.5rem;
   display: flex;
   justify-content: space-around;
   align-items: flex-start;
@@ -799,12 +1025,15 @@ li {
   margin-top: 0.2rem;
   background-color: #ffffff;
   border-radius: 4px;
-  border: solid 1px #2e73e8;
+  border: solid 1px #e5e5e5;
 }
-
+.help_box:hover{
+ border: solid 1px #2e73e8;
+}
 .help_boxli2 {
   line-height: 0.17rem;
    font-size: 14px;
+   height: 0.75rem;
    cursor: pointer;
 }
 

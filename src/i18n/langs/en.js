@@ -1,1255 +1,798 @@
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98
-99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
-207
-208
-209
-210
-211
-212
-213
-214
-215
-216
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228
-229
-230
-231
-232
-233
-234
-235
-236
-237
-238
-239
-240
-241
-242
-243
-244
-245
-246
-247
-248
-249
-250
-251
-252
-253
-254
-255
-256
-257
-258
-259
-260
-261
-262
-263
-264
-265
-266
-267
-268
-269
-270
-271
-272
-273
-274
-275
-276
-277
-278
-279
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289
-290
-291
-292
-293
-294
-295
-296
-297
-298
-299
-300
-301
-302
-303
-304
-305
-306
-307
-308
-309
-310
-311
-312
-313
-314
-315
-316
-317
-318
-319
-320
-321
-322
-323
-324
-325
-326
-327
-328
-329
-330
-331
-332
-333
-334
-335
-336
-337
-338
-339
-340
-341
-342
-343
-344
-345
-346
-347
-348
-349
-350
-351
-352
-353
-354
-355
-356
-357
-358
-359
-360
-361
-362
-363
-364
-365
-366
-367
-368
-369
-370
-371
-372
-373
-374
-375
-376
-377
-378
-379
-380
-381
-382
-383
-384
-385
-386
-387
-388
-389
-390
-391
-392
-393
-394
-395
-396
-397
-398
-399
-400
-401
-402
-403
-404
-405
-406
-407
-408
-409
-410
-411
-412
-413
-414
-415
-416
-417
-418
-419
-420
-421
-422
-423
-424
-425
-426
-427
-428
-429
-430
-431
-432
-433
-434
-435
-436
-437
-438
-439
-440
-441
-442
-443
-444
-445
-446
-447
-448
-449
-450
-451
-452
-453
-454
-455
-456
-457
-458
-459
-460
-461
-462
-463
-464
-465
-466
-467
-468
-469
-470
-471
-472
-473
-474
-475
-476
-477
-478
-479
-480
-481
-482
-483
-484
-485
-486
-487
-488
-489
-490
-491
-492
-493
-494
-495
-496
-497
-498
-499
-500
-501
-502
-503
-504
-505
-506
-507
-508
-509
-510
-511
-512
-513
-514
-515
-516
-517
-518
-519
-520
-521
-522
-523
-524
-525
-526
-527
-528
-529
-530
-531
-532
-533
-534
-535
-536
-537
-538
-539
-540
-541
-542
-543
-544
-545
-546
-547
-548
-549
-550
-551
-552
-553
-554
-555
-556
-557
-558
-559
-560
-561
-562
-563
-564
-565
-566
-567
-568
-569
-570
-571
-572
-573
-574
-575
-576
-577
-578
-579
-580
-581
-582
-583
-584
-585
-586
-587
-588
-589
-590
-591
-592
-593
-594
-595
-596
-597
-598
-599
-600
-601
-602
-603
-604
-605
-606
-607
-608
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
-619
-620
-621
-622
-623
-624
-625
-626
-627
-628
 import enLocale from "element-ui/lib/locale/lang/en"
 const en = {
-  m: {
-    key: "Network Connection Error",
-    key2: "Phone number format error",
-    key3: "Email format error",
-    key4: "Network timeout",
-    key5: "Enter 6-16 character old asset password，",
-    key6: "Enter 6-16 character old asset password，",
-    key7: "Enter 6-16 character asset password，",
-    key8: "Enter 6-16 character old login password，",
-    key9: "Enter 6-16 character new login password，",
-    key10: "Please bind Google Authenticator first",
-    key11: "Enter 6-16 character login password，",
-    key12: "Must contain digits and letters",
-    key13: "Password (6–16 numbers and digits)",
-    key14: "Phone numbers of the selected country are currently not supported",
-    main: {
-      key1: "Get code",
-      key2: "Retry",
-      key3: "Please log in first",
-      key4: "Please log in first"
+  m:  {
+      key:  "Network connection error",
+      key2:  "Wrong phone format",
+      key3:  "Wrong email format",
+      key4:  "Network timeout",
+      key5:  "Enter old asset password (6-16 ",
+      key6:  "Enter new asset password (6-16 ",
+      key7:  "Enter asset password (6-16 ",
+      key8:  "Enter old login password (6-16 ",
+      key9:  "Enter new login password (6-16 ",
+      key10:  "Please bind Google verification first",
+      key11:  "Enter login password (6-16 ",
+      key12:  "digits and letters)",
+      key13:  "Enter password (6-16 digits and English letters)",
+      key14:  "Country not supported",
+      key15:  "",
+      main:  {
+        key1:  "Get Code",
+        key2:  "Retry",
+        key3:  "Failed to log in, please log in again",
+        key4:  "Please log in first"
+      },
+      header:  {
+        key1:  "Online",
+        key2:  "Pool Hash Rate",
+        key3:  "Difficulty",
+        key4:  "Height",
+        key5:  "Latest Block",
+        key6:  "Fee",
+        key7:  "Home",
+        key8:  "My Miner",
+        key9:  "Payments",
+        key10:  "Wallet",
+        key11:  "Help Center",
+        key12:  "Sign up",
+        key13:  "Log out",
+        key14:  " s ago",
+        key15:  " m ago",
+        key16:  " h ago",
+        key17:  "WTC Mining Tutorial",
+        key18:  "FAQ",
+        key19:  "WTC Mining Tools",
+        key20:  "Download",
+        key21:  "Client",
+        key22:  "Scan to download",
+        key23:  "Home",
+        key24:  "Please open in browser",
+        key25:  "iOS is currently not supported",
+        key26:  "Miner Mall",
+        key27:  "My Rewards",
+        key28:  "Tool Download",
+        key29:  "FAQ",
+        key30: "Account",
+        key31: "Account",
+        key32: "Sub-accounts",
+        key33: "Logged in as",
+  
+      },
+      home:  {
+        key1:  "Log in",
+        key2:  "Statistics",
+        key3:  "Height",
+        key4:  "Miner",
+        key5:  "Time",
+        key6:  "Reward (WTC)",
+        key7:  "Latest Block",
+        key8:  "Search by Block / Tx Hash / Address",
+        key9:  "",
+        key10:  " result(s) found for key word ",
+        key11:  "Hash",
+        key12:  "Next",
+        key13:  "Previous",
+        key14:  "Transactions",
+        key15:  "Broadcaster",
+        key16:  "Block Hash",
+        key17:  "Difficulty",
+        key18:  "Size",
+        key19:  "Block Reward",
+        key20:  "Transaction Reward",
+        key21:  "Miner",
+        key22:  "Sender",
+        key23:  "Receiver",
+        key24:  "Gas Used",
+        key25:  "Amount",
+        key26:  "Transactions",
+        key27:  "Operation",
+        key28:  "Address",
+        key29:  "In/Out",
+        key30:  "No data",
+        key31:  "Transactions",
+        key32:  "Mined Blocks",
+        key33:  "More",
+        key34:  "KIRINPOOL mining mode change from SOLO to PPLNS",
+        key35:  "Transaction Reward",
+        key36: "Block",
+        key37: "Tx Hash"
+      },
+      myltc:  {
+        key1:  "Miner Configuration",
+        key2:  "After configuring the wallet address, download the configuration software:  FindMiner (LAN Miner Search Tool). Download address:  ",
+        key3:  "Power on the miner, connect it to LAN and log in to the miner management webpage.",
+        key4:  "Configure pool and user name. Worker indicates different miners of one user. When bulk configured, a sequence number is added. E.g. if you choose ‘miner’, your workers will be miner001, miner002, …, miner100 (8-16 digits and letters).",
+        key5:  "Suggestion:  First configure sub-account wallet address and then pool and user name.",
+        key6:  "Enjoy the rewards. Configuration is complete; everything is ready. After a while, your miner(s) will be automatically added to the pool website.",
+        key7:  "KIRINPOOL Servers",
+        key8:  "KIRINPOOL has 3 servers: ",
+        key9:  "Pool Fee",
+        key10:  "Others",
+  
+      key11:  "",
+      key12:  "",
     },
-    header: {
-      key1: "Online",
-      key2: "Pool Hash Power",
-      key3: "Difficulty",
-      key4: "Height",
-      key5: "Latest Block",
-      key6: "Pool Fee",
-      key7: "Home",
-      key8: "My Miner",
-      key9: "Paid",
-      key10: "Wallet",
-      key11: "Help center",
-      key12: "Sign up",
-      key13: "Log out",
-      key14: "s ago",
-      key15: "m ago",
-      key16: "h ago",
-      key17: "WTC Mining Tutorial",
-      key18: "FAQ",
-      key19: "WTC mining tool",
-      key20: "Download",
-      key21: "Download client",
-      key22: "Scan code to download",
-      key23: "Home",
-      key24: "Please use browser to open",
-      key25: "Do not support ios download",
-      key26: "Miner Mall",
-      key27: "My Benefits",
-      key28: "Tool Download",
-      key29: "Common problem",
-      key30: "Personal Center",
-      key31: "Account number",
-      key32: "Subuser settings",
-        key33:"Current login",
+    noson:  {
+            key1: "Create Sub-account",
+            key2: "Before configuring the miner(s), you need to set up a sub-account to manage your miner(s) (worker(s)) first. One email (phone number) can have up to 10 sub-accounts.",
+            key3: "Create Sub-account",
+            key4: "After you created a sub-account, you can connect your miner(s) to the pool",
+            key5: "Enjoy the rewards. Configuration is complete; everything is ready. After a while, your miner(s) will be automatically added to the pool website."
+          },
+          myprofit:  {
+            key1:  "Today's Earnings",
+            key2:  "Total Rewards",
+            key3:  "Pending",
+            key4:  "Total Paid",
+            key5:  "Rewards",
+            key6:  "Payments",
+            key7:  "Time",
+            key8:  "Amount",
+            key9:  "Daily Hash Rate",
+            key10:  "Type",
+            key11:  "Payment Status",
+            key12:  "Payment Time",
+            key13:  "Settlement Time",
+            key14:  "Amount",
+            key15:  "Wallet Address",
+            key16:  "Tx Hash",
+            key17:  "All",
+            key18:  "Export",
+            key19:  "Export",
+            key20:  "Tx Hash",
+            key21:  "Last Week",
+            key22:  "Last Month",
+          },
+          myMill:  {
+            key1:  "Total Blocks",
+            key2:  "Mature Blocks",
+            key3:  "Available",
+            key4:  "Withdrawn",
+            key5:  "Miner",
+            key6:  "Rewards",
+            key7:  "Miner",
+            key8:  "Hash Rate",
+            key9:  "Latest Block",
+            key10:  "Time",
+            key11:  "Received Rewards",
+            key13:  "No data, please try again later",
+            key14:  "No devices connected, please add miners",
+            key25:  "Block History",
+            key26:  "Height",
+            key27:  "Tx Hash",
+            key28:  "Time",
+            key29:  "Miner Hash Rate",
+            key30:  "Current Hash Rate",
+            key31:  "30 m Hash Rate",
+            key32:  "24 h Hash Rate",
+            key33:  "Hash Rate Curve",
+            key34:  "H",
+            key35:  "D",
+            key36:  "Latest Response",
+            key37:  "Daily Hash Rate"
+          },
+          sonset: {
+            key1: "Sub-account Management",
+            key2: "Add Sub-account",
+            key3: "Sub-account",
+            key4: "Creation Time",
+            key5: "Wallet Address",
+            key6: "Operations",
+            key7: "Edit",
+            key8: "Delete",
+            key9: "Sub-account name must be 8-16 digits and lowercase letters and cannot start with a digit.",
+            key10: "Asset Password",
+            key11: "Enter asset password",
+            key12: "Google verification code",
+            key13: "Enter Google verification code" ,
+            key14: "Miners",
+            key15: "Cancel",
+            key16: "Enter or paste address",
+            key17: "Enter sub-account name"
+          },
+          wallet:  {
+            key:  "Yesterday’s Earnings",
+            key2:  "Total Rewards",
+            key3:  "Rate",
+            key4:  "Wallet Settings",
+            key5:  "Wallet Address",
+            key6:  "Withdrawal Address",
+            key7:  "Set",
+            key8:  "Edit",
+            key9:  "Withdrawal History",
+            key10:  "",
+            key11:  "Close",
+            key12:  "View",
+            key13:  "Withdrawal",
+            key14:  "Time",
+            key15:  "Set wallet address",
+            key16:  "Enter asset password",
+            key17:  "Enter wallet address",
+            key18:  "Enter Google verification code",
+            key19:  "Confirm",
+            key22:  "Balance",
+            key23:  "Asset Password",
+            key24:  "Password for withdrawal",
+            key25:  "Set asset password",
+            key26:  "Confirm asset password",
+            key27:  "Change asset password",
+            key28:  "Enter old asset password",
+            key29:  "Enter new asset password",
+            key30:  "Confirm new asset password",
+            key31:  "Passwords do not match",
+            key32:  "Asset password changed successfully",
+            key33:  "Asset password set successfully",
+            key34:  "Wrong Google verification code",
+            key35:  "Wrong old asset password",
+            key36:  "Wallet address set successfully",
+            key37:  "Please set asset password first",
+            key38:  "Wrong asset password",
+            key39:  "No data",
+            key40:  "Passwords do not match",
+            key41:  "Wrong wallet address",
+            key42:  "Reset asset password",
+            key43:  "Please set asset password first",
+            key44:  "Verification error",
+      
     },
-    home: {
-      key1: "Log in",
-      key2: "Statistics",
-      key3: "Height",
-      key4: "Miner",
-      key5: "Time",
-      key6: "Reward",
-      key7: "New Blocks",
-      key8: "Please enter block height, wallet address, transaction hash",
-      key9: "We inquired",
-      key10: "Result,Key word",
-      key11: "Hash",
-      key12: "previous",
-      key13: "next",
-      key14: "Number of transactions",
-      key15: "Broadcaster",
-      key16: "Block hash",
-      key17: "difficulty",
-      key18: "Size",
-      key19: "Block income",
-      key20: "Transaction earnings",
-      key21: "Out of Block",
-      key22: "Sender",
-      key23: "Receiver",
-      key24: "Gas used",
-      key25: "Amount",
-      key26: "Quantity of transactions",
-      key27: "operation",
-      key28: "Ordinary address",
-      key29: "In/Out",
-      key30: "No more data yet",
-      key31: "Account transactions",
-      key32: "Digging block statistics",
-      key33: "More",
-      key34: "The settlement mode of current mine pool changed from SOLO mode to PPLNS mode!",
-      key35: "Transaction rewards",
-      key36: "Located block",
-      key37: "Trading hash"
+    setting:  {
+            key1:  "Balance",
+            key2:  "User Settings",
+            key3:  "Login Password",
+            key4:  "Password to log in to KIRINPOOL",
+            key5:  "Change",
+            key6:  "Google verification code",
+            key7:  "Please bind Google verification to transact",
+            key8:  "Bind",
+            key9:  "Set phone number",
+            key10:  "to increase account security",
+            key11:  "Bound Email",
+            key12:  "to increase account security",
+            key13:  "Bound",
+            key14:  "Change login password",
+            key15:  "Enter old password",
+            key16:  "Enter new password",
+            key17:  "Confirm new password",
+            key18:  "Enter Google verification code",
+            key19:  "Confirm",
+            key20:  "Enter email",
+            key21:  "Get Code",
+            key22:  "Enter login password",
+            key23:  "Set Google verification",
+            key24:  "Download and install Google verification or other authentication app on your mobile phone, scan or enter the key manually in the app, and enter the generated dynamic code into the field below",
+            key25:  "Key",
+            key26:  "Enter verification code",
+            key27:  "Change Google verification",
+            key28:  "Enter old Google verification code",
+            key29:  "Enter new Google verification code",
+            key30:  "Enter phone number",
+            key31:  "Change phone number",
+            key32:  "User does not exist, failed to get Google verification key",
+            key33:  "Set successfully",
+            key34:  "Wrong Google verification code",
+            key35:  "Wrong verification code",
+            key36:  "User does not exist",
+            key37:  "Changed successfully",
+            key38:  "Wrong old Google verification code",
+            key39:  "Wrong new Google verification code",
+            key40:  "Email already exists",
+            key41:  "Wrong password",
+            key42:  "Phone already exists",
+            key42_1:  "Email already exists",
+            key43:  "Passwords do not match",
+            key44:  "Password changed successfully",
+            key45:  "Wrong old password",
+            key46:  "Bound",
+            key47:  "Phone or email",
+            key48:  "Enter phone or email",
+            key49:  "Phone not registered",
+            key50:  "Email not registered",
+            key51:  "Enter user name",
+            key52:  "KYC",
+            key53:  "Passed",
+            key54:  "Under Review",
+            key55:  "Pass KYC and get 0.5 WTC",
+            key56:  "User Name",
+            key57:  "Enter Google verification code",
+            key58:  "Set",
+            key59:  "Asset Password",
+            key60:  "Set asset password to transact",
+            key61:  "Enter asset password",
+            key62:  "Confirm asset password",
+            key63:  "Please log in first",
+            key64:  "Failed to retrieve",
+            key65:  "Email not bound",
+            key66:  "Failed to send email verification code",
+            key67:  "Phone not bound",
+            key68:  "Failed to send SMS verification code",
+            key69:  "Enter asset password",
+            key70:  "Please complete all fields",
+            key71:  "User name does not exist",
+            key72:  "Email already exists",
+            key73:  "Failed to send email",
+            key74:  "Phone already exists",
+            key75:  "Phone not bound",
+            key76:  "Email not bound",
+            key77:  "Failed to set",
+            key78:  "Failed to Bound Email",
+            key79:  "Failed to set phone",
+            key80:  "New password cannot be empty",
+            key81:  "Wrong new password format",
+            key82:  "Wrong old password",
+            key83:  "Failed to change",
+            key84:  "Google verification key and dynamic code do not match",
+            key85:  "Enter old asset password",
+            key86:  "Change asset password",
+            key87:  "Enter new asset password",
+            key88:  "Email already exists",
+            key89:  "Not Passed",
+            key90:  "Copy",
+            key91:  "Phone Number",
+            key92:  "Email",
+            key93:  "Google verification not set",
+            key94:  "New and old password cannot be the same",
+            key95:  "Account Security:  ",
+            key96:  "High",
+            key97:  "Medium",
+            key98:  "Low",
+            key99:  "Back"
+          },
+          resetPassword:  {
+            key1:  "Reset Password",
+            key2:  "Phone",
+            key3:  "Email",
+            key4:  "Enter phone number",
+            key5:  "Enter email",
+            key6:  "Enter verigication code",
+            key7:  "Get Code",
+            key8:  "Login Password",
+            key9:  "Confirm password",
+            key10:  "Have an account? Log in",
+            key11:  "Failed to send verification code, please try again later",
+            key12:  "Passwords do not match",
+            key13:  "Password reset successfully",
+            key14:  "Wrong verification code",
+            key15:  "Enter password",
+      
     },
-    myltc: {
-      key1: "You can configure the miners in the following ways",
-      key2: "After configuring the wallet address, download the configuration software: FindMiner, a local area network search tool for mining machines. Download address: http://file.kirinpool.com/download/FINDMINER",
-      key3: "Miners are electrified, connected to the local area network where the miners are located, and logged in to the backstage of the miners.",
-      key4: "Configuration of mine ponds and miners, Worker Miner is called Miner Marking, batch configuration will be extended its number. For example, miner is extended to miner 001, miner 002,... Miner 100 (numbers and letters limited to 8-16)",
-      key5: "Suggestion: First configure the address of the sub-account wallet, then configure the mine and miners.",
-      key6: "Enjoy the benefits. Configuration is complete, everything is ready. After a while, the mine will be automatically added to the mine website.",
-      key7: "WTC Mining Address",
-      key8: "There are three KIRINMINER mine servers, which are:",
-      key9: "Rate standard",
-      key10: "Other",
-      key11: "",
-      key12: "",
+    download:  {
+      key1:  "1. Why do I need a user name during the sign up?",
+      key2:  "User name is a unique name required to connect a miner to the mining pool. KIRINPOOL user name needed during the miner setup is the user name registered in the pool network. When a miner is bound to your account, you can check block production and reward information of the bound miner instantly on the kirinpool platform. Note:  User name set in miner configurations must be the same as the registered account user name.",
+      key3:  "2. What wallet address do I add?",
+      key4:  "There are four common types of wallet addresses:  ERC 20 address, exchange platform address, hardware wallet address and mobile/desktop wallet address.",
+      key5:  "We recommend using mobile wallet APP or trading website wallet, easy to understand, simple and convenient. (Bona fide recommendation, wallet is not related to mine, please choose by yourself)",
+      // key6: "善意推荐，钱包和矿池无关，请自行选择",
+      key7:  "Download the latest wallets here:  ",
+      key8:  "Android:  ",
+      key9:  "3. What software do I need?",
+      key10:  "When the wallet address is set, the next step is to download the mining software.",
+      key11:  "First, you need to download the LAN miner search tool FindMiner ",
+      key12:  "Download link:  ",
+      key13:  "Then, you need the miner management Software KIRINPOOL",
+      key14:  "Download link:  ",
+      key15:  "4. What is pool address?",
+      key16:  "kirinpool server has three pool addresses:  ",
+      key17:  "5. What Worker name do I set?",
+      key18:  "Worker indicates different miners of one user. When bulk configured, a sequence number is added. E.g. if you choose ‘miner’, your Workers will be miner001, miner002, …, miner100 (8-16 digits and letters).",
+      key19:  "6. What do I do if miner does not connect to the pool?",
+      key20:  "Check your network connection: ",
+      key21:  "Open the “run” menu -> input ‘cmd’ -> input ‘ping www.kirinpool.com’ to check the connection. In case of abnormality, you need to fix the local network.",
+      key22:  "Check configurations: ",
+      key23:  "Pool address:  www.kirinpool.com: 5555, www.kirinpool.com: 6666, www.kirinpool.com: 7777. Check the miner connection address, it must not contain ‘http: //’.",
+      key24:  "7. How do I check equipment status and rewards?",
+      key25:  "Open kirinpool.com in your browser, log in and press ‘Miner’ to see the details.",
+      key26:  "",
+      key27:  "Tool Download",
+      key28:  "FAQ",
+      key29:  "Miner Management Software",
+      key30:  "Miner Management Software User Manual",
+      key31:  "LAN Miner Search Tool",
+      key32:  "Tool  Download",
+      // key32_1: "Download tool(Mac)",
+      key33:  "Real-time hash power, farm and miner monitoring anytime and anywhere",
+      key34:  "KIRINPOOL Instruction Manual",
+      key35:  "tools",
+      key36:  "GpuMiner User Manual",
+      key37:  "IMToken is recommended for mobile wallets. Website:  https: //token.im/Note:  IOS needs overseas ID, download and install, open APP to create wallet, must backup mnemonics, sure!",
+      key38:  "Pool Announcements",
+      key39:  "All Announcements",
+      key40:  "Mining Tools Download",
+      key41:  "Routine Questions & Answers"
     },
-    noson: {
-      key1: "New sub-account",
-      key2: "Before you configure the miner, you must have a sub-account for the worker, and up to 10 sub-accounts can be set under a mailbox account.",
-      key3: "To add new sub-accounts ",
-      key4: "When the sub-account is created, you can link the miner to the mine.",
-      key5: "Enjoy the benefits. Configuration is complete, everything is ready. After a while, the miner will automatically be added to the mine site."
+    register:  {
+            key1:  "Reset Password",
+            key2:  "Phone",
+            key3:  "Email",
+            key4:  "Enter phone number",
+            key5:  "Enter email",
+            key6:  "Enter verigication code",
+            key7:  "Get Code",
+            key8:  "Login Password",
+            key9:  "Confirm password",
+            key10:  "Have an account? Log in",
+            key11:  "Failed to send verification code, please try again later",
+            key12:  "Passwords do not match",
+            key13:  "Password reset successfully",
+            key14:  "Wrong verification code",
+            key15:  "Enter password",
+          },
+          register:  {
+            key:  "Sign up",
+            key2:  "Phone",
+            key3:  "Email",
+            key4:  "Enter email",
+            key5:  "Enter user name",
+            key6:  "Enter password",
+            key7:  "Get Code",
+            key8:  "User name must be 8-16 digits and lowercase letters and cannot start with a digit",
+            // key9: "Set login password of 6-16 digits and letters",
+            key10:  "Enter login password of 6-16 digits and letters",
+            key11:  "Confirm password",
+            key14:  "Log in for existing accounts",
+            key15:  "Enter phone number",
+            key16:  "Verification code received",
+            key17:  "Failed to send SMS verification code, please retry",
+            key18:  "Daily SMS request limit reached, please retry tomorrow",
+            key19:  "Passwords do not match",
+            key20:  "Signed up successfully",
+            key21:  "Wrong verification code",
+            key22:  "User name already exists",
+            key23:  "Account (email/phone) already exists",
+            key24:  "Failed to send verification code, please try again later",
+            key25:  "Get verification code first",
+            key26:  "Agree to Terms of Use to sign up",
+            key27:  "I have read and agree",
+            key28:  "Terms of Use",
+      
+      key29:  "KIRINPOOL TERMS OF USE",
+      key30:  "KIRINPOOL Terms of Use Agreement (hereinafter referred to as “this Agreement”) shall set the rights and obligations of the KIRINPOOL user and KIRINPOOL regarding KIRINPOOL menu. By visiting and/or using this website, the user shall accept and agree to all the terms and conditions of this Agreement. KIRINPOOL shall have the right to amend the terms of this Agreement; and the revised agreement shall effectively replace the original agreement once it is published. The user may access the latest agreement at any time.",
+      key31:  "I. Menu",
+      key32:  "1. KIRINPOOL shall use its own system to provide the user community and others with new menu/products based on this product through the Internet and other methods.",
+      key33:  "2. When providing the materials during registration, the user shall agree to: ",
+      key34:  "(1) provide legitimate, true, accurate and detailed personal data;",
+      key35:  "(2) update user information in time if there is any change. If the registration information provided by the user is illegitimate, untrue, inaccurate and not detailed, the user shall bear the corresponding responsibility for consequences; and KIRINPOOL shall reserve the right to terminate the use of KIRINPOOL menu by the user.",
+      key36:  "II. PROVISION, MODIFICATION AND TERMINATION OF Menu",
+      key37:  "1. While accepting KIRINPOOL Terms of Use, the user shall agree to accept all kinds of information menu provided by KIRINPOOL.",
+      key38:  "2. KIRINPOOL shall reserve the right to modify or terminate menu at any time without notifying the user. KIRINPOOL shall have the right to modify or terminate menu without being responsible to the user or any third party with no direct relationship.",
+      key39:  "3. The user may exercise the following rights shall it have objections to the modification of this Agreement or be dissatisfied with KIRINPOOL menu: ",
+      key39_1:  "(1) the right to stop using KIRINPOOL network menu;",
+      key40:  "(2) the right to inform KIRINPOOL about the termination of menu through customer service and other channels. The user’s right to use KIRINPOOL network menu shall terminate immediately upon such notice. In this case, KIRINPOOL shall not be obliged to provide any unprocessed information or incomplete menu to the user or any third party with no direct relationship.",
+      key41:  "III. INFORMATION CONFIDENTIALITY",
+      key42:  "1. The KIRINPOOL user information referred to herein shall mean information that conforms to laws, regulations, relevant provisions and the following scope: ",
+      key43:  "(1) personal information provided to KIRINPOOL by the user during registration;",
+      key44:  "(2) when the user uses KIRINPOOL menu, participates in product activities or visits website pages, KIRINPOOL shall automatically receive and record user browser or mobile client data, including, but not limited to, IP address, information in website Cookie files and web page records required by the user;",
+      key45:  "(3) user personal information legally obtained by KIRINPOOL from business partners;",
+      key46:  "(4) user personal information obtained by other KIRINPOOL through legal channels.",
+      key47:  "2. KIRINPOOL shall not disclose the user’s password, name, mobile phone number and other private information to any third party without legal reasons or user’s prior permission.",
+      key48:  "3. The user’s personal information may be partially or totally disclosed under the following statutory circumstances: ",
+      key49:  "(1) disclosure to the user itself or to other third parties with the consent of the user;",
+      key50:  "(2) disclosure to the third party of the administrative, judicial authorities or other legal provisions in accordance with the relevant provisions of laws and regulations or the requirements of the administrative authorities;",
+      key51:  "(3) other disclosure by KIRINPOOL in accordance with laws, regulations and other relevant provisions.",
+      key52:  "IV. USER RIGHTS",
+      key53:  "1. The user’s user name and password security: ",
+      key54:  "(1) the user shall have the right to choose whether to become a registered user of KIRINPOOL or not. The user who chooses to become a registered user of KIRINPOOL shall be able to create and modify its username by itself. The user name shall abide by relevant laws and regulations and conform to network ethics. User name shall not contain any insult, threat, obscenity, abuse or other violation of the legitimate rights and interests of others;",
+      key55:  "(2) upon the successful registration, the user shall become a registered user of KIRINPOOL. It shall get the user name (user email or mobile phone number) and password. The user shall be responsible for all activities and events that occur after the user name and password are logged into the system. The user shall bear all legal liabilities directly or indirectly caused by the speech and behavior using the user name;",
+      key56:  "(3) the user shall be obliged to keep its KIRINPOOL account, username, password, SMS verification codes and Google verification codes properly. The user shall take full responsibility for the user name, password and Google key security. The user shall be responsible for any legal consequences caused by the leakage of user name, password or Google key due to the user’s own reasons. This product shall not be liable for asset losses caused by the leakage of such information due to user’s own reasons;",
+      key57:  "(4) if the user lost its password, the password may be reset using a link sent to the registered email or using a mobile phone verification code. The user shall inform KIRINPOOL immediately if it finds any illegal use of the user name or other security vulnerabilities.",
+      key58:  "2. The user shall have the right to modify all modifiable information in its personal account and decide whether to provide optional items or not;",
+      key60:  "3. The user shall have the right to participate in all online and offline activities organized and provided by KIRINPOOL;",
+      key61:  "4. The user shall have the right to enjoy all kinds of other menu provided by KIRINPOOL according to the rules on the KIRINPOOL website.",
+      key62:  "V. USER OBLIGATIONS",
+      key63:  "1. This product shall not be used to endanger national security, disclose state secrets and infringe upon the legitimate rights and interests of the society and citizens of the state. This website shall not be used to produce, copy and disseminate the following information: ",
+      key64:  "(1) instigating resistance to and undermining the implementation of the Constitution, legal and administrative regulations;",
+      key65:  "(2) instigating subversion of the state power and overthrowing the socialist system;",
+      key66:  "(3) instigating secession and undermining the unity of the state;",
+      key67:  "(4) instigating national hatred and discrimination, undermining the unity of the nations;",
+      key68:  "(5) fabricating or distorting facts, spreading rumors and disturbing the social order;",
+      key69:  "(6) advocating feudal superstition, obscenity, pornography, gambling, violence, murder, terror and abetting crime;",
+      key70:  "(7) publicly insulting others or fabricating facts to defame others, or carrying out other malicious attacks;",
+      key71:  "(8) damaging the credibility of state authorities;",
+      key72:  "(9) otherwise violating the Constitution and legal and administrative regulations;",
+      key73:  "(10) conducting commercial advertising.",
+      key74:  "2. The user shall not register KIRINPOOL product accounts with ill intent by any means, including but not limited to multiple accounts for profit-making, speculation, cash-taking and award-winning purposes. The user shall not take ownership of other user accounts. If the user violates the above provisions, KIRINPOOL shall have the right to take all necessary direct measures to cancel the benefits gained from the violation and hold the user legally liable through litigation.",
+      key75:  "3. The user shall be forbidden to use KIRINPOOL as a place, platform or medium to engage in illegal activities of any form. Without authorization or permission from KIRINPOOL, the user may not engage in any commercial activities in the name of this product, nor may it use KIRINPOOL as a place, platform or medium for commercial activities of any form.",
+      key76:  "VI. DISCLAIMER",
+      key77:  "1. Due to the particularity of the Internet, KIRINPOOL shall not guarantee that the service will not be interrupted, shall not guarantee the timeliness and security of the service, and shall not bear the responsibility not caused by KIRINPOOL. KIRINPOOL shall strive to enable the user to access and use the product safely, but KIRINPOOL shall not declare or guarantee that the website or its servers do not contain viruses or other potential harmful factors. Therefore, the user should use industry-recognized software to detect and neutralize any viruses in KIRINPOOL download files.",
+      key78:  "2. KIRINPOOL shall not be responsible for the failure to save, modify, delete or store information released by the user. It shall not be responsible for typesetting errors or negligence not caused intentionally by KIRINPOOL, but revised in a timely manner.",
+      key79:  "3. Unless KIRINPOOL explicitly agrees in writing, KIRINPOOL shall not guarantee the accuracy, integrity and reliability of any information content, including but not limited to advertising, obtained by the user in any way from this website (including, but not limited to, via connecting or downloading). KIRINPOOL shall not be responsible for any product, service, information or materials purchased or obtained by the user because of the content information on this website. The user itself shall bear the risk of using the information content of this product.",
+      key80:  "4. KIRINPOOL shall deliver all notices intended for the user through official page announcements, in-site letters, emails, customer service phone calls, mobile phone SMS or regular mail. KIRINPOOL shall not be liable for any prize winning, discounts and other activities or information not obtained through the regular channels of KIRINPOOL.",
+      key81:  "VII. APPLICABLE LAW AND PLACE OF JURISDICTION",
+      key82:  "1. All disputes, claims or other matters arising out of or related to the use of the KIRINPOOL website by the user shall be governed by local law.",
+      key83:  "2. If a dispute arises between the user and KIRINPOOL, it shall first be settled through negotiation in accordance with the principle of good faith. If negotiation fails, it shall be settled by arbitration in Shenzhen Court of International Arbitration.",
+            key84:  "Unable to send SMS to this number",
+            key85:  "Failed to send SMS verification code, please retry",
+      
     },
-    myprofit: {
-      key1: "Earnings Today",
-      key2: "Total income",
-      key3: "To be paid",
-      key4: "Total payment",
-      key5: "Income record",
-      key6: "Payment record",
-      key7: "Revenue time",
-      key8: "Income amount",
-      key9: "Daily arithmetic",
-      key10: "Income type",
-      key11: "Payment status",
-      key12: "Payment time",
-      key13: "Settlement time",
-      key14: "Income amount",
-      key15: "Wallet address",
-      key16: "Trading hash",
-      key17: "whole",
-      key18: "Export earnings records",
-      key19: "Export Payment Records",
-      key20: "Trading hash",
-      key21: "Last week",
-      key22: "Recent January",
+    login:  {
+            key1:  "Log in",
+            key2:  "Phone",
+            key3:  "Email",
+            key4:  "Enter phone number",
+            key5:  "Enter email",
+            key6:  "Forgot password?",
+            key7:  "No account yet?",
+            key8:  "Sign up",
+            key9:  "Login password of 6-16 digits and letters",
+            key10:  "Enter password",
+            key11:  "Logging in...",
+            key12:  "User does not exist, please sign up first",
+            key13:  "Wrong password",
+            key14:  "Wrong password entered 5 times. Please try again later or retrieve password",      
     },
-    myMill: {
-      key1: "Mined blocks",
-      key2: "Immature",
-      key3: "Pending",
-      key4: "Paid",
-      key5: "Miner",
-      key6: "Earnings",
-      key7: "Miner",
-      key8: "Hash Power",
-      key9: "Latest Block Time",
-      key10: "Time",
-      key11: "Earnings",
-      key13: "No data yet, please check again later",
-      key14: "No accessible equipment, please add a miner first",
-      key15: "Installation：",
-      key16: "1. Download wtcminer tools",
-      key17: "2. Confirm your computer graphics card type:AMD or Nvidia (RX580 graphics card mining is recommended) ",
-      key18: "* right click on My Computer - Properties - Device management Devices - Display Adapters - right click Card Properties - C",
-      key19: "Manufacturer: Advanced Micro Devices(AMD)/Nvidia",
-      key20: "3. Configure the address of mining wallet\tE.g: A card: right click to edit strart_amd_mining. bat ",
-      key21: "Edit command:{.\\wtcminer\\wtcminer.exe -G -P stratum1+TCP://0 x6c290094b38faa11c57304f4eaf76eec7f5dd022.minername@",
-      key22: "www.kirinpoo.com:8008 --OpenCL-platform 1}\n" +
-      "[X6c290094b38faa11c57304f4eaf76eec7f5dd022 ] : ",
-      key23: " replace your wallet address[minername] : mining rigs name identification-customization[--OpenCL-platform] : Use OpenCL platform 0, 1....",
-      key24: "4. Save settings。",
-      key25: "Blocks",
-      key26: "Height",
-      key27: "Tx ID",
-      key28: "Time",
-      key29: "Mine computer power",
-      key30: "Real-time computing",
-      key31: "30-minute arithmetic",
-      key32: "24-hour arithmetic",
-      key33: "Total Force Curve",
-      key34: "hour",
-      key35: "date",
-      key36: "Latest submission time",
-      key37: "Daily arithmetic"
+    account:  {
+      key1:  'Platform information error',
+      key2:  'Login expired, please login again',
+      key3:  'Search by Block / Transaction / Address',
+      key4:  'Daily login error limit exceeded',
+      key5:  'Failed to log in',
+      key6:  'WTC not yet paid to the miner',
+      key7:  'All WTC paid to the miner',
+      key8:  'WTC mined today',
+      key9:  "Pending + Total Paid",
+      key10:  'WTC not yet paid to the miner',
+      key11:  "Not paid",
+      key12:  "Paid",
+      key13:  "Block mining",
+      key14:  "Account",
+      key15:  "Phone/Email Binding",
+      key16:  "Secure phone number",
+      key17:  "Secure phone number is used for logging in, password resetting or other verification",
+      key18:  "Change",
+      key19:  "No email address is bound",
+      key20:  "Bound email is used for verification",
+      key21:  "Security",
+      key22:  "Please change your password regularly. A highly secure password can protect your account better",
+      key23:  "For account security, please set an asset password",
+      key24:  "For account security, please bind Google verification",
+      key25:  "Completed",
+      key26:  "Asset Password - Not set",
+      key27:  "Change phone number",
+      key28:  "Bound phone number",
+      key29:  "Please contact customer service if the phone number is no longer available",
+      key30:  "Send code",
+      key31:  "Enter a new phone number",
+      key32:  "Next",
+      key33:  "Back",
+      key34:  "Email already exists",
+      key35:  "Please contact customer service if the email address is no longer available",
+      key36:  "Enter the email verification code",
+      key37:  "Identity verification",
+      key38:  "Bind phone number",
+      key39:  "Changed successfully",
+      key40:  "Bound Email address",
+      key41:  "Please contact customer service if the phone number is no longer available",
+      key42:  "Enter old login password",
+      key43:  "Set a new login password of 6 - 20 characters",
+      key44:  "Confirm new login password",
+      key45:  "Enter old asset password",
+      key46:  "Set a new asset password of 6 - 16 characters",
+      key47:  "Confirm new asset password",
+      key48:  "Enter Google verification code",
+      key49:  "Download and install Google verification or other authentication app on your mobile phone, scan or enter the key manually in the app, and enter the generated dynamic code into the field below",
+      key50:  "Phone number changed successfully!",
+      key51:  "Enter user name",
+      key52:  "I agree to",
+      key53:  "Terms of Use",
+      key54:  "Create a sub-account now",
+      key55:  "Loading",
+      key56:  "SMS sent successfully",
+      key57:  "Enter a correct phone number",
+      key58:  "This phone number is already bound",
+      key59:  "Enter a correct email address",
+      key60:  "Email sent successfully",
+      key61:  "Old phone verification failed",
+      key62:  "Wrong old phone verification code",
+      key63:  "Wrong verification code",
+      key64:  "Failed to change bound phone number",
+      key65:  "Phone number bound successfully",
+      key66:  "Failed to Bound Email address",
+      key67:  "Email address bound successfully",
+      key68:  "Passwords do not match",
+      key69:  "Wrong old password",
+      key70:  "Failed to change",
+      key71:  "Google verification not set",
+      key72:  "Email verification code sent successfully",
+      key73:  "Google verification set successfully",
+      key74:  "Enter correct user name and email address",
+      key75:  "Enter correct user name and phone number",
+      key76:  "Resend",
+      key77:  "Enter complete sign-up information",
+      key78:  "User name already exists",
+      key79:  "Enter a correct phone number",
+      key80:  "Enter a correct email address",
+      key81:  "Please agree to the Terms of Use first",
+      key82:  "User name or password format is incorrect",
+      key83:  "Failed to sign up",
+      key84:  "Please get a verification code first",
+      key85:  "Failed to reset",
+      key86:  "Reset successfully",
+      key87:  "Failed to delete",
+      key88:  "Enter a correct wallet address",
+      key89:  "Failed to edit, please enter correct asset password and Google verification code",
+      key90:  "Failed to edit, please try again later",
+      key91:  "One-click Upgrading Tool",
+      key92:  "One-click Upgrading Tool Manual",
+      key93:  "Windows",
+      key94:  "macOS",
+      key95:  "Sub-account deleted successfully",
+      key96:  "Sub-account added successfully",
+      key97:  "Failed to add sub-account",
+      key98:  "Failed to delete sub-account",
+      key99:  "Address edited successfully",
+      key100:  "Failed to edit address",
+      key101: "Announcement on KirinPool Upgrade",
+      key102: "Dear KirinPool users, ",
+      key103: "To enhance user experience and improve mining rewards, KirinPool will perform a comprehensive upgrade at 10: 00-12: 00 (UTC+8) on Sep 26, 2019, during which the servers will be down for maintenance.",
+      key104: "New functions: ",
+      key105: "1. KirinPool mining mode change from SOLO to PPLNS;",
+      key106: "2. Sub-account management;",
+      key107: "3. Hash rate curve in statistics;",
+      key108: "4. Mainnet data query.",
+      key109: "Notes: ",
+      key110: "1. In no case will Waltonchain ask for your wallet and KirinPool information first. Stay alert to fraud!",
+      key111: "2. To ensure the safety of your WTC, we ask all users to follow official announcements only and DO NOT trust any unofficial sources.",
+      key112: "KIRINPOOL TEAM",
+      key113: "Sep. 24, 2019",
+      key114: 'Failed to verify verification code',
+      key115: "Replicating Success",
+      key116: "Disagree"
     },
-    sonset: {
-      key1: "Sub-account management",
-      key2: "New sub-accounts",
-      key3: "Subaccounts",
-      key4: "Creation time",
-      key5: "Wallet address",
-      key6: "operation",
-      key7: "edit",
-      key8: "delete",
-      key9: "Subaccounts consist of numbers or lowercase letters and cannot begin with numbers, 8-16 bits in length.",
-      key10: "Capital Code",
-      key11: "Please enter the fund password.",
-      key12: "Google Verification Code",
-      key13: "Please enter Google Verification Code",
-      key14: "Number of miners",
-      key15: "cancel",
-      key16: "Please enter or paste the wallet address",
-      key17: "Please enter the name of the sub-account."
+    FAQ: {
+      key1: '1. How to upgrade KIRINMINER?',
+      key2: 'Step 1:  Go to https: //kirinpool.com/pc/index.html#/download and download the One-click Upgrading Tool for your operating system',
+      key3: 'Step 2:  Save the One-click Upgrading Tool to your local disk and run it;',
+      key4: 'Step 3:  When the Tool is running, IP range of your computer will be detected. It can be modified manually. If the IP is correct, click the “Upgrade” button to upgrade your KIRINMINER.',
+      key5: '2. How to add a wallet address？',
+      key6: 'There are four kinds of commonly-used wallet addresses: Ethereum wallets, exchange platform wallets, hardware wallets and mobile wallet apps.',
+      key7: 'It is recommended to use mobile wallet apps or exchange platform wallets since they are easy and convenient. (Prompt:  For reference only. Wallet has no relation to KirinPool; you can select any you wish).',
+      key8: 'imToken is a recommended mobile wallet app.',
+      key9: '',
+      key10: '',
+      key11: "3. KIRINPOOL Address Configuration: ",
+      key12: "There are four regions for KIRINPOOL server: ",
+      key13: "Asia: ",
+      key14: "Pool 1",
+      key15: "Pool 2",
+      key16: "Pool 3 ",
+      key17: "America: ",
+      key18: "Pool 1",
+      key19: "Pool 2",
+      key20: "Pool 3",
+      key21: "Europe: ",
+      key22: "Pool 1",
+      key23: "Pool 2",
+      key24: "Pool 3",
+      key25: "Australia: ",
+      key26: "Pool 1",
+      key27: "Pool 2",
+      key28: "Pool 3",
+      key29: "4. How to set up sub-accounts?",
+      key30: "Up to 10 sub-accounts can be set up under each account. With sub-accounts, multiple users can manage the status of miners easier. Each sub-account can manage 100+ miners.",
+      key31: "Step 1:  Log in to your KirinPool account with your email (phone) and password;",
+      key32: "Step 2:  Click “***” on the right side of the navigation bar, select “Sub-account Settings” to access to the sub-account management page and click “Add Sub-account”;",
+      key33: "Step 3:  “Add Sub-account” window will pop;",
+      key34: "Step 4:  Enter a sub-account name in the field (Note:  The name must be 8-16 digits and lowercase letters and cannot start with a digit).",
+      key35: "Note:  Sub-account name is the unique identifier used on the pool to identify which user owns the miner, thus all the names are unique. If the prompt “Sub-account already exists” appears, please use a different name.",
+      key36: "5. How to manage sub-accounts (e.g. set wallet address, delete sub-account)?",
+      key37: "After successful creation of a sub-account, you can find the “Edit” and “Delete” wallet address functions on the “Sub-account Management” page.",
+      key38: "“Edit”:  (you shall pass Google authentication and set an asset password first) Select a sub-account and click “Edit”, then enter the asset password and Google verification code to add a wallet address to the sub-account.",
+      key39: "“Delete”:  (you shall pass Google authentication and set an asset password first) Select a sub-account and click “Delete”, then enter the asset password and Google verification code to delete the sub-account.",
+      key40: "6. How to recover an accidentally deleted sub-account?",
+      key41: "If a sub-account is accidentally deleted, you can add the deleted sub-account name through the “Add Sub-account” menu.",
+      key42: "Note:  You need to remember the deleted sub-account name to recover it. Other users cannot add a sub-account under that name.",
+      key43: "7. How to set a worker name?",
+      key44: "Worker indicates different miners of one user. When bulk configured, a sequence number is added. E.g. if you choose ‘miner’, your workers will be miner001, miner002, …, miner100 (8-16 digits and letters).",
+      key45: "8. I have completed settings as per the KIRINMINER User Manual, why is there no data on my “Miner” page?",
+      key46: "Step 1:  Check your network connection: ",
+      key47: "Open the “run” menu - enter ‘cmd’ - enter ‘ping www.kirinpool.com’ to check the connection. In case of abnormality, you need to fix the local network.",
+      key48: "Step 2:  Check configurations: ",
+      key49: "Pool addresses (for Asia): ",
+      key50: "asia.kirinpool.com: 5555",
+      key51: "asia.kirinpool.com: 6666",
+      key52: "asia.kirinpool.com: 7777",
+      key53: "Check the miner connection addresses; they must not contain ‘http: //’.",
+      key54: "9. How to check miner status and rewards?",
+      key55: "Step 1:  Log in at www.kirinpool.com;",
+      key56: "Step 2:  When your miner is successfully connected to the pool, click “Miner” to enter the miner page to check the status. Click “Earnings” to check the mining rewards of the current sub-account.",
+      key57: "Welcome to KirinPool 2.0",
+      key58: "Click Start for a new mining experience",
+      key59: "Start",
+      key60: "Download One-click Upgrading Tool",
+      key61: "Go to Help Center",
+      key62: "Download",
+      key63: "download the One-click Upgrading Tool",
+      key64: "One-click Upgrading Tool Manual",
+      key65: "Run the Upgrading Tool and click Upgrade to search for KIRINMINERs within the IP range",
+      key66: "Confirm the KIRINPOOL to be upgraded",
+      key67: "After the upgrading is completed, the result will be shown",
+      key68: "Log in to miner management webpage for configuration",
+      key69: "Double-click the IP to log in to the miner management webpage.    User Name/Password:  root/root",
+      key70: "Pool configuration for KIRINPOOL",
+      key71: "Go to Help Center - Download and download the Miner Management Software User Manual",
+      key72: "Experience Now",
+      key73: "Skip",
+      key74: "Start a new mining experience with PPLNS mode",
+      key75: "",
+      key76: "Help",
+      key78: "Can be asia/america/europe/australiaasperyourregion",
+      key79: "Your pool sub-account",
+      key80: "Select pool as per your region–Entersub-accountname–Setminername",
+      key81:"Have an account?",
+      key82:"Log in",
+      key83:'Please access KIRINPOOL on PC. Website mobile version is coming soon.',
+      key84:'First',
+      key85:"Last",
+      key86:"Please create sub-account firs",
+      key87:"Please download with PC browser",
+      key88:"No data on miner hash rate today",
+      key89:"No response from server",
+      key90:"Enter address",
+      key91:"Incorrect address, please enter again!",
+      key92:"Enter Google Authenticator code or asset password",
+      key94:"Address edited successfully",
+      key95:"Sub-account name already exists",
+      key96:"Each user can create up to 9 sub-accounts",
+      key97:"Add sub-account first",
+      key98:"Sub-account deleted successfully",
+      key99:"The account has no sub-accounts",
+      key100:"No data on miner hash rate",
+      key101:"Please bind sub-account to miner", 
+      key102:"Google Authentication",
+      key103:"Edit Wallet Address",
+      key104:"Google Authentication - Unverified",
+      key105:"Mining Rewards",
+      key106:"Actual Rewards",
+
+
+      
+      key107:"10. If KIRINMINER Miner Management Software returns a password error: ",
+      key108:"Enter [System] - [Miner Password Configuration] and select [Set login password] to set the password. Then check the miners you need to assign the password to. After confirming the information is correct, click [Set] and then [Confirm] to save the settings.",
+      key109:"",
+      key110:"",
+
+      key111:"11. How to change miner login password in Miner Management Software:",
+      key112:"Enter [System] - [Miner Password Configuration] and select [Change login password]. Enter the old login password and the new login password, and then check the miners you need to assign the password to. After confirming the information is correct, click [Set] and then [Confirm] to save the settings.",
+      key113:"",
+      key114:""
     },
-    wallet: {
-      key: "Earned yesterday",
-      key2: "Total earned",
-      key3: "Rate",
-      key4: "Wallet Settings",
-      key5: "Wallet Address",
-      key6: "User’s withdrawal address",
-      key7: "Settings",
-      key8: "Change",
-      key9: "Withdrawal History",
-      key10: "User’s withdrawal history",
-      key11: "Close",
-      key12: "Expand",
-      key13: "Amount",
-      key14: "Time",
-      key15: "Set wallet address",
-      key16: "Enter asset password",
-      key17: "Enter wallet address",
-      key18: "Google Authenticator code",
-      key19: "Confirm",
-      key22: "Balance",
-      key23: "Asset Password",
-      key24: "Password for withdrawal of user’s coins",
-      key25: "Set asset password",
-      key26: "Confirm asset password",
-      key27: "Change asset password",
-      key28: "Old asset password",
-      key29: "New asset password",
-      key30: "Confirm new asset password",
-      key31: "The passwords do not match",
-      key32: "Asset password is changed successfully",
-      key33: "Asset password is set successfully",
-      key34: "Google Authenticator code error",
-      key35: "Old asset password error",
-      key36: "Wallet address is set successfully",
-      key37: "Please set asset password first",
-      key38: "Asset password error",
-      key39: "No data",
-      key40: "The passwords do not match",
-      key41: "Wallet address error",
-      key42: "Reset asset password ",
-      key43: "Please set up asset password first",
-      key44: "Verify error",
+    upgrade:{
+      key1:"Announcement on KIRINMINER Upgrade (October 12, 2019)",
+      key2:'Dear KIRINMINER users,',
+      key3:"To improve KIRINMINER stability and enhance user experience, KIRINMINER firmware will be upgraded from v5-11 to v5-12.",
+      key4:"New functions:",
+      key5:"1. KIRINMINER instability solved;",
+      key6:"2. Encrypted access to KIRINMINER and KIRINMINER Monitor System adjusted",
+      key7:"Operation Instruction:",
+      key8:"1. Open https://www.kirinpool.com/pc/index.html#/download, go to Tool Download and download the One-click Upgrading Tool (v5-12);",
+      key9:"2. Save the One-click Upgrading Tool to your local disk and run it;",
+      key10:"3. When the Tool is running, IP range of your computer will be detected. It can be modified manually. If the IP is correct, click the “Upgrade” button to upgrade your KIRINMINER;",
+      key11:"4. If the Current Version is v5-12 after upgrading, the upgrading has been successful.",
+      key12:"Notes:",
+      key13:"1. In no case will Waltonchain ask for your wallet, KIRINPOOL or KIRINMINER information first. Stay alert to fraud!",
+      key14:"2. To ensure the safety of your WTC, we ask all users to follow official announcements only. DO NOT trust any unofficial sources.",
+      key15:"Waltonchain Team",
+      key16:"October 12, 2019",
+      key17:"To enhance user experience and improve mining rewards, KirinPool will perform a comprehensive upgrade at 10: 00-12: 00 (UTC+8) on October 12, 2019, during which the servers will be down for maintenance.",
+      key18:"September 26, 2019",
+      key19:"Details",
+      key20:"One  account  can  create  up  to  10  sub-accounts",
+      key21:"Change  Wallet  Addres",
+      key22:"To improve KIRINMINER stability, KIRINMINER firmware will be upgraded to V6-0 on November 1 through the one-click upgrading tool. Once the tool is issued, Waltonchain will send an email to inform KIRINMINER users to download and install it. ",
+      key23:"Before upgrading, please pay attention to the running status of your KIRINMINER. In the case of abnormality, please restart it through the Miner Management Software. ",
+      key24:"October 30, 2019",
+
+      key25:"Dear Sir/Madam,",
+      key26:"To improve KIRINMINER stability, KIRINMINER firmware is upgraded to V6-0. Please go to KIRINPOOL “Help Center” (https://www.kirinpool.com/pc/index.html#/download) to download one-click upgrading tool.",
+      key27:"KIRINPOOL Team",
+      key28:"November 1, 2019",
+      key29:"To improve KIRINMINER stability, KIRINMINER firmware is upgraded to V6-0.",
+      key30:"Announcement on KIRINMINER Upgrade (November 1, 2019)",
+      key31:"KIRINMINER Upgrade (November 1, 2019)",
     },
-    setting: {
-      key1: "Balance",
-      key2: "User Settings",
-      key3: "Login password",
-      key4: "KIRINMINER login password",
-      key5: "Change",
-      key6: "Google Authenticator",
-      key7: "Please bind Google Authenticator to transact",
-      key8: "Bind",
-      key9: "Set phone number",
-      key10: "Set phone number to protect your account",
-      key11: "Bind email",
-      key12: "Bind email to protect your account",
-      key13: "Bound successfully",
-      key14: "Change login password",
-      key15: "Old password",
-      key16: "New password",
-      key17: "Confirm new password",
-      key18: "Google key",
-      key19: "Confirm",
-      key20: "Email",
-      key21: "Get code",
-      key22: "Login password",
-      key23: "Set Google Authenticator",
-      key24: "Install Google Authenticator or another two-factor authentication (2FA) app on your mobile phone, scan or enter the key manually and provide the generated dynamic verification code in the field below",
-      key25: "Key",
-      key26: "Verification code",
-      key27: "Change Google Authenticator",
-      key28: "Old Google Authenticator code",
-      key29: "New Google Authenticator code",
-      key30: "Phone",
-      key31: "Change phone number",
-      key32: "User does not exist, failed to get Google Authenticator key",
-      key33: "Bound successfully",
-      key34: "Google Authenticator code error",
-      key35: "Verification code error",
-      key36: "User does not exist",
-      key37: "Changed successfully",
-      key38: "Old Google Authenticator code error",
-      key39: "New Google Authenticator code error",
-      key40: "This email is already bound",
-      key41: "Password error",
-      key42: "Phone number is already bound to another account",
-      key42_1: "Email is already bound to another account",
-      key43: "The passwords do not match",
-      key44: "Password is changed successfully",
-      key45: "Old password error",
-      key46: "Already set",
-      key47: "Phone/email",
-      key48: "Enter phone number or email",
-      key49: "Phone number not registered",
-      key50: "Email not registered",
-      key51: "Enter user name",
-      key52: "Identity Verification",
-      key53: "Verified",
-      key54: "Under review",
-      key55: "Verify identity to get 0.5 WTC",
-      key56: "Username",
-      key57: "Google Authenticator code",
-      key58: "Set",
-      key59: "Asset password",
-      key60: "Please set asset password to transact",
-      key61: "Set asset password",
-      key62: "Confirm asset password",
-      key63: "Please log in first",
-      key64: "Retrieval error",
-      key65: "Email not bound",
-      key66: "Failed to send email verification code",
-      key67: "Phone not bound",
-      key68: "Failed to send SMS verification code",
-      key69: "Enter asset password",
-      key70: "Please fill in all fields",
-      key71: "User name does not exist",
-      key72: "Email already exists",
-      key73: "Failed to send email",
-      key74: "Phone already exists",
-      key75: "Phone not bound",
-      key76: "Email not bound",
-      key77: "Failed to set",
-      key78: "Failed to bind email",
-      key79: "Failed to set phone",
-      key80: "New password cannot be empty",
-      key81: "Wrong new password format",
-      key82: "Wrong old password",
-      key83: "Failed to change",
-      key84: "Key and Google Authenticator code do not match",
-      key85: "Enter old asset password",
-      key86: "Change asset password",
-      key87: "Enter new asset password",
-      key88: "Email already exists",
-      key89: "Not passed",
-      key90: "Copy",
-      key91: "Phone number",
-      key92: "Email",
-      key93: "Google Authenticator not set",
-      key94: "New password and old password cannot be the same!",
-      key95: "Security Level: ",
-      key96: "High",
-      key97: "Medium",
-      key98: "Low",
-      key99: "Return"
-    },
-    resetPassword: {
-      key1: "Reset password",
-      key2: "Phone",
-      key3: "Email",
-      key4: "Enter phone number",
-      key5: "Enter email",
-      key6: "Enter verification code",
-      key7: "Get code",
-      key8: "Login password",
-      key9: "Confirm password",
-      key10: "Have an account? Log in",
-      key11: "Failed to send verification code, try again later",
-      key12: "The passwords do not match",
-      key13: "Password is reset successfully",
-      key14: "Verification code error",
-      key15: "Enter password",
-    },
-    download: {
-      key1: "1. Why do I need a user name during the sign up?",
-      key2: "User name is a unique name required to connect a miner to the mining pool. KIRINMINER user name needed during the miner setup is the user name registered in the pool network. When a miner is bound to your account, you can check block production and reward information of the bound miner instantly on the kirinpool platform. Note: User name set in miner configurations must be the same as the registered account user name.",
-      key3: "2. What wallet address do I add?",
-      key4: "There are four common types of wallet addresses: ERC 20 address, exchange platform address, hardware wallet address and mobile/desktop wallet address.",
-      key5: "We recommend using mobile wallet APP or trading website wallet, easy to understand, simple and convenient. (Bona fide recommendation, wallet is not related to mine, please choose by yourself)",
-      // key6:"善意推荐，钱包和矿池无关，请自行选择",
-      key7: "Download the latest wallets here: ",
-      key8: "Android: ",
-      key9: "3. What software do I need?",
-      key10: "When the wallet address is set, the next step is to download the mining software.",
-      key11: "First, you need to download the LAN miner search tool FindMiner ",
-      key12: "Download link: ",
-      key13: "Then, you need the miner management tool KIRINMINER",
-      key14: "Download link: ",
-      key15: "4. What is pool address?",
-      key16: "kirinpool server has three pool addresses: ",
-      key17: "5. What Worker name do I set?",
-      key18: "Worker indicates different miners of one user. When bulk configured, a sequence number is added. E.g. if you choose ‘miner’, your Workers will be miner001, miner002, …, miner100 (8-16 digits and letters).",
-      key19: "6. What do I do if miner does not connect to the pool?",
-      key20: "Check your network connection:",
-      key21: "Open the “run” menu -> input ‘cmd’ -> input ‘ping www.kirinpool.com’ to check the connection. In case of abnormality, you need to fix the local network.",
-      key22: "Check configurations:",
-      key23: "Pool address: www.kirinpool.com:5555, www.kirinpool.com:6666, www.kirinpool.com:7777. Check the miner connection address, it must not contain ‘http://’.",
-      key24: "7. How do I check equipment status and rewards?",
-      key25: "Open kirinpool.com in your browser, log in and press ‘Miner’ to see the details.",
-      key26: "",
-      key27: "Download",
-      key28: "FAQ",
-      key29: "Miner management tool",
-      key30: "Miner Management Software User Manual",
-      key31: "LAN Search Mining Machine Tool",
-      key32: "Download tool",
-      // key32_1:"Download tool(Mac)",
-      key33: "Real-time hash power, farm and miner monitoring anytime and anywhere",
-      key34: "KIRINMINER USER MANUAL",
-      key35: "tools",
-      key36: "GpuMiner USER MANUAL",
-      key37: "IMToken is recommended for mobile wallets. Website: https://token.im/Note: IOS needs overseas ID, download and install, open APP to create wallet, must backup mnemonics, sure!",
-      key38: "Mine Pool Announcement",
-      key39: "Notice of all announcements about the mine",
-      key40: "Mining Tools Download",
-      key41: "Routine Question Answering"
-    },
-    register: {
-      key: "Sign up",
-      key2: "Phone",
-      key3: "Email",
-      key4: "Enter email",
-      key5: "Enter user name",
-      key6: "Verification code",
-      key7: "Get code",
-      key8: "User name must contain digits and lowercase letters and cannot start with a digit(Length: 8-16)",
-      // key9:"请设置6-16位登录密码，由数字和字母组成",
-      // key10:"请输入6-16位密码，由数字和字母组成",
-      key11: "Confirm password",
-      key14: "Log in for existing accounts",
-      key15: "Phone",
-      key16: "Verification code received",
-      key17: "Failed to send SMS verification code, try again later",
-      key18: "Too many SMS verification code requests for one day, please try again tomorrow",
-      key19: "The passwords do not match",
-      key20: "Signed up successfully",
-      key21: "Verification code error",
-      key22: "User name already exists",
-      key23: "Account (email/phone number) already exists",
-      key24: "Failed to send email verification code, try again later",
-      key25: "Please get verification code first",
-      key26: "Agree to the Terms of Use and Privacy Agreement to sign up",
-      key27: "Read and agree",
-      key28: "User Terms of Service",
-      key29: "KIRINMINER TERMS OF USE",
-      key30: "KIRINMINER Terms of Use Agreement (hereinafter referred to as “this Agreement”) shall set the rights and obligations of the KIRINMINER user and KIRINMINER regarding KIRINMINER services. By visiting and/or using this website, the user shall accept and agree to all the terms and conditions of this Agreement. KIRINMINER shall have the right to amend the terms of this Agreement; and the revised agreement shall effectively replace the original agreement once it is published. The user may access the latest agreement at any time.",
-      key31: "I. SERVICES",
-      key32: "1. KIRINMINER shall use its own system to provide the user community and others with new services/products based on this product through the Internet and other methods.",
-      key33: "2. When providing the materials during registration, the user shall agree to:",
-      key34: "(1) provide legitimate, true, accurate and detailed personal data;",
-      key35: "(2) update user information in time if there is any change. If the registration information provided by the user is illegitimate, untrue, inaccurate and not detailed, the user shall bear the corresponding responsibility for consequences; and KIRINMINER shall reserve the right to terminate the use of KIRINMINER services by the user.",
-      key36: "II. PROVISION, MODIFICATION AND TERMINATION OF SERVICES",
-      key37: "1. While accepting KIRINMINER Terms of Use, the user shall agree to accept all kinds of information services provided by KIRINMINER.",
-      key38: "2. KIRINMINER shall reserve the right to modify or terminate services at any time without notifying the user. KIRINMINER shall have the right to modify or terminate services without being responsible to the user or any third party with no direct relationship.",
-      key39: "3. The user may exercise the following rights shall it have objections to the modification of this Agreement or be dissatisfied with KIRINMINER services:",
-      key39_1: "(1) the right to stop using KIRINMINER network services;",
-      key40: "(2) the right to inform KIRINMINER about the termination of services through customer service and other channels. The user’s right to use KIRINMINER network services shall terminate immediately upon such notice. In this case, KIRINMINER shall not be obliged to provide any unprocessed information or incomplete services to the user or any third party with no direct relationship.",
-      key41: "III. INFORMATION CONFIDENTIALITY",
-      key42: "1. The KIRINMINER user information referred to herein shall mean information that conforms to laws, regulations, relevant provisions and the following scope:",
-      key43: "(1) personal information provided to KIRINMINER by the user during registration;",
-      key44: "(2) when the user uses KIRINMINER services, participates in product activities or visits website pages, KIRINMINER shall automatically receive and record user browser or mobile client data, including, but not limited to, IP address, information in website Cookie files and web page records required by the user;",
-      key45: "(3) user personal information legally obtained by KIRINMINER from business partners;",
-      key46: "(4) user personal information obtained by other KIRINMINER through legal channels.",
-      key47: "2. KIRINMINER shall not disclose the user’s password, name, mobile phone number and other private information to any third party without legal reasons or user’s prior permission.",
-      key48: "3. The user’s personal information may be partially or totally disclosed under the following statutory circumstances:",
-      key49: "(1) disclosure to the user itself or to other third parties with the consent of the user;",
-      key50: "(2) disclosure to the third party of the administrative, judicial authorities or other legal provisions in accordance with the relevant provisions of laws and regulations or the requirements of the administrative authorities;",
-      key51: "(3) other disclosure by KIRINMINER in accordance with laws, regulations and other relevant provisions.",
-      key52: "IV. USER RIGHTS",
-      key53: "1. The user’s user name and password security:",
-      key54: "(1) the user shall have the right to choose whether to become a registered user of KIRINMINER or not. The user who chooses to become a registered user of KIRINMINER shall be able to create and modify its username by itself. The user name shall abide by relevant laws and regulations and conform to network ethics. User name shall not contain any insult, threat, obscenity, abuse or other violation of the legitimate rights and interests of others;",
-      key55: "(2) upon the successful registration, the user shall become a registered user of KIRINMINER. It shall get the user name (user email or mobile phone number) and password. The user shall be responsible for all activities and events that occur after the user name and password are logged into the system. The user shall bear all legal liabilities directly or indirectly caused by the speech and behavior using the user name;",
-      key56: "(3) the user shall be obliged to keep its KIRINMINER account, username, password, SMS verification codes and Google Authenticator codes properly. The user shall take full responsibility for the user name, password and Google key security. The user shall be responsible for any legal consequences caused by the leakage of user name, password or Google key due to the user’s own reasons. This product shall not be liable for asset losses caused by the leakage of such information due to user’s own reasons;",
-      key57: "(4) if the user lost its password, the password may be reset using a link sent to the registered email or using a mobile phone verification code. The user shall inform KIRINMINER immediately if it finds any illegal use of the user name or other security vulnerabilities.",
-      key58: "2. The user shall have the right to modify all modifiable information in its personal account and decide whether to provide optional items or not;",
-      key60: "3. The user shall have the right to participate in all online and offline activities organized and provided by KIRINMINER;",
-      key61: "4. The user shall have the right to enjoy all kinds of other services provided by KIRINMINER according to the rules on the KIRINMINER website.",
-      key62: "V. USER OBLIGATIONS",
-      key63: "1. This product shall not be used to endanger national security, disclose state secrets and infringe upon the legitimate rights and interests of the society and citizens of the state. This website shall not be used to produce, copy and disseminate the following information:",
-      key64: "(1) instigating resistance to and undermining the implementation of the Constitution, legal and administrative regulations;",
-      key65: "(2) instigating subversion of the state power and overthrowing the socialist system;",
-      key66: "(3) instigating secession and undermining the unity of the state;",
-      key67: "(4) instigating national hatred and discrimination, undermining the unity of the nations;",
-      key68: "(5) fabricating or distorting facts, spreading rumors and disturbing the social order;",
-      key69: "(6) advocating feudal superstition, obscenity, pornography, gambling, violence, murder, terror and abetting crime;",
-      key70: "(7) publicly insulting others or fabricating facts to defame others, or carrying out other malicious attacks;",
-      key71: "(8) damaging the credibility of state authorities;",
-      key72: "(9) otherwise violating the Constitution and legal and administrative regulations;",
-      key73: "(10) conducting commercial advertising.",
-      key74: "2. The user shall not register KIRINMINER product accounts with ill intent by any means, including but not limited to multiple accounts for profit-making, speculation, cash-taking and award-winning purposes. The user shall not take ownership of other user accounts. If the user violates the above provisions, KIRINMINER shall have the right to take all necessary direct measures to cancel the benefits gained from the violation and hold the user legally liable through litigation.",
-      key75: "3. The user shall be forbidden to use KIRINMINER as a place, platform or medium to engage in illegal activities of any form. Without authorization or permission from KIRINMINER, the user may not engage in any commercial activities in the name of this product, nor may it use KIRINMINER as a place, platform or medium for commercial activities of any form.",
-      key76: "VI. DISCLAIMER",
-      key77: "1. Due to the particularity of the Internet, KIRINMINER shall not guarantee that the service will not be interrupted, shall not guarantee the timeliness and security of the service, and shall not bear the responsibility not caused by KIRINMINER. KIRINMINER shall strive to enable the user to access and use the product safely, but KIRINMINER shall not declare or guarantee that the website or its servers do not contain viruses or other potential harmful factors. Therefore, the user should use industry-recognized software to detect and neutralize any viruses in KIRINMINER download files.",
-      key78: "2. KIRINMINER shall not be responsible for the failure to save, modify, delete or store information released by the user. It shall not be responsible for typesetting errors or negligence not caused intentionally by KIRINMINER, but revised in a timely manner.",
-      key79: "3. Unless KIRINMINER explicitly agrees in writing, KIRINMINER shall not guarantee the accuracy, integrity and reliability of any information content, including but not limited to advertising, obtained by the user in any way from this website (including, but not limited to, via connecting or downloading). KIRINMINER shall not be responsible for any product, service, information or materials purchased or obtained by the user because of the content information on this website. The user itself shall bear the risk of using the information content of this product.",
-      key80: "4. KIRINMINER shall deliver all notices intended for the user through official page announcements, in-site letters, emails, customer service phone calls, mobile phone SMS or regular mail. KIRINMINER shall not be liable for any prize winning, discounts and other activities or information not obtained through the regular channels of KIRINMINER.",
-      key81: "VII. APPLICABLE LAW AND PLACE OF JURISDICTION",
-      key82: "1. All disputes, claims or other matters arising out of or related to the use of the KIRINMINER website by the user shall be governed by local law.",
-      key83: "2. If a dispute arises between the user and KIRINMINER, it shall first be settled through negotiation in accordance with the principle of good faith. If negotiation fails, it shall be settled by arbitration in Shenzhen Court of International Arbitration.",
-      key84: "Unable to send SMS to the phone number",
-      key85: "Failed to send SMS verification code, try again later",
-    },
-    login: {
-      key1: "Log in",
-      key2: "Phone",
-      key3: "Email",
-      key4: "Enter phone number",
-      key5: "Enter email",
-      key6: "Forgot password?",
-      key7: "No account yet?",
-      key8: "Sign up",
-      // key9:"请输入6-16位登录密码，由数字和密码组成",
-      key10: "Enter password",
-      key11: "Logging in...",
-      key12: "User does not exist, please sign up first",
-      key13: "Password error",
-      key14: "Wrong password for 5 times, Please try again later or retrieve the password",
-    },
-    account: {
-      key1: 'Platform information error',
-      key2: 'Login expired, please login again',
-      key3: 'Search by Block / Transaction / Address',
-      key4: 'Daily login error limit exceeded',
-      key5: 'Failed to log in',
-      key6: 'Pending WTC not yet paid to the miner',
-      key7: 'All WTC paid to the miner',
-      key8: 'refers to WTC mined today',
-      key9: "Today's earnings + Pending + Paid",
-      key10: 'Pending WTC not yet paid to the miner',
-      key11: "Not paid",
-      key12: "Paid",
-      key13: "Block mining",
-      key14: "Account",
-      key15: "Account Binding",
-      key16: "Secure phone number",
-      key17: "Secure phone number is used for logging in, password resetting or other verification",
-      key18: "Change",
-      key19: "No email address is bound",
-      key20: "Bound email is used for verification",
-      key21: "Security",
-      key22: "Please change your password regularly. A highly secure password can protect your account better",
-      key23: "For account security, please set an asset password",
-      key24: "For account security, please bind Google Authenticator",
-      key25: "Completed",
-      key26: "Asset Password - Not set",
-      key27: "Change phone number",
-      key28: "Bound phone number",
-      key29: "Please contact customer service if the phone number is no longer available",
-      key30: "Send code",
-      key31: "Enter a new phone number",
-      key32: "Next",
-      key33: "Back",
-      key34: "Email already exists",
-      key35: "Please contact customer service if the email address is no longer available",
-      key36: "Enter the email verification code",
-      key37: "Identity verification",
-      key38: "Bind phone number",
-      key39: "Changed successfully",
-      key40: "Bind email address",
-      key41: "Please contact customer service if the phone number is no longer available",
-      key42: "Enter old login password",
-      key43: "Set a new login password of 6 - 20 characters",
-      key44: "Confirm new login password",
-      key45: "Enter old asset password",
-      key46: "Set a new asset password of 6 - 16 characters",
-      key47: "Confirm new asset password",
-      key48: "Enter Google Authenticator code",
-      key49: "Download and install Google Authenticator or other authentication app on your mobile phone, scan or enter the key manually in the app, and enter the generated dynamic code into the field below",
-      key50: "Phone number changed successfully!",
-      key51: "Enter user name",
-      key52: "Agree",
-      key53: "Terms of Use",
-      key54: "Create a sub-account now",
-      key55: "Loading",
-      key56: "SMS sent successfully",
-      key57: "Enter a correct phone number",
-      key58: "This phone number is already bound",
-      key59: "Enter a correct email address",
-      key60: "Email sent successfully",
-      key61: "Old phone verification failed",
-      key62: "Wrong old phone verification code",
-      key63: "Wrong verification code",
-      key64: "Failed to change bound phone number",
-      key65: "Phone number bound successfully",
-      key66: "Failed to bind email address",
-      key67: "Email address bound successfully",
-      key68: "Passwords do not match",
-      key69: "Wrong old password",
-      key70: "Failed to change",
-      key71: "Google Authenticator not set",
-      key72: "Email verification code sent successfully",
-      key73: "Google Authenticator set successfully",
-      key74: "Enter correct user name and email address",
-      key75: "Enter correct user name and phone number",
-      key76: "Resend verification code",
-      key77: "Enter complete sign-up information",
-      key78: "User name already exists",
-      key79: "Enter a correct phone number",
-      key80: "Enter a correct email address",
-      key81: "Please agree to the Terms of Use first",
-      key82: "User name or password format is incorrect",
-      key83: "Failed to sign up",
-      key84: "Please get a verification code first",
-      key85: "Failed to reset",
-      key86: "Reset successfully",
-      key87: "Failed to delete",
-      key88: "Enter a correct wallet address",
-      key89: "Failed to edit, please enter correct asset password and Google Authenticator code",
-      key90: "Failed to edit, please try again later",
-      key91: "One-click Upgrading Tool",
-      key92: "One-click Upgrading Tool Manual",
-      key93: "Windows",
-      key94: "macOS",
-      key95: "Sub-account deleted successfully",
-      key96: "Sub-account added successfully",
-      key97: "Failed to add sub-account",
-      key98: "Failed to delete sub-account",
-      key99: "Address edited successfully",
-      key100: "Failed to edit address",
-      key101:"Announcement on KirinPool Upgrade",
-      key102:"Dear KirinPool users, ",
-      key103:"To enhance user experience and improve mining rewards, KirinPool will perform a comprehensive upgrade at 10:00-12:00 (UTC+8) on Sep 26, 2019, during which the servers will be down for maintenance.",
-      key104:"New functions:",
-      key105:"1. KirinPool mining mode change from SOLO to PPLNS;",
-      key106:"2. Sub-account management;",
-      key107:"3. Hash rate curve in statistics;",
-      key108:"4. Mainnet data query.",
-      key109:"Notes:",
-      key110:"1. In no case will Waltonchain ask for your wallet and KirinPool information first. Stay alert to fraud!",
-      key111:"2. To ensure the safety of your WTC, we ask all users to follow official announcements only and DO NOT trust any unofficial sources.",
-      key112:"KIRINPOOL TEAM",
-      key113:"Sep. 24, 2019",
-      key114:'Failed to verify verification code'
-    }
+    foo:{
+      key1:"Quick access",
+      key2:"Contact Us"
+    } 
   },
   ...enLocale
 };

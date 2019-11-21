@@ -1,13 +1,15 @@
 <template>
   <div class="home">
     <div class="home_bcg">
-      <img src="../assets/img/banner.jpg" alt="">
+      <div v-if="lang=='zh'"> <img src="../assets/img/banner.jpg" alt=""></div>
+     <div v-if="lang=='en'"> <img src="../assets/img/banner-en.jpg" alt=""></div>
+     <div v-if="lang=='ko'"> <img src="../assets/img/banner-kr.jpg" alt=""></div>
     </div>
     <div class="home_tips" v-if="hometype==1">
       <div class="center-box">
         <router-link :to="{name:'download',query:{t:6}}">
           <div class="tips_l ishover" @click="to_down2(4)"> <img src="../assets/img/u68.png" alt="">
-            <span class="tips_main">{{$t("m.home.key34")}}</span>
+            <span class="tips_main">{{$t("m.upgrade.key29")}}</span>
           </div>
           <div class="tips_r ishover" @click="to_down2(4)">
             {{$t("m.home.key33")}}>
@@ -25,7 +27,7 @@
             <span> {{$t("m.home.key2")}}</span>
           </div>
           <div>
-            <div class="go_search" :style="InputStyle">
+            <div class="go_search" :style="InputIconStyle">
               <input type="text" class="search_inp" :placeholder="placehoder" v-model="search_data" @keydown="btKeyUp" @keyup.enter="tosearch()" @focus="InputStyleFun()" @blur="InputStyleBlur()"> 
               <span class="el-icon-search search" @click="tosearch()" :style="InputIconStyle"></span>
             </div>
@@ -147,60 +149,6 @@
 
         </div>
       </div>
-      <!-- 指导 -->
-      <el-dialog title="" :visible.sync="dialogTableVisible" width="4rem"  custom-class="dialogConTop" @close="closeLDialog">
-        <div class="beginTep01" v-if="step0">
-          <p class="step0_title">欢迎使用KIRINPOOL 2.0全新版本</p>
-          <p class="step0_text">请点击立即开始，感受全新挖矿体验</p>
-          <p class="step0_img">
-            <img src="../assets/img/step/img1.png" alt="">
-          </p>
-          <p class="stepo_btn" @click="stepo_btn()">立即开始</p>
-        </div>
-        <div class="beginTep02" v-if="step1">
-          <div class="step1_img"  style="background:#f8fafc" v-if="step00">
-            <p class="step1_title">下载一键升级工具</p>
-            <p class="step1_text">进入帮助中心->工具下载，选择一键升级工具下载</p>
-          </div>
-          <div class="step1_img"  style="background:#f8fafc" v-if="step01">
-            <p class="step1_title">一键升级工具使用</p>
-            <p class="step1_text">运行一键升级，点击“升级”搜寻网段内KIRINMINER</p>
-          </div>
-          <div class="step1_img"  style="background:#f8fafc" v-if="step02">
-            <p class="step1_title">确认KIRINMINER升级</p>
-            <p class="step1_text">矿机升级完成后，显示矿机的升级结果</p>
-          </div>
-          <div class="step1_img"  style="background:#f8fafc" v-if="step03">
-            <p class="step1_title">登录矿机进行配置</p>
-            <p class="step1_text">访问一台矿机IP    账户/密码：root/root</p>
-          </div>
-          <div class="step1_img"  style="background:#f8fafc" v-if="step04">
-            <p class="step1_title">为矿机配置矿池</p>
-            <p class="step1_text">前往帮助中心->工具下载，下载《矿机管理软件操作指南》</p>
-          </div>
-          <div style="margin-top:0.18rem">
-            <el-carousel :interval="5000" arrow="always" :autoplay="false" :loop="false" trigger="click"  @change="onChange">
-              <el-carousel-item style="margin-bottom:0.5rem">
-                <img src="../assets/img/step/step1.jpg" alt="">
-              </el-carousel-item>
-              <el-carousel-item>
-                  <img src="../assets/img/step/step2.jpg" alt="">
-              </el-carousel-item>
-              <el-carousel-item>
-                  <img src="../assets/img/step/step3.jpg" alt="">
-              </el-carousel-item>
-              <el-carousel-item>
-                <img src="../assets/img/step/step4.jpg" alt="">
-              </el-carousel-item>
-              <el-carousel-item>
-                <img src="../assets/img/step/step5.jpg" alt="">
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-          <div class="skip" v-if="SKIP1" @click="closeLDialog1">跳过了解</div>
-          <div class="skip" v-else @click="closeLDialog1">立即体验</div>
-        </div>
-      </el-dialog>
     </div>
   </div>
 </template>
@@ -211,6 +159,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      lang:'',
       baseUrl: this.GLOBAL.baseUrl,
       baseUrlTwo: this.GLOBAL.baseUrlTwo,
       baseUrltree: this.GLOBAL.baseUrltree,
@@ -255,20 +204,13 @@ export default {
          border: '1px solid #e5e5e5;'
       },
       InputIconStyle:{
-        color: "#737682;"
+        color: "#2e73e8;"
       },
-      dialogTableVisible:true,
-      step0:true,
-      step1:false,
-      step00:false,
-      step01:false,
-      step02:false,
-      step03:false,
-      step04:false,
-      SKIP1:true,
+
     }
   },
   created() {
+    this.lang=localStorage.getItem('lang')||'zh'
     if (getCookie("isLogin")) {
       // this.getAccountMill();
     }
@@ -279,10 +221,10 @@ export default {
     }
   },
   mounted() {
-    if (localStorage.getItem('nosearch') !== '') {
-      this.search_data = localStorage.getItem('nosearch')
-      localStorage.removeItem('nosearch')
-    }
+    // if (localStorage.getItem('nosearch') !== '') {
+    //   this.search_data = localStorage.getItem('nosearch')
+    //   localStorage.removeItem('nosearch')
+    // }
     this.sethomedata()
     this.tosearch()
     if (this.hometype == 3) {
@@ -290,65 +232,17 @@ export default {
     }
   },
   methods: {
-    closeLDialog(){
-      sessionStorage.setItem("offer",'1');
-    },
-    closeLDialog1(){
-      sessionStorage.setItem("offer",'1');
-      this.dialogTableVisible=false
-    },
-    onChange(index,a){
-      console.log(index);
-      if(index=='0'){
-        this.step00=true;
-        this.step01=false;
-        this.step02=false;
-        this.step03=false;
-        this.step04=false;
-        this.SKIP1=true;
-      }else if(index=='1'){
-        this.step00=false;
-        this.step01=true;
-        this.step02=false;
-        this.step03=false;
-        this.step04=false;
-        this.SKIP1=true;
-      }else if(index=='2'){
-        this.step00=false;
-        this.step01=false;
-        this.step02=true;
-        this.step03=false;
-        this.step04=false;
-        this.SKIP1=true;
-      }else if(index=='3'){
-        this.step00=false;
-        this.step01=false;
-        this.step02=false;
-        this.step03=true;
-        this.step04=false;
-        this.SKIP1=true;
-      }else if(index=='4'){
-        this.step00=false;
-        this.step01=false;
-        this.step02=false;
-        this.step03=false;
-        this.step04=true;
-        this.SKIP1=false;
-      }
-    },
+
     indexChang(){
     },
-    stepo_btn(){
-      this.step0=false;
-      this.step1=true;
-    },
+
     InputStyleFun(){
       console.log(1);
       this.InputStyle={ 
         border: '1px solid rgb(87, 20, 209)'
       };
       this.InputIconStyle={ 
-        color: 'rgb(87, 20, 209)'
+        color: '#2e73e8;'
       };
     },
     InputStyleBlur(){
@@ -577,69 +471,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.step0_title{
-   background-image: -webkit-linear-gradient(#001f80,#2f25ff,#00ffdd);
-  -webkit-background-clip:text; 
-  -webkit-text-fill-color:transparent; 
-  font-size: 0.12rem;
-  font-weight: 600
-}
-.step0_text{
-	font-family: MicrosoftYaHei;
-	font-size: 0.09rem;
-	font-weight: normal;
-	font-stretch: normal;
-	color: #333333;
-  text-align: center;
-  margin-top: 0.08rem;
-}
-.step0_img{
-  margin-top: 0.17rem;
-}
-.stepo_btn{
-  width: 0.6rem;
-  height: 0.2rem;
-  margin: auto;
-  margin-top: 0.27rem;
-	background-color: #2e73e8;
-	border-radius: 4px;
-  line-height: 0.2rem;
-  color: #f2f2f2;
-  cursor: pointer;
-  margin-bottom: 0.32rem;
-  font-size: 0.07rem;
-}
-.step1_title{
-  font-size: 0.12rem;
-}
-.step1_text{
-  padding-top: 0.08rem;
-  font-size: 0.09rem;
-  color: #2e73e8
-}
-.step1_img img{
-  margin-top: 0.2rem
-}
-.step1_img{
-  padding-bottom: 0.1rem;
-  padding-top: 0.15rem;
-}
-.skip{
-  position: absolute;
-  right: 81px;
-  bottom: 35px;
-  font-size: 15px;
-  z-index: 222;
-  color: rgb(46, 115, 232);
-  cursor: pointer;
-}
-.beginTep01{
-  padding-top: 50px;
-  padding-bottom: 30px;
-}
-.beginTep02{
-
-}
 
 
 
@@ -716,7 +547,7 @@ li {
 }
 
 .go_search {
-  width: 1.9rem;
+  width: 2rem;
   height: 0.18rem;
   display: flex;
   justify-content: space-around;
@@ -724,11 +555,20 @@ li {
   border: 1px solid #e5e5e5;
   border-radius: 0.09rem;
 }
-.go_search:focus{
-  border: 1px solid rgb(87, 20, 209)
+.go_search:hover{
+  border: 1px solid #2e73e8;
+}
+.go_search:hover .search{
+    width: 0.4rem;
+    height: 0.18rem;
+    line-height: 0.18rem;
+    padding-right: 0.09rem;
+    text-align: right;
+    font-size: 0.08rem;  
+    color: #2e73e8;
 }
 .search {
-  width: 0.4rem;
+  width: 0.3rem;
   height: 0.18rem;
   line-height: 0.18rem;
   padding-right: 0.09rem;
@@ -737,9 +577,11 @@ li {
   color: #737682;
   cursor: pointer;
 }
-
+.search:hover{
+  color: #2e73e8!important;
+}
 .search_inp {
-  width: 1.5rem;
+  width: 1.8rem;
   font-size: 14px;
   border: none;
   font-weight: normal;
@@ -972,6 +814,7 @@ input:-ms-input-placeholder {
 
 .center-box {
   width: 6rem;
+  min-width: 750px;
   margin: 0 auto;
 }
 

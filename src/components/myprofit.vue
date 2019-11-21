@@ -8,20 +8,20 @@
             <div v-for="(item,index) in profit_top" :key="index" class="flex_C mylcted_top_main">
               <span class="mylcted_top_item">{{item}}</span>
               <div class="mylcted_top_item font_b" v-show="index==0">
-                <span>{{format(Number(profit_data.needPayAndPayHistory.waitPay),8)||0}}WTC</span>
+                <span>{{format(Number(profit_data.needPayAndPayHistory.waitPay),8)||0}} WTC</span>
                 <div class="profit_tips">{{$t("m.account.key6")}}</div>
               </div>
 
               <div class="mylcted_top_item font_b" v-show="index==1">
-                <span>{{format(Number(profit_data.needPayAndPayHistory.paidTotal),8)||0}}WTC</span>
+                <span>{{format(Number(profit_data.needPayAndPayHistory.paidTotal),8)||0}} WTC</span>
                 <div class="profit_tips">{{$t("m.account.key7")}}</div>
               </div>
               <div class="mylcted_top_item font_b" v-show="index==2">
-                <span>{{format(Number(profit_data.todayEarningsAndAllEarnings.todatEarnings),8)||0}}WTC</span>
+                <span>{{format(Number(profit_data.todayEarningsAndAllEarnings.todatEarnings),8)||0}} WTC</span>
                 <div class="profit_tips">{{$t("m.account.key8")}}</div>
               </div>
               <div class="mylcted_top_item font_b" v-show="index==3">
-                <span> {{format(Number(profit_data.todayEarningsAndAllEarnings.allEarnings),8)||0}}WTC</span>
+                <span> {{format(Number(profit_data.todayEarningsAndAllEarnings.allEarnings),8)||0}} WTC</span>
                
                 <div class="profit_tips">{{$t("m.account.key9")}}</div>
               </div>
@@ -34,12 +34,12 @@
           <div class="record flex_b">
             <div class="record_l flex_f">
               <div
-                class="record_item"
+                class="record_item fontweight1"
                 @click="change_record(true)"
                 :class="recordtype?'record_item_active':''"
               >{{$t("m.myprofit.key5")}}</div>
               <div
-                class="record_item"
+                class="record_item fontweight1"
                 @click="change_record(false)"
                 :class="recordtype?'':'record_item_active'"
               >{{$t("m.myprofit.key6")}}</div>
@@ -95,7 +95,13 @@
                 <li class="record_main_li">{{profit_data.subUserEarningsListInfo.array[index].date}}</li>
                 <li
                   class="record_main_li"
-                >{{format(profit_data.subUserEarningsListInfo.array[index].earningsMoney,8)}}</li>
+                > {{profit_data.subUserEarningsListInfo.array[index].miningEarningsMoney}}</li>
+                <li
+                  class="record_main_li"
+                > {{profit_data.subUserEarningsListInfo.array[index].payfee}}</li>
+                <li
+                  class="record_main_li"
+                >{{profit_data.subUserEarningsListInfo.array[index].actualEarningsMoney}}</li>
                 <li
                   class="record_main_li"
                 >{{changpow(profit_data.subUserEarningsListInfo.array[index].dayHr,2)}}H/s</li>
@@ -104,7 +110,7 @@
                 >{{profit_data.subUserEarningsListInfo.array[index].rewardType==2?'solo':'pplns'}}</li>
                 <li
                   class="record_main_li"
-                  :class="profit_data.subUserEarningsListInfo.array[index].status>0?'color_3':'color_4'"
+                  :class="profit_data.subUserEarningsListInfo.array[index].status>0?'color_4':'color_3'"
                 >{{profit_data.subUserEarningsListInfo.array[index].status>0?$t("m.account.key12"):$t("m.account.key11")}}</li>
               </ul>
               </div>
@@ -193,47 +199,31 @@ export default {
           allEarnings: 0
         },
         subUserPayListInfo: {
-          array: [
-            {
-              paytime: 0,
-              payType: 0,
-              payMoney: 0,
-              toAddress: "0",
-              hash: "0"
-            },
-            {
-              paytime: 0,
-              payType: 0,
-              payMoney: 0,
-              toAddress: "0",
-              hash: "0"
-            }
-          ],
+          // array: [
+          //   {
+          //     paytime: 0,
+          //     payType: 0,
+          //     payMoney: 0,
+          //     toAddress: 0,
+          //     hash: 0
+          //   },
+          // ],
           total: 3,
           totalPage: 1
         },
         subUserEarningsListInfo: {
-          array: [
-            {
-              date: 0,
-              waitpay: 0,
-              paidTotal: 0,
-              earningsMoney: "0",
-              dayHr: "0",
-              rewardType: 1,
-              status: 1
-            },
-            {
-              date: 0,
-              waitpay: 0,
-              paidTotal: 0,
-              earningsMoney: "0",
-              dayHr: "",
-              rewardType: 1,
-              status: 1
-            }
-          ],
-          total: 4,
+          // array: [
+          //   {
+          //     date: '',
+          //     waitpay: '',
+          //     paidTotal: '',
+          //     earningsMoney: '',
+          //     dayHr: '',
+          //     rewardType: '',
+          //     status: ''
+          //   },
+          // ],
+          total: 1,
           totalPage: 1
         }
       },
@@ -259,14 +249,14 @@ export default {
   },
   created() {
     this.recorddata = [];
-    this.profit_topdata = [];
     this.tableData = "";
     this.list = [];
     if (localStorage.getItem("subnameList") == null||localStorage.getItem("subnameList") < 1) {
       this.$router.push({ name: "unsub" });
     } else {
       this.change_record(true);
-      this.getprofitdata();//收益信息
+      // this.getprofitdata();//收益信息
+      this. timeprofitdata(3)
     }
   },
   methods: {
@@ -274,21 +264,22 @@ export default {
       let _that=this
       this.recordtype = val;
       this.profit_params.page=1
-      console.log(this. profit_data,444444444444444444); 
-      if (this.profit_params.type==0) {
+      if (this.profit_params.type==0) {    
         this.getprofitdata();
          this.derive_top= this.$t("m.myprofit.key17");
       }
        if (this.profit_params.type!==0) {
         this.timeprofitdata(this.profit_params.type);
       }
-      console.log(this.profit_params.type);  
       if (val) { 
         // console.log(this.recordtype);
         this.export_name = this.$t("m.myprofit.key18");    
         this.recorddata = [
           this.$t("m.myprofit.key7"),
-          this.$t("m.myprofit.key8"),
+          // this.$t("m.myprofit.key8"),
+          this.$t("m.FAQ.key105"),
+          this.$t("m.header.key6"),
+          this.$t("m.FAQ.key106"),
           this.$t("m.myprofit.key9"),
           this.$t("m.myprofit.key10"),
           this.$t("m.myprofit.key11")
@@ -315,38 +306,43 @@ export default {
       let _that = this;
       // this.profit_data = data.accountInfo
       // console.log(this.profit_params);
-      console.log( this.recordtype,1111111111111111);
-      
       this.$ajax(
         "post",
         this.GLOBAL.baseUrl + "v2/earningsAndPayment",
         this.profit_params,
         function(data) {
-          // console.log("收益页面数据");
-          // console.log(_that.recordtype);
-          // console.log(JSON.parse(data).accountInfo);
+
           let dataInfo = JSON.parse(data).accountInfo;
+          if(JSON.parse(data).code==1102){ 
+              _that.$message.error(_that.$t("m.account.key2"));    
+                  _that.setCookie('token',null)
+                 _that.setCookie('username',null)
+                 localStorage.removeItem('token')
+                 localStorage.removeItem('isLogin')
+                  localStorage.removeItem('username')
+                localStorage.removeItem("change");
+                localStorage.removeItem("subusername");    
+                   _that.$router.push({name:'login',query:{isLogin:false}})
+              }
           _that.profit_data = dataInfo;
+          console.log( _that.profit_data,8888);
+          
+          // localStorage.setItem( _that.profit_data)    
           if(_that.recordtype==true){
-            _that.tableData =JSON.parse(JSON.stringify(dataInfo.subUserEarningsListInfo.array));
-            _that.$set(_that.totalSize,0,_that.profit_data.subUserEarningsListInfo.total)
-            if (_that.tableData.length==0) {
-              _that.haverecord=false
+       if (_that.profit_data.subUserEarningsListInfo.total==0) {
+              _that.haverecord=false         
             }else{
                _that.haverecord=true
             }
-            console.log(_that.totalSize,99999999);
-            
+            _that.$set(_that.totalSize,0,_that.profit_data.subUserEarningsListInfo.total)     
           }else{
-            _that.tableData =JSON.parse(JSON.stringify(dataInfo.subUserPayListInfo.array));
-              _that.$set(_that.totalSize,0,_that.profit_data.subUserPayListInfo.total)
-              if (_that.tableData.length==0) {
+        if (_that.profit_data.subUserPayListInfo.total==0) {   
               _that.haverecord=false
             }else{
                _that.haverecord=true
             }
-            console.log(_that.totalSize,99999999);
-            
+              _that.$set(_that.totalSize,0,_that.profit_data.subUserPayListInfo.total)
+                   
           }
           if (
             _that.profit_data.subUserEarningsListInfo.array.length == 0 &&
@@ -354,10 +350,6 @@ export default {
           ) {
             _that.haverecord = false;
           } 
-          // console.log(
-          //   _that.profit_data.subUserPayListInfo.array,
-          //   "profit1222222221"
-          // );
         },
         function(error) {
           // alert("网络出现一点点问题，请稍后再试");
@@ -380,7 +372,10 @@ export default {
         if (_that.recordtype) {
           filterVal = [
             "date",
-            "earningsMoney",
+            // "earningsMoney",
+            "miningEarningsMoney",
+             "payfee",
+              "actualEarningsMoney",
             "dayHr",
             "rewardType",
             "status"
@@ -393,7 +388,7 @@ export default {
           for (var i = 0; i < list.length; i++) {
             //  list[i].date = _that.timestampToTime3(list[i].date);
             list[i].rewardType = list[i].rewardType == 2 ? _that.$t("m.account.key13") : "pplns";
-            list[i].status = list[i].status > 0 ? _that.$t("m.account.key12") :_that.$t("m.account.key11");
+            // list[i].status = list[i].status > 0 ? _that.$t("m.account.key12") :_that.$t("m.account.key11");
             // list[i].dayHr=JSON.parse(JSON.stringify(list[i].dayHr))
             list[i].dayHr = _that.changpow(list[i].dayHr, 2) + "H/s";
             // console.log(list[i].dayHr );
@@ -546,7 +541,9 @@ export default {
   width: 6rem;
   margin: 0 auto;
 }
-
+.fontweight1{
+  font-weight: 700
+}
 .mylcted_top {
   height: 1.85rem;
   background: url("../assets/img/myltc11.png") no-repeat;
@@ -629,13 +626,14 @@ export default {
 }
 
 .record_item {
-  width: 0.5rem;
+  min-width: 0.5rem;
   height: 0.25rem;
   border-bottom: 1px solid rgba(228, 228, 228, 1);
   line-height: 0.25rem;
   color: rgba(51, 51, 51, 1);
   box-sizing: border-box;
   cursor: pointer;
+  margin-right: 0.05rem;
 }
 
 .record_item:hover {
